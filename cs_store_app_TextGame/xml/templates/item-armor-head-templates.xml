@@ -1,0 +1,13 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>leather helmet</name>
+		<description>It's a standard leather helmet. Nothing special.</description>
+		<keywords>
+			<keyword>helmet</keyword>
+		</keywords>
+		<weight>3.0</weight>
+		<value>10</value>
+		<armor-factor>3</armor-factor>
+	</item-template>
+</item-templates>

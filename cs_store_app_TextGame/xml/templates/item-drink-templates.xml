@@ -1,0 +1,15 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>bottle of water</name>
+		<description>It's a plain bottle of water.  Hopefully it's purified.</description>
+		<keywords>
+			<keyword>bottle</keyword>
+			<keyword>water</keyword>
+		</keywords>
+		<weight>0.3</weight>
+		<value>15</value>
+		<number-of-drinks>5</number-of-drinks>
+		<magic-per-drink>3</magic-per-drink>
+	</item-template>
+</item-templates>

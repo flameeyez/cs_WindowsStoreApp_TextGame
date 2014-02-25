@@ -1,0 +1,14 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>bronze sword</name>
+		<description>This sword has seen better days.  Several chipped areas line the blade.</description>
+		<keywords>
+			<keyword>sword</keyword>
+		</keywords>
+		<weight>10.0</weight>
+		<value>25</value>
+		<minimum-damage>5</minimum-damage>
+		<maximum-damage>8</maximum-damage>
+	</item-template>
+</item-templates>

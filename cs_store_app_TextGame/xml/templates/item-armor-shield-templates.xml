@@ -1,0 +1,13 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>wooden shield</name>
+		<description>This shield splinters something terrible.  It looks as if one solid blow from a weapon would shatter it into pieces.</description>
+		<keywords>
+			<keyword>shield</keyword>
+		</keywords>
+		<weight>5.0</weight>
+		<value>15</value>
+		<armor-factor>5</armor-factor>
+	</item-template>
+</item-templates>

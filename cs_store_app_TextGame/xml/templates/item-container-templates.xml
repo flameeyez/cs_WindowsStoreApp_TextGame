@@ -1,0 +1,28 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>light backpack</name>
+		<description>This backpack is sturdy.  Sturdy and small.</description>
+		<keywords>
+			<keyword>backpack</keyword>
+		</keywords>
+		<weight>5.0</weight>
+		<value>25</value>
+		<maximum-weight>20</maximum-weight>
+		<closed>false</closed>
+		<closable>true</closable>
+	</item-template>	
+  <item-template>
+		<id>1</id>
+		<name>heavy backpack</name>
+		<description>Much larger than its light counterpart, the heavy backpack is made of tanned leather hides.</description>
+		<keywords>
+			<keyword>backpack</keyword>
+		</keywords>
+		<weight>8.0</weight>
+		<value>100</value>
+		<maximum-weight>40</maximum-weight>
+		<closed>false</closed>
+		<closable>true</closable>
+	</item-template>
+</item-templates>

@@ -1,0 +1,292 @@
+<?xml version="1.0" ?>
+<world>
+    <regions>
+        <region>
+            <id>0</id>
+            <name>The Town</name>
+            <rooms>
+                <room>
+                    <id>0</id>
+                    <description>This is the northwest room. The town gates are here.</description>
+                    <exits>
+                        <east>
+                            <region>0</region>
+                            <room>1</room>
+                        </east>
+                        <south>
+                            <region>0</region>
+                            <room>3</room>
+                        </south>
+                        <southeast>
+                            <region>0</region>
+                            <room>4</room>
+                        </southeast>
+                    </exits>
+                    <connections>
+                        <connection>
+                            <region>1</region>
+                            <room>0</room>
+                            <action-verb>go</action-verb>
+                            <action-noun>gates</action-noun>
+                        </connection>
+                    </connections>
+                </room>
+                <room>
+                    <id>1</id>
+                    <description>This is the north room.</description>
+                    <exits>
+                        <west>
+                            <region>0</region>
+                            <room>0</room>
+                        </west>
+                        <east>
+                            <region>0</region>
+                            <room>2</room>
+                        </east>
+                        <south>
+                            <region>0</region>
+                            <room>4</room>
+                        </south>
+                    </exits>
+                </room>
+                <room>
+                    <id>2</id>
+                    <description>This is the northeast room. The weapon store is also here.</description>
+                    <exits>
+                        <west>
+                            <region>0</region>
+                            <room>1</room>
+                        </west>
+                        <southwest>
+                            <region>0</region>
+                            <room>4</room>
+                        </southwest>
+                        <south>
+                            <region>0</region>
+                            <room>5</room>
+                        </south>
+                    </exits>
+                    <connections>
+                        <connection>
+                            <region>2</region>
+                            <room>0</room>
+                            <action-verb>go</action-verb>
+                            <action-noun>store</action-noun>
+                        </connection>
+                    </connections>
+                </room>
+                <room>
+                    <id>3</id>
+                    <description>This is the west room.</description>
+                    <exits>
+                        <north>
+                            <region>0</region>
+                            <room>0</room>
+                        </north>
+                        <east>
+                            <region>0</region>
+                            <room>4</room>
+                        </east>
+                        <south>
+                            <region>0</region>
+                            <room>6</room>
+                        </south>
+                    </exits>
+                    <inventory />
+                </room>
+                <room>
+                    <id>4</id>
+                    <description>This is the central room.</description>
+                    <exits>
+                        <northwest>
+                            <region>0</region>
+                            <room>0</room>
+                        </northwest>
+                        <north>
+                            <region>0</region>
+                            <room>1</room>
+                        </north>
+                        <northeast>
+                            <region>0</region>
+                            <room>2</room>
+                        </northeast>
+                        <west>
+                            <region>0</region>
+                            <room>3</room>
+                        </west>
+                        <east>
+                            <region>0</region>
+                            <room>5</room>
+                        </east>
+                        <southwest>
+                            <region>0</region>
+                            <room>6</room>
+                        </southwest>
+                        <south>
+                            <region>0</region>
+                            <room>7</room>
+                        </south>
+                        <southeast>
+                            <region>0</region>
+                            <room>8</room>
+                        </southeast>
+                    </exits>
+                    <inventory />
+                </room>
+                <room>
+                    <id>5</id>
+                    <description>This is the east room.</description>
+                    <exits>
+                        <north>
+                            <region>0</region>
+                            <room>2</room>
+                        </north>
+                        <west>
+                            <region>0</region>
+                            <room>4</room>
+                        </west>
+                        <south>
+                            <region>0</region>
+                            <room>8</room>
+                        </south>
+                    </exits>
+                    <inventory />
+                </room>
+                <room>
+                    <id>6</id>
+                    <description>This is the southwest room.</description>
+                    <exits>
+                        <north>
+                            <region>0</region>
+                            <room>3</room>
+                        </north>
+                        <northeast>
+                            <region>0</region>
+                            <room>4</room>
+                        </northeast>
+                        <east>
+                            <region>0</region>
+                            <room>7</room>
+                        </east>
+                    </exits>
+                    <inventory />
+                </room>
+                <room>
+                    <id>7</id>
+                    <description>This is the south room.</description>
+                    <exits>
+                        <north>
+                            <region>0</region>
+                            <room>4</room>
+                        </north>
+                        <west>
+                            <region>0</region>
+                            <room>6</room>
+                        </west>
+                        <east>
+                            <region>0</region>
+                            <room>8</room>
+                        </east>
+                    </exits>
+                    <inventory />
+                </room>
+                <room>
+                    <id>8</id>
+                    <description>This is the southeast room.</description>
+                    <exits>
+                        <northwest>
+                            <region>0</region>
+                            <room>4</room>
+                        </northwest>
+                        <north>
+                            <region>0</region>
+                            <room>5</room>
+                        </north>
+                        <west>
+                            <region>0</region>
+                            <room>7</room>
+                        </west>
+                    </exits>
+                    <inventory />
+                </room>
+            </rooms>
+        </region>
+        <region>
+            <id>1</id>
+            <name>The Forest</name>
+            <rooms>
+                <room>
+                    <id>0</id>
+                    <description>This is the bottom room. The town gates are here.</description>
+                    <exits>
+                        <north>
+                            <region>1</region>
+                            <room>1</room>
+                        </north>
+                    </exits>
+                    <connections>
+                        <connection>
+                            <region>0</region>
+                            <room>0</room>
+                            <action-verb>go</action-verb>
+                            <action-noun>gates</action-noun>
+                        </connection>
+                    </connections>
+                    <inventory>
+                        <item>
+                            <id>0</id>
+                            <name>copper bolt</name>
+                            <description>It&apos;s a copper bolt. I&apos;m not sure what it could be used for.</description>
+                            <weight>9.4201008426855001e-308</weight>
+                            <value>0</value>
+                            <keywords>
+                                <keyword>bolt</keyword>
+                            </keywords>
+                        </item>
+                    </inventory>
+                </room>
+                <room>
+                    <id>1</id>
+                    <description>This is the top room.</description>
+                    <exits>
+                        <south>
+                            <region>1</region>
+                            <room>0</room>
+                        </south>
+                    </exits>
+                    <inventory>
+                        <item>
+                            <id>0</id>
+                            <name>bronze sword</name>
+                            <description>This sword has seen better days. Several chipped areas line the blade.</description>
+                            <weight>9.4201008426855001e-308</weight>
+                            <value>0</value>
+                            <keywords>
+                                <keyword>sword</keyword>
+                            </keywords>
+                            <minimum-damage>5</minimum-damage>
+                            <maximum-damage>8</maximum-damage>
+                        </item>
+                    </inventory>
+                </room>
+            </rooms>
+        </region>
+        <region>
+            <id>2</id>
+            <name>Town Weapon Store</name>
+            <rooms>
+                <room>
+                    <id>0</id>
+                    <description>This is the weapons store.</description>
+                    <exits>
+                        <out>
+                            <region>0</region>
+                            <room>2</room>
+                        </out>
+                    </exits>
+                    <inventory />
+                </room>
+            </rooms>
+        </region>
+    </regions>
+</world>

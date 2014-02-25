@@ -1,0 +1,43 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>wedge of swiss cheese</name>
+		<description>It's an amazing wedge of swiss cheese!</description>
+		<keywords>
+			<keyword>cheese</keyword>
+			<keyword>wedge</keyword>
+			<keyword>swiss</keyword>
+		</keywords>
+		<weight>0.51</weight>
+		<value>10</value>
+		<number-of-bites>5</number-of-bites>
+		<health-per-bite>2</health-per-bite>
+	</item-template>
+	
+	<item-template>
+		<id>1</id>
+		<name>roasted leg of goat</name>
+		<description>It's a spiced leg of goat.  Yum!</description>
+		<keywords>
+			<keyword>leg</keyword>
+			<keyword>goat</keyword>
+		</keywords>
+		<weight>1.0</weight>
+		<value>6</value>
+		<number-of-bites>6</number-of-bites>
+		<health-per-bite>5</health-per-bite>
+	</item-template>
+	
+	<item-template>
+		<id>2</id>
+		<name>apple</name>
+		<description>It's a plain apple.</description>
+		<keywords>
+			<keyword>apple</keyword>
+		</keywords>
+		<weight>0.5</weight>
+		<value>2</value>
+		<number-of-bites>5</number-of-bites>
+		<health-per-bite>2</health-per-bite>
+	</item-template>
+</item-templates>

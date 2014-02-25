@@ -1,0 +1,14 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>pair of leather boots</name>
+		<description>Some standard issue leather boots.</description>
+		<keywords>
+			<keyword>boots</keyword>
+      <keyword>pair</keyword>
+		</keywords>
+		<weight>4.0</weight>
+		<value>15</value>
+		<armor-factor>2</armor-factor>
+	</item-template>
+</item-templates>

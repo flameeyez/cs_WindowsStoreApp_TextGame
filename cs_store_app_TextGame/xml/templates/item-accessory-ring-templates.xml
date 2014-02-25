@@ -1,0 +1,22 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>silver ring</name>
+		<description>The ring is dull, tarnished, and otherwise unremarkable.</description>
+		<keywords>
+			<keyword>ring</keyword>
+		</keywords>
+		<weight>0.1</weight>
+		<value>25</value>
+	</item-template>	
+  <item-template>
+		<id>1</id>
+		<name>gold ring</name>
+		<description>This ring has luster!</description>
+		<keywords>
+			<keyword>ring</keyword>
+		</keywords>
+		<weight>0.1</weight>
+		<value>100</value>
+	</item-template>
+</item-templates>

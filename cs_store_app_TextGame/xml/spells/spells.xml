@@ -1,0 +1,45 @@
+<spells>
+	<spell>
+		<id>001</id>
+		<name>fire</name>
+		<spell-type>fire</spell-type>
+		
+		<level-requirement>1</level-requirement>
+		<mana-cost>3</mana-cost>
+		<base-power>5</base-power>
+		<variance>2</variance> <!-- 3-7 base damage -->
+	</spell>
+
+	<spell>
+		<id>001</id>
+		<name>fire</name>
+		<spell-type>fire</spell-type>
+		
+		<level-requirement>2</level-requirement>
+		<mana-cost>4</mana-cost>
+		<base-power>7</base-power>
+		<variance>1</variance> <!-- 6-8 base damage -->
+	</spell>
+
+	<spell>
+		<id>003</id>
+		<name>lightning</name>
+		<spell-type>lightning</spell-type>
+		
+		<level-requirement>3</level-requirement>
+		<mana-cost>5</mana-cost>
+		<base-power>10</base-power>
+		<variance>3</variance> <!-- 7-13 base damage -->
+	</spell>
+	
+	<spell>
+		<id>004</id>
+		<name>cure</name>
+		<spell-type>cure</spell-type>
+		
+		<level-requirement>1</level-requirement>
+		<mana-cost>3</mana-cost>
+		<base-power>6</base-power>
+		<variance>1</variance> <!-- 5-7 health -->
+	</spell>
+</spells>

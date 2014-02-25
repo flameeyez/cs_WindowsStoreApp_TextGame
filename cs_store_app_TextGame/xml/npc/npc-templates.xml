@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<npc-templates>
+  <npc-template>
+    <id>0</id>
+    <name>goblin</name>
+    <keywords>
+      <keyword>goblin</keyword>
+    </keywords>
+    <inventory>
+      <armor-chest>0</armor-chest>
+      <backpack>0</backpack>
+      <gold>50</gold>
+    </inventory>
+  </npc-template>
+  <npc-template>
+    <id>1</id>
+    <name>orc</name>
+    <keywords>
+      <keyword>orc</keyword>
+    </keywords>
+    <inventory>
+      <right-hand>
+        <weapon>0</weapon>
+      </right-hand>
+      <left-hand>
+        <armor-shield>0</armor-shield>
+      </left-hand>
+      <armor-head>0</armor-head>
+      <armor-feet>0</armor-feet>
+      <armor-chest>0</armor-chest>
+      <ring1>0</ring1>
+      <ring2>1</ring2>
+      <amulet>0</amulet>
+      <backpack>0</backpack>
+      <gold>50</gold>
+    </inventory>
+  </npc-template>
+</npc-templates>

@@ -1,0 +1,13 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>leather tunic</name>
+		<description>This tunic hasn't been washed recently...if ever...</description>
+		<keywords>
+			<keyword>tunic</keyword>
+		</keywords>
+		<weight>10.0</weight>
+		<value>25</value>
+		<armor-factor>10</armor-factor>
+	</item-template>
+</item-templates>

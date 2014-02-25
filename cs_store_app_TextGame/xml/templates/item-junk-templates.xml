@@ -1,0 +1,12 @@
+<item-templates>
+	<item-template>
+		<id>0</id>
+		<name>copper bolt</name>
+		<description>It's a copper bolt.  I'm not sure what it could be used for.</description>
+		<keywords>
+			<keyword>bolt</keyword>
+		</keywords>
+		<weight>0.1</weight>
+		<value>2</value>
+	</item-template>
+</item-templates>
