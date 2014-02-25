@@ -8,7 +8,7 @@ namespace cs_store_app_TextGame
 {
     public class Player : Entity
     {
-        public Player() : base() { }
+        public Player() : base() { SetCurrentRoom(0, 0, 0); }
 
         public string CurrentRoomDisplayString
         {

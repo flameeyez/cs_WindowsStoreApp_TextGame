@@ -109,6 +109,7 @@
     <Compile Include="entity\NPC.cs" />
     <Compile Include="entity\NPCTemplates.cs" />
     <Compile Include="entity\Player.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="input\Handler.cs" />
     <Compile Include="items\ItemAccessory.cs" />
     <Compile Include="items\ItemAccessoryAmulet.cs" />

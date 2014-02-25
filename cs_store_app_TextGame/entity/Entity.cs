@@ -39,7 +39,7 @@ namespace cs_store_app_TextGame
         public EntityAttributes Attributes = new EntityAttributes();
         public ENTITY_POSTURE Posture { get; set; }
 
-        private string _name { get; set; }
+        protected string _name { get; set; }
         public string Name 
         {
             get

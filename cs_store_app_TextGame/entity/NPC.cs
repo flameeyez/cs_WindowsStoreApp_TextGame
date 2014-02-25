@@ -20,7 +20,7 @@ namespace cs_store_app_TextGame
             npc.ActionPulse = 3000 + StaticMethods.r.Next(5000); 
             npc.NID = StaticMethods.EntityCount++;
             npc.ID = ID;
-            npc.Name = Name;
+            npc.Name = _name;
             npc.Gold = Gold;
             if (RightHand != null) { npc.RightHand = RightHand.DeepClone(); }
             if (LeftHand != null) { npc.LeftHand = LeftHand.DeepClone(); }
@@ -316,12 +316,14 @@ namespace cs_store_app_TextGame
                 LastActionTime = now;
                 Exit exit = CurrentRoom.GetRandomExit();
 
+                int nID = CurrentRoom.ID;
+
                 CurrentRoom.NPCs.Remove(this);
                 SetCurrentRoom(exit.Region, exit.Subregion, exit.Room);
                 CurrentRoom.NPCs.Add(this);
 
                 // [randomly?] take an action
-                handler = new Handler(RETURN_CODE.HANDLED, Name + " is taking an action (" + exit.Room.ToString() + ").");
+                handler = new Handler(RETURN_CODE.HANDLED, Name + " is moving from room " + nID.ToString() + " to room " + exit.Room.ToString() + ".");
                 // update LastActionTime
             }
 
