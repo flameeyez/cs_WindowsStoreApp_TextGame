@@ -29,7 +29,8 @@ namespace cs_store_app_TextGame
         SHOW_GOLD,
         SIT,
         STAND,
-        KNEEL
+        KNEEL,
+        ATTACK
     }
 
     public class TranslatedInput
@@ -65,6 +66,8 @@ namespace cs_store_app_TextGame
             StringToAction.Add("sit", ACTION_ENUM.SIT);
             StringToAction.Add("stand", ACTION_ENUM.STAND);
             StringToAction.Add("kneel", ACTION_ENUM.KNEEL);
+            StringToAction.Add("attack", ACTION_ENUM.ATTACK);
+            StringToAction.Add("kill", ACTION_ENUM.ATTACK);
         }
 
         public TranslatedInput(string unparsedInput)

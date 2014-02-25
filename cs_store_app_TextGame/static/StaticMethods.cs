@@ -18,6 +18,13 @@ namespace cs_store_app_TextGame
             return new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(char.ToLower(character));
         }
 
+        public static string ToSentenceCase(this string str)
+        {
+            if (str.Length == 0) { return str; }
+            if (str.Length == 1) { return char.ToUpper(str[0]).ToString(); }
+            return char.ToUpper(str[0]) + str.Substring(1);
+        }
+
         public static string ExitIntegerToStringAbbreviated(int nDirection)
         {
             switch(nDirection)

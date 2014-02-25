@@ -6,11 +6,17 @@
     <keywords>
       <keyword>goblin</keyword>
     </keywords>
+    <maximum-health>10</maximum-health>
     <inventory>
       <armor-chest>0</armor-chest>
       <backpack>0</backpack>
       <gold>50</gold>
     </inventory>
+    <behavior>
+      <attack>50</attack>
+      <move>90</move>
+      <look>100</look>
+    </behavior>
   </npc-template>
   <npc-template>
     <id>1</id>
@@ -18,6 +24,7 @@
     <keywords>
       <keyword>orc</keyword>
     </keywords>
+    <maximum-health>20</maximum-health>
     <inventory>
       <right-hand>
         <weapon>0</weapon>
@@ -34,5 +41,10 @@
       <backpack>0</backpack>
       <gold>50</gold>
     </inventory>
+    <behavior>
+      <attack>90</attack>
+      <move>95</move>
+      <look>100</look>
+    </behavior>
   </npc-template>
 </npc-templates>

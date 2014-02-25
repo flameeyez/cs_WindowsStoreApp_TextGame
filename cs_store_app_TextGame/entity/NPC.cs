@@ -10,37 +10,18 @@ namespace cs_store_app_TextGame
 {
     public class NPC : Entity
     {
+        #region Attributes
+
         public DateTime LastActionTime = DateTime.Now;
         public int ActionPulse { get; set; }
-
-        public NPC() : base() { }
-        public NPC Clone()
+        public override string Name
         {
-            NPC npc = new NPC();
-            npc.ActionPulse = 3000 + StaticMethods.r.Next(5000); 
-            npc.NID = StaticMethods.EntityCount++;
-            npc.ID = ID;
-            npc.Name = _name;
-            npc.Gold = Gold;
-            if (RightHand != null) { npc.RightHand = RightHand.DeepClone(); }
-            if (LeftHand != null) { npc.LeftHand = LeftHand.DeepClone(); }
-            if (ArmorChest != null) { npc.ArmorChest = ArmorChest.DeepClone(); }
-            if (ArmorHead != null) { npc.ArmorHead = ArmorHead.DeepClone(); }
-            if (ArmorFeet != null) { npc.ArmorFeet = ArmorFeet.DeepClone(); }
-            if (Backpack != null) { npc.Backpack = Backpack.DeepClone(); }
-            if (Ring1 != null) { npc.Ring1 = Ring1.DeepClone(); }
-            if (Ring2 != null) { npc.Ring2 = Ring2.DeepClone(); }
-            if (Amulet != null) { npc.Amulet = Amulet.DeepClone(); }
-
-            foreach(string keyword in Keywords)
+            get
             {
-                npc.Keywords.Add(keyword);
+                return base.Name + " (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
-
-            return npc;
         }
         public List<string> Keywords = new List<string>();
-
         public override string HandsString
         {
             get
@@ -127,10 +108,44 @@ namespace cs_store_app_TextGame
             }
         }
 
+        #endregion
+        #region Constructors
+
+        public NPC() : base() { }
+        public NPC Clone()
+        {
+            NPC npc = new NPC();
+            npc.ActionPulse = 10000 + StaticMethods.r.Next(5000);
+            npc.NID = StaticMethods.EntityCount++;
+            npc.ID = ID;
+            npc.Name = _name;
+            npc.Gold = Gold;
+            npc.MaximumHealth = MaximumHealth;
+            npc.CurrentHealth = CurrentHealth;
+            if (RightHand != null) { npc.RightHand = RightHand.DeepClone(); }
+            if (LeftHand != null) { npc.LeftHand = LeftHand.DeepClone(); }
+            if (ArmorChest != null) { npc.ArmorChest = ArmorChest.DeepClone(); }
+            if (ArmorHead != null) { npc.ArmorHead = ArmorHead.DeepClone(); }
+            if (ArmorFeet != null) { npc.ArmorFeet = ArmorFeet.DeepClone(); }
+            if (Backpack != null) { npc.Backpack = Backpack.DeepClone(); }
+            if (Ring1 != null) { npc.Ring1 = Ring1.DeepClone(); }
+            if (Ring2 != null) { npc.Ring2 = Ring2.DeepClone(); }
+            if (Amulet != null) { npc.Amulet = Amulet.DeepClone(); }
+
+            foreach (string keyword in Keywords)
+            {
+                npc.Keywords.Add(keyword);
+            }
+
+            return npc;
+        }
+
         public NPC(XElement npcNode)
         {
             ID = int.Parse(npcNode.Element("id").Value);
             Name = npcNode.Element("name").Value;
+            MaximumHealth = int.Parse(npcNode.Element("maximum-health").Value);
+            CurrentHealth = MaximumHealth;
 
             var keywordNodes = from keywords in npcNode
                                 .Elements("keywords")
@@ -295,6 +310,62 @@ namespace cs_store_app_TextGame
             }
         }
 
+        #endregion
+        #region Action Handlers
+
+        private Handler DoRandomAction()
+        {
+            Random r = new Random(DateTime.Now.Millisecond);
+            TranslatedInput input = null;
+
+            switch (r.Next(2))
+            {
+                case 0:
+                    return DoMoveBasic(input);
+                case 1:
+                    return DoLook(input);
+            }
+
+            return Handler.UNHANDLED;
+        }
+
+        public override Handler DoLook(TranslatedInput input)
+        {
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LOOK, Name));
+            }
+
+            return Handler.HANDLED;
+        }
+
+        public override Handler DoMoveBasic(TranslatedInput input)
+        {
+            Handler handler = Handler.HANDLED;
+
+            ExitWithDirection exit = CurrentRoom.GetRandomExit();
+
+            // npc is leaving player's room
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, exit.Direction));
+            }
+
+            CurrentRoom.NPCs.Remove(this);
+            SetCurrentRoom(exit.Exit.Region, exit.Exit.Subregion, exit.Exit.Room);
+            CurrentRoom.NPCs.Add(this);
+
+            // npc has moved to player's room
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name));
+            }
+
+            return handler;
+        }
+
+        #endregion
+
         public bool IsKeyword(string strWord)
         {
             foreach(string keyword in Keywords)
@@ -308,23 +379,18 @@ namespace cs_store_app_TextGame
         public Handler Update()
         {
             Handler handler = null;
+            if (CurrentHealth <= 0) 
+            {
+                CurrentRoom.NPCs.Remove(this);
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.DEBUG_REMOVE, Name));
+            }
 
             DateTime now = DateTime.Now;
             TimeSpan delta = now - LastActionTime;
             if(delta.TotalMilliseconds >= ActionPulse)
             {
                 LastActionTime = now;
-                Exit exit = CurrentRoom.GetRandomExit();
-
-                int nID = CurrentRoom.ID;
-
-                CurrentRoom.NPCs.Remove(this);
-                SetCurrentRoom(exit.Region, exit.Subregion, exit.Room);
-                CurrentRoom.NPCs.Add(this);
-
-                // [randomly?] take an action
-                handler = new Handler(RETURN_CODE.HANDLED, Name + " is moving from room " + nID.ToString() + " to room " + exit.Room.ToString() + ".");
-                // update LastActionTime
+                handler = DoRandomAction();
             }
 
             return handler;

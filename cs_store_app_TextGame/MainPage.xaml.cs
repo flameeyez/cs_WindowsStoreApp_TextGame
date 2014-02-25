@@ -161,6 +161,37 @@ namespace cs_store_app_TextGame
             AppendText(handler.StringToAppend);
         }
         #endregion
+        // TODO: figure out if state should be used
+        public async void Update(object state)
+        {
+            DateTime start = DateTime.Now;
+
+            // interaction with UI thread
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                // handle input queue
+                while (InputQueue.Count > 0)
+                {
+                    string input = InputQueue.Dequeue();
+                    HandleInput(input);
+                }
+
+                // update world
+                List<Handler> handlers = World.Update();
+                foreach (Handler handler in handlers)
+                {
+                    AppendText(handler.StringToAppend);
+                }
+            });
+
+            DateTime end = DateTime.Now;
+            TimeSpan delta = end - start;
+
+            //await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            //{
+            //    AppendText(delta.TotalMilliseconds.ToString());
+            //});
+        }
         #region Debug
         public void AddDebug()
         {
@@ -198,40 +229,5 @@ namespace cs_store_app_TextGame
             }
         }
         #endregion
-
-        // TODO: figure out if state should be used
-        public async void Update(object state)
-        {
-            DateTime start = DateTime.Now;
-
-            // interaction with UI thread
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                // handle input queue
-                while (InputQueue.Count > 0)
-                {
-                    string input = InputQueue.Dequeue();
-                    HandleInput(input);
-                }
-
-                // update world
-                List<Handler> handlers = World.Update();
-                foreach (Handler handler in handlers)
-                {
-                    AppendText(handler.StringToAppend, false);
-                }
-
-                if (handlers.Count > 0) { AppendText("\n"); }
-            });
-
-            DateTime end = DateTime.Now;
-            TimeSpan delta = end - start;
-
-            //await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            //{
-            //    AppendText(delta.TotalMilliseconds.ToString());
-            //});
-        }
-        
     }
 }

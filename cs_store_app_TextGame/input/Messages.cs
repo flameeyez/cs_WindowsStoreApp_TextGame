@@ -57,7 +57,13 @@ namespace cs_store_app_TextGame
         NPC_SELL_ITEM,
         NPC_BUY,
         NPC_PRICE_ITEM,
-        NPC_CARRYING_GOLD
+        NPC_CARRYING_GOLD,
+        NPC_ARRIVES,
+        NPC_LEAVES,
+        PLAYER_ATTACKS_NPC,
+        PLAYER_KILLS_NPC,
+        DEBUG_REMOVE,
+        NPC_LOOK
     };
     public enum ERROR_MESSAGE_ENUM
     {
@@ -82,7 +88,8 @@ namespace cs_store_app_TextGame
         ALREADY_SITTING,
         ALREADY_KNEELING,
         SITTING,
-        KNEELING
+        KNEELING,
+        NOT_A_WEAPON
     };
     public static class Messages
     {
@@ -117,9 +124,15 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_STAND, "You stand up.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SIT, "You sit down.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_KNEEL, "You kneel.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_ATTACKS_NPC, "You attack the /1 with your /2 and hit for /3 damage.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_KILLS_NPC, "You attack the /1 with your /2 and hit for /3 damage.\nThe /1 dies.");
+            MessageDictionary.Add(MESSAGE_ENUM.DEBUG_REMOVE, "DEBUG: Removing /1.");
             
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SELL_ITEM, "You sell the /1 for /2 gold pieces.");
+
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_ARRIVES, "/An /1 appears!");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_LEAVES, "The /1 heads /2.");
 
             MessageDictionary.Add(MESSAGE_ENUM.NPC_GET, "The /1 picks up /an /2.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_DROP, "The /1 drops /an /2.");
@@ -133,7 +146,7 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.NPC_DRINK_LAST_GROUND_ITEM, "The /1 takes the last sip from the /2 that is lying on the ground.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_OPEN, "The /1 opens /an /2.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_CLOSE, "The /1 closes /an /2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_GET_FROM_CONTAINER, "The /1 removes /an /2 from a /3.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_GET_FROM_CONTAINER, "The /1 removes /an /2 from /an /3.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_GET_FROM_ROOM_CONTAINER, "The /1 removes /an /2 from /an /3 that is lying on the ground.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_PUT_IN_NPC_CONTAINER, "The /1 puts /an /2 in its /3.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_PUT_IN_GROUND_CONTAINER, "The /1 puts /an /2 in /an /3 that is lying on the ground.");
@@ -143,6 +156,7 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.NPC_BUY, "The /1 buys /an /2 from the shopkeeper.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_PRICE_ITEM, "The shopkeeper converses with the /1.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_CARRYING_GOLD, "The /1 checks its pockets for gold.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_LOOK, "The /1 checks its surroundings.");
 
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.NPC_SELL_ITEM, "The /1 sells /an /2 to the shopkeeper.");
@@ -168,13 +182,15 @@ namespace cs_store_app_TextGame
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ALREADY_KNEELING, "You are already kneeling.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.SITTING, "You can't move while sitting.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.KNEELING, "You can't move while kneeling.");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, "You can't attack with /an /1!");
         }
 
-        private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2)
+        private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)
         {
             string strReturn = strMessage;
             strReturn = strReturn.Replace("/1", strParameter1);
             strReturn = strReturn.Replace("/2", strParameter2);
+            strReturn = strReturn.Replace("/3", strParameter3);
 
             // /an - get first consonant after next space
             int nIndex = strReturn.IndexOf("/an");
@@ -183,6 +199,15 @@ namespace cs_store_app_TextGame
                 int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
                 strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "an" : "a") + strReturn.Substring(nIndex + "/an".Length);
                 nIndex = strReturn.IndexOf("/an");
+            }
+
+            // /An - capitalized version of the above
+            nIndex = strReturn.IndexOf("/An");
+            while (nIndex != -1)
+            {
+                int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
+                strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "An" : "A") + strReturn.Substring(nIndex + "/An".Length);
+                nIndex = strReturn.IndexOf("/An");
             }
 
             // numbers
@@ -200,13 +225,13 @@ namespace cs_store_app_TextGame
 
             return strReturn;
         }
-        public static string GetMessage(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "")
+        public static string GetMessage(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
         {
-            return ProcessMessage(MessageDictionary[message], strParameter1, strParameter2) + "\n";
+            return ProcessMessage(MessageDictionary[message], strParameter1, strParameter2, strParameter3) + "\n";
         }
-        public static string GetErrorMessage(ERROR_MESSAGE_ENUM errorMessage, string strParameter1 = "", string strParameter2 = "")
+        public static string GetErrorMessage(ERROR_MESSAGE_ENUM errorMessage, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
         {
-            return ProcessMessage(ErrorMessageDictionary[errorMessage], strParameter1, strParameter2) + "\n";
+            return ProcessMessage(ErrorMessageDictionary[errorMessage], strParameter1, strParameter2, strParameter3) + "\n";
         }
     }
 }

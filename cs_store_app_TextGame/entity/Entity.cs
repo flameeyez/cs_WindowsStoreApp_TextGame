@@ -40,7 +40,7 @@ namespace cs_store_app_TextGame
         public ENTITY_POSTURE Posture { get; set; }
 
         protected string _name { get; set; }
-        public string Name 
+        public virtual string Name 
         {
             get
             {
@@ -217,11 +217,14 @@ namespace cs_store_app_TextGame
                     return DoStand(input);
                 case ACTION_ENUM.KNEEL:
                     return DoKneel(input);
+                case ACTION_ENUM.ATTACK:
+                    return DoAttack(input);
                 default:
                     return Handler.UNHANDLED;
             }
         }
 
+        public virtual Handler DoAttack(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoMoveBasic(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoLook(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoLook(string strWord) { return Handler.HANDLED; }

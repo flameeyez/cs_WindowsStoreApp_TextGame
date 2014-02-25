@@ -752,6 +752,28 @@ namespace cs_store_app_TextGame
             Posture = ENTITY_POSTURE.SITTING;
             return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_SIT));
         }
+        public override Handler DoAttack(TranslatedInput input)
+        {
+            if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, input.Words[0].ToSentenceCase())); }
+
+            string NPCString = "";
+            if (input.Words.Length == 2) { NPCString = input.Words[1]; }
+            else if (input.Words.Length == 3) { NPCString = input.Words[2]; }
+            
+            NPC npc = CurrentRoom.FindNPC(NPCString);
+            if (npc == null) { return Handler.BAD_INPUT; }
+
+            if (RightHand != null && RightHand.Type != ITEM_TYPE.WEAPON) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, RightHand.Name)); }
+            string weapon = RightHand == null ? "fist" : RightHand.Name;
+
+            // calculate some damage
+            MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_ATTACKS_NPC;
+            int damage = 5;
+            npc.CurrentHealth -= damage;
+            if (npc.CurrentHealth <= 0) { message = MESSAGE_ENUM.PLAYER_KILLS_NPC; }
+
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, npc.Name, weapon, damage.ToString()));
+        }
 
         #endregion
     }

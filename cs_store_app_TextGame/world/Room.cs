@@ -274,14 +274,21 @@ namespace cs_store_app_TextGame
             return handlers;
         }
 
-        public Exit GetRandomExit()
+        public ExitWithDirection GetRandomExit()
         {
             Random r = new Random(DateTime.Now.Millisecond);
 
-            Exit exit = Exits[r.Next(9)];
-            while ( exit.Region == -1) { exit = Exits[r.Next(9)]; }
+            int nDirection = r.Next(9);
+            Exit exit = Exits[nDirection];
+            while ( exit.Region == -1) 
+            {
+                nDirection = r.Next(9);
+                exit = Exits[nDirection]; 
+            }
 
-            return exit;
+            string direction = StaticMethods.ExitIntegerToStringFull(nDirection);
+
+            return new ExitWithDirection(exit, direction);
         }
     }
 }
