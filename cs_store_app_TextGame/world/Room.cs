@@ -17,7 +17,7 @@ namespace cs_store_app_TextGame
         public List<Connection> Connections = new List<Connection>();
 
         // friendly, unfriendly, and everything in-between
-        public List<NPC> NPCs = new List<NPC>();
+        public List<EntityNPC> NPCs = new List<EntityNPC>();
 
         public Room()
         {
@@ -246,14 +246,14 @@ namespace cs_store_app_TextGame
             return Items.Get(strKeyword, itemType);
         }
 
-        public void AddNPC(NPC npc)
+        public void AddNPC(EntityNPC npc)
         {
             NPCs.Add(npc);
         }
 
-        public NPC FindNPC(string strWord)
+        public EntityNPC FindNPC(string strWord)
         {
-            foreach (NPC npc in NPCs)
+            foreach (EntityNPC npc in NPCs)
             {
                 if (npc.IsKeyword(strWord)) { return npc; }
             }

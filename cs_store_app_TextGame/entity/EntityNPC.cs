@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace cs_store_app_TextGame
 {
-    public class NPC : Entity
+    public class EntityNPC : Entity
     {
         #region Attributes
 
@@ -107,14 +107,15 @@ namespace cs_store_app_TextGame
                 return strReturn;
             }
         }
+        public static List<EntityNPCBehavior> Behavior = new List<EntityNPCBehavior>();
 
         #endregion
         #region Constructors
 
-        public NPC() : base() { }
-        public NPC Clone()
+        public EntityNPC() : base() { }
+        public EntityNPC Clone()
         {
-            NPC npc = new NPC();
+            EntityNPC npc = new EntityNPC();
             npc.ActionPulse = 10000 + StaticMethods.r.Next(5000);
             npc.NID = StaticMethods.EntityCount++;
             npc.ID = ID;
@@ -140,7 +141,7 @@ namespace cs_store_app_TextGame
             return npc;
         }
 
-        public NPC(XElement npcNode)
+        public EntityNPC(XElement npcNode)
         {
             ID = int.Parse(npcNode.Element("id").Value);
             Name = npcNode.Element("name").Value;
@@ -156,6 +157,19 @@ namespace cs_store_app_TextGame
                 Keywords.Add(keywordNode.Value);
             }
 
+            // behavior
+            var behaviorNode = npcNode.Element("behavior");
+            if(behaviorNode != null)
+            {
+                foreach(var node in behaviorNode.Elements())
+                {
+                    ACTION_ENUM action = TranslatedInput.StringToAction[node.Name.LocalName];
+                    int percentage = int.Parse(node.Value);
+                    Behavior.Add(new EntityNPCBehavior(action, percentage));
+                }
+            }
+
+            // inventory
             var inventoryNode = npcNode.Element("inventory");
 
             // right hand
@@ -313,10 +327,22 @@ namespace cs_store_app_TextGame
         #endregion
         #region Action Handlers
 
-        private Handler DoRandomAction()
+        private Handler DoAction()
         {
-            Random r = new Random(DateTime.Now.Millisecond);
+            Handler handler = Handler.UNHANDLED;
             TranslatedInput input = null;
+
+            Random r = new Random(DateTime.Now.Millisecond);
+            int percentage = r.Next(100);
+
+            foreach(EntityNPCBehavior behavior in Behavior)
+            {
+                if(percentage < behavior.PercentageChance)
+                {
+                    // TODO: method for converting ACTION_ENUM directly to Do method
+                    //handler = 
+                }
+            }            
 
             switch (r.Next(2))
             {
@@ -375,7 +401,6 @@ namespace cs_store_app_TextGame
 
             return false;
         }
-
         public Handler Update()
         {
             Handler handler = null;
@@ -389,8 +414,9 @@ namespace cs_store_app_TextGame
             TimeSpan delta = now - LastActionTime;
             if(delta.TotalMilliseconds >= ActionPulse)
             {
+                // check behavior
                 LastActionTime = now;
-                handler = DoRandomAction();
+                handler = DoAction();
             }
 
             return handler;

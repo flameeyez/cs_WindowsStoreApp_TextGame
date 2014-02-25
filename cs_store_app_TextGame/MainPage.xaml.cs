@@ -47,7 +47,7 @@ namespace cs_store_app_TextGame
             await ItemTemplates.Load();
             await World.Load();
             //await World.LoadCompressed();
-            await NPCTemplates.Load();
+            await EntityNPCTemplates.Load();
 
             // world update timer
             t = new Timer(Update, null, 1000, 50);
@@ -223,7 +223,7 @@ namespace cs_store_app_TextGame
                 int region = 0;
                 int subregion = 0;
                 int room = r.Next(9);
-                NPC npc = NPCTemplates.NPCs[r.Next(2)].Clone();
+                EntityNPC npc = EntityNPCTemplates.NPCs[r.Next(2)].Clone();
                 npc.SetCurrentRoom(region, subregion, room);
                 World.Regions[region].Subregions[subregion].Rooms[room].AddNPC(npc);
             }

@@ -46,6 +46,7 @@ namespace cs_store_app_TextGame
 
             StringToAction.Add("look", ACTION_ENUM.LOOK);
             StringToAction.Add("go", ACTION_ENUM.MOVE_CONNECTION);
+            StringToAction.Add("move", ACTION_ENUM.MOVE_CONNECTION);
             StringToAction.Add("get", ACTION_ENUM.GET_ITEM);
             StringToAction.Add("take", ACTION_ENUM.GET_ITEM);
             StringToAction.Add("drop", ACTION_ENUM.DROP_ITEM);

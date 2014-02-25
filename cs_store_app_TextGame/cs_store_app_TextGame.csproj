@@ -106,9 +106,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="entity\EntityAttributes.cs" />
-    <Compile Include="entity\NPC.cs" />
-    <Compile Include="entity\NPCTemplates.cs" />
-    <Compile Include="entity\Player.cs" />
+    <Compile Include="entity\EntityNPC.cs" />
+    <Compile Include="entity\EntityNPCTemplates.cs" />
+    <Compile Include="entity\EntityPlayer.cs" />
     <Compile Include="ExitWithDirection.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="input\Handler.cs" />
@@ -125,7 +125,7 @@
     <Compile Include="items\ItemWithSource.cs" />
     <Compile Include="input\Messages.cs" />
     <Compile Include="input\TranslatedInput.cs" />
-    <Compile Include="NPCBehavior.cs" />
+    <Compile Include="entity\EntityNPCBehavior.cs" />
     <Compile Include="world\Connection.cs" />
     <Compile Include="world\Exit.cs" />
     <Compile Include="items\Inventory.cs" />

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace cs_store_app_TextGame
 {
-    public class Player : Entity
+    public class EntityPlayer : Entity
     {
-        public Player() : base() { SetCurrentRoom(0, 0, 0); }
+        public EntityPlayer() : base() { SetCurrentRoom(0, 0, 0); }
 
         public string CurrentRoomDisplayString
         {
@@ -115,7 +115,7 @@ namespace cs_store_app_TextGame
             // basic direction
             // if "go <direction>"
             int nDirection;
-            if (input.Words[0] == "go") { nDirection = StaticMethods.DirectionToInt(input.Words[1]); }
+            if (input.Words[0] == "go" || input.Words[0] == "move") { nDirection = StaticMethods.DirectionToInt(input.Words[1]); }
             // see TranslatedInput constructor; hack job replaces first word with integer direction
             else { nDirection = int.Parse(input.Words[0]); }
 
@@ -163,7 +163,7 @@ namespace cs_store_app_TextGame
             item = CurrentRoom.Items.Get(strWord);
             if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
 
-            NPC npc = CurrentRoom.FindNPC(strWord);
+            EntityNPC npc = CurrentRoom.FindNPC(strWord);
             if (npc != null) { return new Handler(RETURN_CODE.HANDLED, npc.HandsString + "\n" + npc.InventoryString); }
 
             return Handler.BAD_INPUT;
@@ -760,7 +760,7 @@ namespace cs_store_app_TextGame
             if (input.Words.Length == 2) { NPCString = input.Words[1]; }
             else if (input.Words.Length == 3) { NPCString = input.Words[2]; }
             
-            NPC npc = CurrentRoom.FindNPC(NPCString);
+            EntityNPC npc = CurrentRoom.FindNPC(NPCString);
             if (npc == null) { return Handler.BAD_INPUT; }
 
             if (RightHand != null && RightHand.Type != ITEM_TYPE.WEAPON) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, RightHand.Name)); }

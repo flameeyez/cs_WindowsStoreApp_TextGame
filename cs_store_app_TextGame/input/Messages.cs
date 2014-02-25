@@ -163,7 +163,7 @@ namespace cs_store_app_TextGame
 
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.BAD_INPUT, "I don't understand what you've typed.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.WRONG_DIRECTION, "You can't go in that direction.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.GO_WHERE, "Go where?");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.GO_WHERE, "Where would you like to go?");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.BAD_ITEM, "I can't find that item.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.HANDS_ARE_FULL, "Your hands are full.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_CARRYING_ITEM, "You aren't carrying that item.");

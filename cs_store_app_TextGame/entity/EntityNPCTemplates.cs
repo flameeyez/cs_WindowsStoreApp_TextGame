@@ -8,9 +8,9 @@ using System.IO;
 
 namespace cs_store_app_TextGame
 {
-    public static class NPCTemplates
+    public static class EntityNPCTemplates
     {
-        public static List<NPC> NPCs = new List<NPC>();
+        public static List<EntityNPC> NPCs = new List<EntityNPC>();
 
         public async static Task Load()
         {
@@ -33,7 +33,7 @@ namespace cs_store_app_TextGame
                                select npcTemplates;
                 foreach (var npcNode in npcNodes)
                 {
-                    NPCs.Add(new NPC(npcNode));
+                    NPCs.Add(new EntityNPC(npcNode));
                 }
             }
             catch (Exception e)
