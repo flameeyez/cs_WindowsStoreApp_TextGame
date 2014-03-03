@@ -63,7 +63,8 @@ namespace cs_store_app_TextGame
         PLAYER_ATTACKS_NPC,
         PLAYER_KILLS_NPC,
         DEBUG_REMOVE,
-        NPC_LOOK
+        NPC_LOOK,
+        NPC_SHOW_ITEM
     };
     public enum ERROR_MESSAGE_ENUM
     {
@@ -89,7 +90,9 @@ namespace cs_store_app_TextGame
         ALREADY_KNEELING,
         SITTING,
         KNEELING,
-        NOT_A_WEAPON
+        NOT_A_WEAPON,
+        NPC_HANDS_ARE_FULL,
+        NPC_NO_ITEMS_IN_ROOM
     };
     public static class Messages
     {
@@ -157,6 +160,7 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.NPC_PRICE_ITEM, "The shopkeeper converses with the /1.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_CARRYING_GOLD, "The /1 checks its pockets for gold.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_LOOK, "The /1 checks its surroundings.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_SHOW_ITEM, "The /1 waves its /2 around in the air. A treasure, indeed!");
 
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.NPC_SELL_ITEM, "The /1 sells /an /2 to the shopkeeper.");
@@ -183,6 +187,8 @@ namespace cs_store_app_TextGame
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.SITTING, "You can't move while sitting.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.KNEELING, "You can't move while kneeling.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, "You can't attack with /an /1!");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL, "The /1 greedily eyes /an /2 that is lying on the ground, but its hands are full.");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, "The /1 searches the area for something useful.");
         }
 
         private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)

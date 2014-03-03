@@ -47,4 +47,20 @@
       <look>100</look>
     </behavior>
   </npc-template>
+  <npc-template>
+    <id>2</id>
+    <name>troll</name>
+    <keywords>
+      <keyword>troll</keyword>
+    </keywords>
+    <maximum-health>15</maximum-health>
+    <inventory>
+      <gold>25</gold>
+    </inventory>
+    <behavior>
+      <attack>50</attack>
+      <move>90</move>
+      <look>100</look>
+    </behavior>
+  </npc-template>
 </npc-templates>

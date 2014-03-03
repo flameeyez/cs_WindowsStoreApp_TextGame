@@ -44,7 +44,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return _name + " (" + NID.ToString() + ")";
+                return _name +" (" + NID.ToString() + ")";
             }
             set
             {
@@ -115,7 +115,12 @@ namespace cs_store_app_TextGame
             _currentSubregion = CurrentRegion.Subregions[nSubregion];
             _currentRoom = CurrentSubregion.Rooms[nRoom];
         }
-        
+
+        public void SetCurrentRoom(Connection connection)
+        {
+            SetCurrentRoom(connection.DestinationRegion, connection.DestinationSubregion, connection.DestinationRoom);
+        }
+
         // GetItem(hand, strKeyword)
         // ItemtoHand(item)
         public Item GetItemFromHand(string strKeyword, bool bRemoveFromHand, ITEM_TYPE itemType = ITEM_TYPE.ANY)

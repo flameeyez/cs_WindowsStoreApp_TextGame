@@ -196,8 +196,8 @@ namespace cs_store_app_TextGame
         public void AddDebug()
         {
             Random r = new Random(DateTime.Now.Millisecond);
-            int nItemPasses = 5;
-            int nNPCCount = 10;
+            int nItemPasses = 10;
+            int nNPCCount = 50;
 
             // DEBUG ITEMS
             for (int i = 0; i < nItemPasses; i++)
@@ -223,7 +223,7 @@ namespace cs_store_app_TextGame
                 int region = 0;
                 int subregion = 0;
                 int room = r.Next(9);
-                EntityNPC npc = EntityNPCTemplates.NPCs[r.Next(2)].Clone();
+                EntityNPC npc = EntityNPCTemplates.NPCs[r.Next(EntityNPCTemplates.NPCs.Count)].Clone();
                 npc.SetCurrentRoom(region, subregion, room);
                 World.Regions[region].Subregions[subregion].Rooms[room].AddNPC(npc);
             }

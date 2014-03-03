@@ -290,5 +290,12 @@ namespace cs_store_app_TextGame
 
             return new ExitWithDirection(exit, direction);
         }
+
+        public Connection GetRandomConnection()
+        {
+            if (Connections.Count == 0) { return null; }
+            Random r = new Random(DateTime.Now.Millisecond);
+            return Connections[r.Next(Connections.Count)];
+        }
     }
 }

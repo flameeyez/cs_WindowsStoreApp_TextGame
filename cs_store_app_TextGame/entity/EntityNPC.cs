@@ -10,6 +10,14 @@ namespace cs_store_app_TextGame
 {
     public class EntityNPC : Entity
     {
+        // TODO: complex action
+        // - for example, a goblin might be hungry
+        // - first, it travels until it finds food
+        // - then, it picks up the food, takes a bite, then drops it (or finishes it)
+        // FIND FOOD
+        // PICK UP FOOD
+        // EAT
+        // DROP FOOD
         #region Attributes
 
         public DateTime LastActionTime = DateTime.Now;
@@ -18,7 +26,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return base.Name + " (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
+                return base.Name +" (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
         }
         public List<string> Keywords = new List<string>();
@@ -340,19 +348,118 @@ namespace cs_store_app_TextGame
                 if(percentage < behavior.PercentageChance)
                 {
                     // TODO: method for converting ACTION_ENUM directly to Do method
+                    // dictionary<action_enum, delegate>? possible?
                     //handler = 
                 }
-            }            
-
-            switch (r.Next(2))
-            {
-                case 0:
-                    return DoMoveBasic(input);
-                case 1:
-                    return DoLook(input);
             }
 
+            switch (r.Next(6))
+            {
+                case 0:
+                    return DoLook(input);
+                case 1:
+                    return DoGet(input);
+                case 2:
+                    return DoDrop(input);
+                case 3:
+                    return DoShowItem(input);
+                case 4:
+                    return DoMoveConnection(input);
+                default:
+                    return DoMoveBasic(input);
+            }
+        }
+
+        public override Handler DoMoveConnection(TranslatedInput input)
+        {
+            if (Posture == ENTITY_POSTURE.SITTING) { return Handler.UNHANDLED; }
+            if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.UNHANDLED; }
+
+            Handler handler = Handler.UNHANDLED;
+            Connection connection = CurrentRoom.GetRandomConnection();
+            if (connection == null) { return DoMoveBasic(input); }
+
+            // TODO: connections need a special display string for NPC exit (and arrival?)
+
+            CurrentRoom.NPCs.Remove(this);
+            if(CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                // npc is leaving player's current room
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, "through a connection"));
+            }
+            
+            // set current room
+            SetCurrentRoom(connection);
+
+            // npc has moved to player's room
+            CurrentRoom.NPCs.Add(this);
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name));
+            }
+
+            return handler;
+        }
+
+        public Handler DoShowItem(TranslatedInput input)
+        {
+            if (RightHand == null && LeftHand == null) { return DoGet(input); }
+            if (RightHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) { return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_SHOW_ITEM, Name, RightHand.Name)); }
+            else if (LeftHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) { return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_SHOW_ITEM, Name, LeftHand.Name)); }
+
             return Handler.UNHANDLED;
+        }
+
+        public override Handler DoDrop(TranslatedInput input)
+        {
+            // TODO: see DoGet, remove possible actions from flag field
+
+            // nothing to drop? pick up instead! just because
+            if (RightHand == null && LeftHand == null) { return DoGet(input); }
+
+            // if we make it here, the npc has SOMETHING to drop
+            // randomly decide which hand to try first
+            Random r = new Random(DateTime.Now.Millisecond);
+            Handler handler = Handler.UNHANDLED;
+            switch(r.Next(2))
+            {
+                case 0:
+                    handler = DoDropRightHand();
+                    if (handler.ReturnCode == RETURN_CODE.HANDLED) { return handler; }
+                    else { handler = DoDropLeftHand(); }
+                    break;
+                case 1:
+                    handler = DoDropLeftHand();
+                    if (handler.ReturnCode == RETURN_CODE.HANDLED) { return handler; }
+                    else { handler = DoDropRightHand(); }
+                    break;
+            }
+
+            return handler;
+        }
+        private Handler DoDropRightHand()
+        {
+            if (RightHand == null) { return Handler.UNHANDLED; }
+            CurrentRoom.Items.Add(RightHand);
+            Handler handler = Handler.HANDLED;
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_DROP, Name, RightHand.Name));
+            }
+            RightHand = null;
+            return handler;
+        }
+        private Handler DoDropLeftHand()
+        {
+            if (LeftHand == null) { return Handler.UNHANDLED; }
+            CurrentRoom.Items.Add(LeftHand);
+            Handler handler = Handler.HANDLED;
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_DROP, Name, LeftHand.Name));
+            }
+            LeftHand = null;
+            return handler;
         }
 
         public override Handler DoLook(TranslatedInput input)
@@ -390,6 +497,34 @@ namespace cs_store_app_TextGame
             return handler;
         }
 
+        public override Handler DoGet(TranslatedInput input)
+        {
+            // [possible] TODO: when npc picks up an item, add possible actions to some sort of list or flag field
+            // - for example, when food is picked up, or when npc enters room with food, the npc can eat
+            // duplicates are OK, if lefthand and righthand do similar things
+            // room needs to keep track of which item types it has; possibly which actions npcs can do in it
+            Item item = CurrentRoom.Items.GetRandomItem();
+            if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))  
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, Name)); 
+            }
+
+            if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
+            { 
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL,Name,item.Name)); 
+            }
+
+            // item picked up; remove from room
+            if (RightHand == null) { RightHand = item; }
+            else if (LeftHand == null) { LeftHand = item; }
+            CurrentRoom.Items.Remove(item);
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_GET, Name, item.Name));
+            }
+
+            return Handler.HANDLED;
+        }
         #endregion
 
         public bool IsKeyword(string strWord)

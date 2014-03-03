@@ -82,6 +82,22 @@ namespace cs_store_app_TextGame
             }
             return returnList;
         }
+        public Item GetRandomItem(ITEM_TYPE itemType = ITEM_TYPE.ANY)
+        {
+            if (Items.Count == 0) { return null; }
+
+            Random r = new Random(DateTime.Now.Millisecond);
+
+            if (itemType == ITEM_TYPE.ANY) 
+            {
+                Item item = Items[r.Next(Items.Count)];
+                return item;
+            }
+
+            List<Item> items = GetItemsOfType(itemType);
+            if (items.Count == 0) { return null; }
+            return items[r.Next(items.Count)];
+        }
         public string DisplayString(bool bAppendPeriod = true)
         {
             string strReturn = "";

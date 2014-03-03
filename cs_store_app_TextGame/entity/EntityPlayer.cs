@@ -8,6 +8,11 @@ namespace cs_store_app_TextGame
 {
     public class EntityPlayer : Entity
     {
+        // TODO: "look [at] <first|second|third|etc.> goblin"
+        // number string to index dictionary?
+        // - first - 0
+        // - second - 1
+        // - etc.
         public EntityPlayer() : base() { SetCurrentRoom(0, 0, 0); }
 
         public string CurrentRoomDisplayString
