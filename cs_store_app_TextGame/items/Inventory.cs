@@ -53,26 +53,36 @@ namespace cs_store_app_TextGame
             if (strKeyword == "") { return null; }
 
             int nOccurrences = -1;
-            foreach(Item item in Items)
+            for (int i = Items.Count() - 1; i >= 0; i--)
             {
-                if (item.Type == itemType || itemType == ITEM_TYPE.ANY)
+                if (Items[i].Type == itemType || itemType == ITEM_TYPE.ANY)
                 {
-                    if(item.IsKeyword(strKeyword))
+                    if (Items[i].IsKeyword(strKeyword))
                     {
                         nOccurrences++;
                         if (nOccurrences == nRequestedOccurrence)
                         {
-                            return item;
+                            return Items[i];
                         }
                     }
-                }
+                }                
             }
+            //foreach(Item item in Items)
+            //{
+            //}
 
             return null;
         }
         public List<Item> GetItemsOfType(ITEM_TYPE itemType)
         {
             List<Item> returnList = new List<Item>();
+            //for (int i = Items.Count() - 1; i >= 0; i--)
+            //{
+            //    if(Items[i].Type == itemType)
+            //    {
+            //        returnList.Add(Items[i]);
+            //    }
+            //}
             foreach(Item item in Items)
             {
                 if(item.Type == itemType)
@@ -80,6 +90,7 @@ namespace cs_store_app_TextGame
                     returnList.Add(item);
                 }
             }
+
             return returnList;
         }
         public Item GetRandomItem(ITEM_TYPE itemType = ITEM_TYPE.ANY)
@@ -104,41 +115,44 @@ namespace cs_store_app_TextGame
 
             if (Items.Count > 2)
             {
-                for (int i = 0; i < Items.Count; i++)
+                for (int i = Items.Count() - 1; i >= 0; i--)
                 {
                     strReturn += "a";
-                    if((Items[i].Name[0]).IsVowel())
+                    if ((Items[i].Name[0]).IsVowel())
                     {
                         strReturn += "n";
                     }
                     strReturn += " ";
                     strReturn += Items[i].Name;
-                    if (i == Items.Count - 2)
+                    if (i == 1)
                     {
                         strReturn += ", and ";
                     }
-                    else if (i < Items.Count - 1)
+                    else if (i > 0)
                     {
                         strReturn += ", ";
                     }
                 }
+                //for (int i = 0; i < Items.Count; i++)
+                //{
+                //}
             }
             else if (Items.Count == 2)
             {
                 strReturn += "a";
-                if ((Items[0].Name[0]).IsVowel())
-                {
-                    strReturn += "n";
-                }
-                strReturn += " ";
-                strReturn += Items[0].Name;
-                strReturn += " and a";
                 if ((Items[1].Name[0]).IsVowel())
                 {
                     strReturn += "n";
                 }
                 strReturn += " ";
                 strReturn += Items[1].Name;
+                strReturn += " and a";
+                if ((Items[0].Name[0]).IsVowel())
+                {
+                    strReturn += "n";
+                }
+                strReturn += " ";
+                strReturn += Items[0].Name;
             }
             else if (Items.Count == 1)
             {

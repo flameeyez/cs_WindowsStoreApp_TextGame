@@ -13,8 +13,17 @@ namespace cs_store_app_TextGame
         // - first - 0
         // - second - 1
         // - etc.
-        public EntityPlayer() : base() { SetCurrentRoom(0, 0, 0); }
-
+        public EntityPlayer() : base() 
+        {
+            CurrentHealth = 100;
+            MaximumHealth = 100;
+            CurrentMagic = 20;
+            MaximumMagic = 20;
+            SetCurrentRoom(0, 0, 0); 
+        }
+        
+        #region Display Strings
+        
         public string CurrentRoomDisplayString
         {
             get
@@ -109,18 +118,21 @@ namespace cs_store_app_TextGame
                 return strReturn;
             }
         }
+        
+        #endregion
 
         #region Input Handling
 
         public override Handler DoMoveBasic(TranslatedInput input)
         {
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.SITTING; }
             if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.KNEELING; }
 
             // basic direction
             // if "go <direction>"
             int nDirection;
-            if (input.Words[0] == "go" || input.Words[0] == "move") { nDirection = StaticMethods.DirectionToInt(input.Words[1]); }
+            if (input.Words[0] == "go" || input.Words[0] == "move") { nDirection = Statics.DirectionToInt(input.Words[1]); }
             // see TranslatedInput constructor; hack job replaces first word with integer direction
             else { nDirection = int.Parse(input.Words[0]); }
 
@@ -134,11 +146,12 @@ namespace cs_store_app_TextGame
         {
             if (input.Words.Length == 1) { return Handler.GO_WHERE; }
 
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.SITTING; }
             if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.KNEELING; }
 
             // go <direction>
-            if (StaticMethods.DirectionToInt(input.Words[1]) != -1) { return DoMoveBasic(input); }
+            if (Statics.DirectionToInt(input.Words[1]) != -1) { return DoMoveBasic(input); }
 
             // go <connection>
             Connection connection = CurrentRoom.GetConnection(input.Words[0], input.Words[1]);
@@ -156,6 +169,7 @@ namespace cs_store_app_TextGame
             if (input == null || input.Words.Length < 2) { return new Handler(RETURN_CODE.HANDLED, CurrentRoomDisplayString); }
             else if (input.Words.Length == 2) { return DoLook(input.Words[1]); }
             else if (input.Words.Length == 3) { return DoLook(input.Words[1], input.Words[2]); }
+            else if (input.Words.Length == 4) { return DoLook(input.Words[1], input.Words[2], input.Words[3]); }
             return Handler.BAD_INPUT;
         }
         public override Handler DoLook(string strWord)
@@ -169,35 +183,65 @@ namespace cs_store_app_TextGame
             if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
 
             EntityNPC npc = CurrentRoom.FindNPC(strWord);
-            if (npc != null) { return new Handler(RETURN_CODE.HANDLED, npc.HandsString + "\n" + npc.InventoryString); }
+            if (npc != null) 
+            {
+                return new Handler(RETURN_CODE.HANDLED, npc.DisplayString);
+            }
 
             return Handler.BAD_INPUT;
         }
         public override Handler DoLook(string strWord1, string strWord2)
         {
             if (strWord1 == "at") { return DoLook(strWord2); }
-            else if (strWord1 == "in") { return DoLookInContainer(strWord2); }
-            else { return Handler.BAD_INPUT; }
+            if (strWord1 == "in") { return DoLookInContainer(strWord2); }
+
+            int ordinal;
+            if (!Statics.OrdinalStringToInt.TryGetValue(strWord1, out ordinal)) { return Handler.BAD_INPUT; }
+
+            Item item = CurrentRoom.FindItem(strWord2, ITEM_TYPE.ANY, ordinal);
+            if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
+
+            EntityNPC npc = CurrentRoom.FindNPC(strWord2, ordinal);
+            if (npc != null) { return new Handler(RETURN_CODE.HANDLED, npc.DisplayString); }
+
+            return Handler.BAD_INPUT;
+        }
+        public override Handler DoLook(string strWord1, string strWord2, string strWord3)
+        {
+            if (strWord1 == "at") { return DoLook(strWord2, strWord3); }
+            if (strWord1 == "in")
+            {
+                int ordinal;
+                if (Statics.OrdinalStringToInt.TryGetValue(strWord2, out ordinal)) { return DoLookInContainer(strWord3, ordinal); }
+                else if(strWord2 == "my")
+                {
+                    // TODO: prioritize room items unless "my" is specified
+                    if (Backpack == null) { return Handler.BAD_INPUT; }
+                    return new Handler(RETURN_CODE.HANDLED, Backpack.ItemsString + "\n");
+                }
+            }
+            return Handler.BAD_INPUT;
         }
         public override Handler DoLookHands(TranslatedInput input)
         {
             return new Handler(RETURN_CODE.HANDLED, HandsString + "\n");
         }
-        public override Handler DoLookInContainer(string strKeyword)
+        public override Handler DoLookInContainer(string strKeyword, int ordinal = 0)
         {
             ItemContainer container = null;
 
             if (Backpack != null && Backpack.IsKeyword(strKeyword)) { container = Backpack; }
             else { container = GetItemFromHand(strKeyword, false, ITEM_TYPE.CONTAINER) as ItemContainer; }
-            if (container == null) { container = CurrentRoom.Items.Get(strKeyword, ITEM_TYPE.CONTAINER) as ItemContainer; }
+            if (container == null) { container = CurrentRoom.Items.Get(strKeyword, ITEM_TYPE.CONTAINER, ordinal) as ItemContainer; }
             if (container == null) { return Handler.BAD_INPUT; }
-
+            if (container.Closed) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.CONTAINER_CLOSED, container.Name)); }
             return new Handler(RETURN_CODE.HANDLED, container.ItemsString + "\n");
         }
         public override Handler DoEat(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Eat")); }
             else if (input.Words.Length > 2) { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             ItemFood itemToEat = null;
             MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_EAT;
@@ -220,6 +264,7 @@ namespace cs_store_app_TextGame
 
             if (itemToEat == null) { return Handler.BAD_INPUT; }
 
+            CurrentHealth += itemToEat.HealthPerBite;
             itemToEat.NumberOfBites--;
             if (itemToEat.NumberOfBites == 0)
             {
@@ -241,12 +286,13 @@ namespace cs_store_app_TextGame
                 else { CurrentRoom.RemoveItem(itemToEat); }
             }
 
-            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, itemToEat.Name, itemToEat.NumberOfBites.ToString()));
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, itemToEat.Name, itemToEat.HealthPerBite.ToString(), itemToEat.NumberOfBites.ToString()));
         }
         public override Handler DoDrink(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Drink")); }
             else if (input.Words.Length > 2) { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             ItemDrink itemToDrink = null;
             MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_DRINK;
@@ -261,6 +307,7 @@ namespace cs_store_app_TextGame
 
             if (itemToDrink == null) { return Handler.BAD_INPUT; }
 
+            CurrentMagic += itemToDrink.MagicPerDrink;
             itemToDrink.NumberOfDrinks--;
             if (itemToDrink.NumberOfDrinks == 0)
             {
@@ -282,17 +329,18 @@ namespace cs_store_app_TextGame
                 else { CurrentRoom.RemoveItem(itemToDrink); }
             }
 
-            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, itemToDrink.Name, itemToDrink.NumberOfDrinks.ToString()));
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, itemToDrink.Name, itemToDrink.MagicPerDrink.ToString(), itemToDrink.NumberOfDrinks.ToString()));
         }
         public override Handler DoOpen(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Open")); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             ItemContainer container = null;
 
             if (Backpack != null) { container = Backpack; }
-            else if (RightHand.Type == ITEM_TYPE.CONTAINER) { container = RightHand as ItemContainer; }
-            else if (LeftHand.Type == ITEM_TYPE.CONTAINER) { container = LeftHand as ItemContainer; }
+            else if (RightHand != null && RightHand.Type == ITEM_TYPE.CONTAINER) { container = RightHand as ItemContainer; }
+            else if (LeftHand != null && LeftHand.Type == ITEM_TYPE.CONTAINER) { container = LeftHand as ItemContainer; }
             else { container = CurrentRoom.FindItem(input.Words[1], ITEM_TYPE.CONTAINER) as ItemContainer; }
 
             if (container == null) { return Handler.BAD_ITEM; }
@@ -305,12 +353,13 @@ namespace cs_store_app_TextGame
         public override Handler DoClose(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Close")); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             ItemContainer container = null;
 
             if (Backpack != null) { container = Backpack; }
-            else if (RightHand.Type == ITEM_TYPE.CONTAINER) { container = RightHand as ItemContainer; }
-            else if (LeftHand.Type == ITEM_TYPE.CONTAINER) { container = LeftHand as ItemContainer; }
+            else if (RightHand != null && RightHand.Type == ITEM_TYPE.CONTAINER) { container = RightHand as ItemContainer; }
+            else if (LeftHand != null && LeftHand.Type == ITEM_TYPE.CONTAINER) { container = LeftHand as ItemContainer; }
             else { container = CurrentRoom.FindItem(input.Words[1], ITEM_TYPE.CONTAINER) as ItemContainer; }
 
             if (container == null) { return Handler.BAD_ITEM; }
@@ -326,6 +375,7 @@ namespace cs_store_app_TextGame
             // put <item> in <container> - TODO: <on surface>
             if (input.Words.Length != 4) { return Handler.BAD_INPUT; }
             if (input.Words[2] != "in") { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             // must be holding item
             // don't remove item here
@@ -358,6 +408,7 @@ namespace cs_store_app_TextGame
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Equip")); }
             if (input.Words.Length != 2) { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             Item itemToEquip = null;
 
@@ -412,6 +463,7 @@ namespace cs_store_app_TextGame
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Remove")); }
             if (input.Words.Length > 2) { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             Handler handler = Handler.BAD_INPUT;
             Item removedItem = null;
@@ -567,6 +619,8 @@ namespace cs_store_app_TextGame
                 }
             }
 
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
+
             ItemContainer container = null;
             MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_GET;
 
@@ -576,9 +630,9 @@ namespace cs_store_app_TextGame
             {
                 // find item in a room container
                 List<Item> containers = CurrentRoom.Items.GetItemsOfType(ITEM_TYPE.CONTAINER);
-                foreach (Item i in containers)
+                for (int i = containers.Count() - 1; i >= 0; i--)
                 {
-                    container = i as ItemContainer;
+                    container = containers[i] as ItemContainer;
                     item = container.Items.Get(input.Words[1]);
                     if (item != null)
                     {
@@ -586,6 +640,10 @@ namespace cs_store_app_TextGame
                         break;
                     }
                 }
+                // changed: reversed list traversal
+                //foreach (Item i in containers)
+                //{
+                //}
             }
             if (item == null)
             {
@@ -641,6 +699,7 @@ namespace cs_store_app_TextGame
         public override Handler DoDrop(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Drop")); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             Item item = GetItemFromHand(input.Words[1], true);
             if (item == null) { return Handler.NOT_CARRYING_ITEM; }
@@ -650,7 +709,9 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoBuy(TranslatedInput input)
         {
+            if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Buy")); }
             if (input.Words.Length > 2) { return Handler.BAD_INPUT; }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             RoomShop shop = CurrentRoom as RoomShop;
             if (shop == null) { return Handler.NOT_A_SHOP; }
@@ -709,6 +770,7 @@ namespace cs_store_app_TextGame
         public override Handler DoPrice(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Price")); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             // verify that we're in a shop
             RoomShop shop = CurrentRoom as RoomShop;
@@ -730,6 +792,7 @@ namespace cs_store_app_TextGame
         public override Handler DoSell(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Sell")); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             // verify that we're in a shop
             RoomShop shop = CurrentRoom as RoomShop;
@@ -741,18 +804,21 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoStand(TranslatedInput input) 
         {
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
             if (Posture == ENTITY_POSTURE.STANDING) { return Handler.ALREADY_STANDING; }
             Posture = ENTITY_POSTURE.STANDING;
             return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_STAND));
         }
         public override Handler DoKneel(TranslatedInput input) 
         {
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
             if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.ALREADY_KNEELING; }
             Posture = ENTITY_POSTURE.KNEELING;
             return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_KNEEL));
         }
         public override Handler DoSit(TranslatedInput input) 
         {
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.ALREADY_SITTING; }
             Posture = ENTITY_POSTURE.SITTING;
             return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_SIT));
@@ -760,24 +826,59 @@ namespace cs_store_app_TextGame
         public override Handler DoAttack(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, input.Words[0].ToSentenceCase())); }
+            if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             string NPCString = "";
+            int ordinal = 0;
             if (input.Words.Length == 2) { NPCString = input.Words[1]; }
-            else if (input.Words.Length == 3) { NPCString = input.Words[2]; }
+            else if (input.Words.Length == 3) 
+            {
+                if (!Statics.OrdinalStringToInt.TryGetValue(input.Words[1], out ordinal)) { return Handler.BAD_INPUT; }
+                NPCString = input.Words[2]; 
+            }
             
-            EntityNPC npc = CurrentRoom.FindNPC(NPCString);
+            EntityNPC npc = CurrentRoom.FindNPC(NPCString, ordinal);
             if (npc == null) { return Handler.BAD_INPUT; }
+            if (npc.IsDead) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_ALREADY_DEAD, npc.NameBase)); }
 
             if (RightHand != null && RightHand.Type != ITEM_TYPE.WEAPON) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, RightHand.Name)); }
             string weapon = RightHand == null ? "fist" : RightHand.Name;
 
-            // calculate some damage
+            // calculate damage
             MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_ATTACKS_NPC;
-            int damage = 5;
+            int damage = AttackPower - npc.DefensePower;
             npc.CurrentHealth -= damage;
             if (npc.CurrentHealth <= 0) { message = MESSAGE_ENUM.PLAYER_KILLS_NPC; }
 
-            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, npc.Name, weapon, damage.ToString()));
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, npc.NameBase, weapon, damage.ToString()));
+        }
+        public override Handler DoShowHealth(TranslatedInput input)
+        {
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_SHOW_HEALTH, HealthString, MagicString));
+        }
+        public override Handler DoSearch(TranslatedInput input)
+        {
+            if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Search")); }
+            if (input.Words.Length > 2) { return Handler.BAD_INPUT; }
+
+            EntityNPC npc = CurrentRoom.FindNPC(input.Words[1]);
+            if (npc == null) { return Handler.BAD_INPUT; }
+            if (!npc.IsDead) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NOT_DEAD, npc.Name)); }
+
+            // add npc inventory to room
+            // TODO: messaging?
+            // You search the goblin and remove its equipment. You find <x> gold.
+            Gold += npc.Gold;
+            npc.BeSearched();
+
+            if (npc.Gold > 0)
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_SEARCH_WITH_GOLD, npc.Name, npc.Gold.ToString()));
+            }
+            else
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_SEARCH_NO_GOLD, npc.Name));
+            }
         }
 
         #endregion

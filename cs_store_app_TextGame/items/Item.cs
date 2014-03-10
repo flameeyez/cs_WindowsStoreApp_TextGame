@@ -65,7 +65,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return _name;// +" (" + NID.ToString() + ")";// +" {" + UID.ToString() + "}";
+                return _name +" (" + NID.ToString() + ")";// +" {" + UID.ToString() + "}";
             }
             set
             {
@@ -73,7 +73,18 @@ namespace cs_store_app_TextGame
             }
         }
         [DataMember]
-        public string Description { get; set; }
+        private string _description;
+        public string Description 
+        {
+            get
+            {
+                return Name + "\n" + _description;
+            }
+            set
+            {
+                _description = value;
+            }
+        }
         [DataMember]
         public double Weight { get; set; }
         [DataMember]

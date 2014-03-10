@@ -64,7 +64,15 @@ namespace cs_store_app_TextGame
         PLAYER_KILLS_NPC,
         DEBUG_REMOVE,
         NPC_LOOK,
-        NPC_SHOW_ITEM
+        NPC_SHOW_ITEM,
+        NPC_ATTACKS_PLAYER,
+        NPC_KILLS_PLAYER,
+        PLAYER_SHOW_HEALTH,
+        NPC_ATTACKS_DEAD_PLAYER,
+        PLAYER_IS_DEAD,
+        NPC_SEARCH_WITH_GOLD,
+        NPC_SEARCH_NO_GOLD,
+        PLAYER_CONTAINER_CLOSED
     };
     public enum ERROR_MESSAGE_ENUM
     {
@@ -92,7 +100,10 @@ namespace cs_store_app_TextGame
         KNEELING,
         NOT_A_WEAPON,
         NPC_HANDS_ARE_FULL,
-        NPC_NO_ITEMS_IN_ROOM
+        NPC_NO_ITEMS_IN_ROOM,
+        NPC_NOT_A_WEAPON,
+        NPC_NOT_DEAD,
+        NPC_ALREADY_DEAD
     };
     public static class Messages
     {
@@ -106,12 +117,12 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DROP, "You drop /an /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT, "You take a bite of your /1. You have /2 bite/s left.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_LAST, "You take a bite of the /1. That was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_GROUND_ITEM, "You take a bite of the /1 that is lying on the ground. There are /2 bite/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_LAST_GROUND_ITEM, "You take a bite of the /1 that is lying on the ground. That was the last of it.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_GROUND_ITEM, "You take a bite of the /1 that is lying on the ground.\nYou regain /2 health.\nThere are /3 bite/s left.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_LAST_GROUND_ITEM, "You take a bite of the /1 that is lying on the ground.\nYou regain /2 health.\nThat was the last of it.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK, "You take a sip from your /1. You have /2 sip/s left.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_LAST, "You take a sip from the /1. That was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_GROUND_ITEM, "You take a sip from the /1 that is lying on the ground. There are /2 sip/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_LAST_GROUND_ITEM, "You take a sip from the /1 that is lying on the ground. That was the last of it.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_GROUND_ITEM, "You take a sip from the /1 that is lying on the ground.\nYou regain /2 magic.\nThere are /3 sip/s left.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_LAST_GROUND_ITEM, "You take a sip from the /1 that is lying on the ground.\nYou regain /2 magic.\nThat was the last of it.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_OPEN, "You open the /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_CLOSE, "You close the /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET_FROM_CONTAINER, "You remove /an /1 from the /2.");
@@ -130,6 +141,9 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_ATTACKS_NPC, "You attack the /1 with your /2 and hit for /3 damage.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_KILLS_NPC, "You attack the /1 with your /2 and hit for /3 damage.\nThe /1 dies.");
             MessageDictionary.Add(MESSAGE_ENUM.DEBUG_REMOVE, "DEBUG: Removing /1.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SHOW_HEALTH, "Health: /1\nMagic: /2");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, "The /1 pokes at your lifeless body.");
+            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_IS_DEAD, "But you're dead!");
             
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SELL_ITEM, "You sell the /1 for /2 gold pieces.");
@@ -161,6 +175,10 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.NPC_CARRYING_GOLD, "The /1 checks its pockets for gold.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_LOOK, "The /1 checks its surroundings.");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_SHOW_ITEM, "The /1 waves its /2 around in the air. A treasure, indeed!");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_ATTACKS_PLAYER, "The /1 attacks you with its /2. You take /3 damage.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_KILLS_PLAYER, "The /1 attacks you with its /2. You take /3 damage.\n\nYou have died.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_SEARCH_WITH_GOLD, "You search the /1 and remove its equipment. You find /2 gold.");
+            MessageDictionary.Add(MESSAGE_ENUM.NPC_SEARCH_NO_GOLD, "You search the /1 and remove its equipment.");
 
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.NPC_SELL_ITEM, "The /1 sells /an /2 to the shopkeeper.");
@@ -189,6 +207,9 @@ namespace cs_store_app_TextGame
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, "You can't attack with /an /1!");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL, "The /1 greedily eyes /an /2 that is lying on the ground, but its hands are full.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, "The /1 searches the area for something useful.");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_A_WEAPON, "For some reason, the /1 tries to attack you with /an /2. It doesn't work very well.");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_DEAD, "But the /1 isn't dead yet!");
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_ALREADY_DEAD, "The /1 is already dead.");
         }
 
         private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)

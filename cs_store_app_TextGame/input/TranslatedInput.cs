@@ -30,7 +30,9 @@ namespace cs_store_app_TextGame
         SIT,
         STAND,
         KNEEL,
-        ATTACK
+        ATTACK,
+        SHOW_HEALTH,
+        SEARCH
     }
 
     public class TranslatedInput
@@ -63,12 +65,14 @@ namespace cs_store_app_TextGame
             StringToAction.Add("sell", ACTION_ENUM.SELL_ITEM);
             StringToAction.Add("price", ACTION_ENUM.PRICE_ITEM);
             StringToAction.Add("buy", ACTION_ENUM.BUY_ITEM);
+            StringToAction.Add("health", ACTION_ENUM.SHOW_HEALTH);
             StringToAction.Add("gold", ACTION_ENUM.SHOW_GOLD);
             StringToAction.Add("sit", ACTION_ENUM.SIT);
             StringToAction.Add("stand", ACTION_ENUM.STAND);
             StringToAction.Add("kneel", ACTION_ENUM.KNEEL);
             StringToAction.Add("attack", ACTION_ENUM.ATTACK);
             StringToAction.Add("kill", ACTION_ENUM.ATTACK);
+            StringToAction.Add("search", ACTION_ENUM.SEARCH);
         }
 
         public TranslatedInput(string unparsedInput)
@@ -81,7 +85,7 @@ namespace cs_store_app_TextGame
 
             if (Words.Length == 0) { return; }
 
-            int nDirection = StaticMethods.DirectionToInt(Words[0]);
+            int nDirection = Statics.DirectionToInt(Words[0]);
             if (nDirection != -1) 
             {
                 // hack - replace first word with integer direction

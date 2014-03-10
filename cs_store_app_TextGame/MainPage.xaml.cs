@@ -33,11 +33,12 @@ namespace cs_store_app_TextGame
         // - FindItem(string, bool bMultiWord = false)
         //   - if true, match string to full item name
         // TODO: create encapsulating class for these variables?
-        string strLastInput = "";
         Timer t;
         Queue<string> InputQueue = new Queue<string>();
+        List<string> PreviousInput = new List<string>();
+        int nPreviousInputIndex = 0;
 
-        #region Page Handlers
+        #region Initialization
         public MainPage()
         {
             this.InitializeComponent();
@@ -63,6 +64,8 @@ namespace cs_store_app_TextGame
 
             txtInput.Focus(FocusState.Programmatic);
         }
+        #endregion
+        #region UI
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             string input = txtInput.Text.Trim();
@@ -84,12 +87,26 @@ namespace cs_store_app_TextGame
                     ClearInput();
                     if (input.Length > 0) { InputQueue.Enqueue(input); }
                     break;
+                case Windows.System.VirtualKey.Escape:
+                    ClearInput();
+                    break;
                 case Windows.System.VirtualKey.Up:
-                    txtInput.Text = strLastInput;
-                    txtInput.Select(txtInput.Text.Length, 0);
+                    if (PreviousInput.Count > 0)
+                    {
+                        nPreviousInputIndex--;
+                        if (nPreviousInputIndex < 0) { nPreviousInputIndex = 0; }
+                        txtInput.Text = PreviousInput[nPreviousInputIndex];
+                        txtInput.Select(txtInput.Text.Length, 0);
+                    }
                     break;
                 case Windows.System.VirtualKey.Down:
-                    txtInput.Text = "";
+                    if (PreviousInput.Count > 0)
+                    {
+                        nPreviousInputIndex++;
+                        if (nPreviousInputIndex > PreviousInput.Count - 1) { nPreviousInputIndex = PreviousInput.Count - 1; }
+                        txtInput.Text = PreviousInput[nPreviousInputIndex];
+                        txtInput.Select(txtInput.Text.Length, 0);
+                    }
                     break;
                 default:
                     break;
@@ -107,8 +124,34 @@ namespace cs_store_app_TextGame
                 this.txtOutput.Blocks.Add(p);
 
                 CheckParagraphCount();
+                txtDebugBlockCount.Text = txtOutput.Blocks.Count.ToString();
+                //if (bScroll) { ScrollToBottom(); }
+            }
+        }
+        private void AppendDebugText(string str)
+        {
+            if (str.Length > 0)
+            {
 
-                if (bScroll) { ScrollToBottom(); }
+                Paragraph p = new Paragraph();
+                Run r = new Run();
+                r.Text = str;
+                p.Inlines.Add(r);
+                this.txtDebug.Blocks.Add(p);
+
+                // TODO: modify to work with total text length
+                if (txtDebug.Blocks.Count > 50)
+                {
+                    while (txtDebug.Blocks.Count > 50)
+                    {
+                        txtDebug.Blocks.RemoveAt(0);
+                    }
+                }
+                
+                if (txtDebugOutputScroll.ExtentHeight > 0)
+                {
+                    txtDebugOutputScroll.ChangeView(null, txtDebugOutputScroll.ExtentHeight, null);
+                }
             }
         }
         private void ClearInput(bool bFocus = true)
@@ -122,19 +165,22 @@ namespace cs_store_app_TextGame
         private void CheckParagraphCount()
         {
             // TODO: modify to work with total text length
-            if (txtOutput.Blocks.Count > 500)
+            if (txtOutput.Blocks.Count > 150)
             {
+                AppendDebugText("Cleaning up!");
                 while (txtOutput.Blocks.Count > 100)
                 {
                     txtOutput.Blocks.RemoveAt(0);
                 }
+
+                //ScrollToBottom();
             }
 
             //txtParagraphCount.Text = txtOutput.Blocks.Count.ToString();
         }
         private void ScrollToBottom()
         {
-            if (txtOutputScroll.ExtentHeight > 0)
+            if (txtOutputScroll.ExtentHeight > txtOutputScroll.ViewportHeight)
             {
                 txtOutputScroll.ChangeView(null, txtOutputScroll.ExtentHeight, null);
             }
@@ -142,15 +188,12 @@ namespace cs_store_app_TextGame
         #endregion
         #region Input Handling
         public void HandleInput(string input)
-        {
-            strLastInput = input;
-            
-            // DateTime begin = DateTime.Now;
+        {   
+            PreviousInput.Add(input);
+            nPreviousInputIndex = PreviousInput.Count;
+
             AppendText("> " + input + "\n", false); 
             ProcessInput(new TranslatedInput(input));
-            // DateTime end = DateTime.Now;
-            // TimeSpan delta = end - begin;
-            // AppendText(delta.TotalMilliseconds.ToString(), false);
         }
         public void ProcessInput(TranslatedInput input)
         {
@@ -161,15 +204,19 @@ namespace cs_store_app_TextGame
             AppendText(handler.StringToAppend);
         }
         #endregion
+        #region Update
         // TODO: figure out if state should be used
         public async void Update(object state)
         {
-            DateTime start = DateTime.Now;
+            DateTime updateStart = DateTime.Now;
+            DateTime updateWorldStart, updateWorldEnd;
+            TimeSpan updateWorldDelta;
 
             // interaction with UI thread
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 // handle input queue
+                // TODO: consider making this an if statement, removing one item per update
                 while (InputQueue.Count > 0)
                 {
                     string input = InputQueue.Dequeue();
@@ -177,27 +224,43 @@ namespace cs_store_app_TextGame
                 }
 
                 // update world
+                updateWorldStart = DateTime.Now;
                 List<Handler> handlers = World.Update();
+                updateWorldEnd = DateTime.Now;
+                updateWorldDelta = updateWorldEnd - updateWorldStart;
+
                 foreach (Handler handler in handlers)
                 {
                     AppendText(handler.StringToAppend);
                 }
             });
 
-            DateTime end = DateTime.Now;
-            TimeSpan delta = end - start;
+            DateTime updateEnd = DateTime.Now;
+            TimeSpan updateDelta = updateEnd - updateStart;
 
-            //await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            //{
-            //    AppendText(delta.TotalMilliseconds.ToString());
-            //});
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                #region Debug
+                if (updateDelta.TotalMilliseconds > 10)
+                {
+                    AppendDebugText("Update: " + updateDelta.TotalMilliseconds.ToString());
+                }
+                if(updateWorldDelta.TotalMilliseconds > 5)
+                {
+                    AppendDebugText("World: " + updateWorldDelta.TotalMilliseconds.ToString());
+                }
+                #endregion
+
+                ScrollToBottom();
+            });
         }
+        #endregion
         #region Debug
         public void AddDebug()
         {
             Random r = new Random(DateTime.Now.Millisecond);
-            int nItemPasses = 10;
-            int nNPCCount = 50;
+            int nItemPasses = 1;
+            int nNPCCount = 5;
 
             // DEBUG ITEMS
             for (int i = 0; i < nItemPasses; i++)

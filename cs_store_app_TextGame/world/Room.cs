@@ -129,7 +129,7 @@ namespace cs_store_app_TextGame
 
                 if (NPCs.Count > 2)
                 {
-                    for (int i = 0; i < NPCs.Count; i++)
+                    for (int i = NPCs.Count() - 1; i >= 0; i--)
                     {
                         strReturn += "a";
                         if ((NPCs[i].Name[0]).IsVowel())
@@ -138,32 +138,35 @@ namespace cs_store_app_TextGame
                         }
                         strReturn += " ";
                         strReturn += NPCs[i].Name;
-                        if (i == NPCs.Count - 2)
+                        if (i == 1)
                         {
                             strReturn += ", and ";
                         }
-                        else if (i < NPCs.Count - 1)
+                        else if (i > 0)
                         {
                             strReturn += ", ";
-                        }
+                        } 
                     }
+                    //for (int i = 0; i < NPCs.Count; i++)
+                    //{
+                    //}
                 }
                 else if (NPCs.Count == 2)
                 {
                     strReturn += "a";
-                    if ((NPCs[0].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += NPCs[0].Name;
-                    strReturn += " and a";
                     if ((NPCs[1].Name[0]).IsVowel())
                     {
                         strReturn += "n";
                     }
                     strReturn += " ";
                     strReturn += NPCs[1].Name;
+                    strReturn += " and a";
+                    if ((NPCs[0].Name[0]).IsVowel())
+                    {
+                        strReturn += "n";
+                    }
+                    strReturn += " ";
+                    strReturn += NPCs[0].Name;
                 }
                 else if (NPCs.Count == 1)
                 {
@@ -202,7 +205,7 @@ namespace cs_store_app_TextGame
                 {
                     if (Exits[i].Region == -1) { continue; }
 
-                    strReturn += StaticMethods.ExitIntegerToStringAbbreviated(i);
+                    strReturn += Statics.ExitIntegerToStringAbbreviated(i);
                     strReturn += ", ";
                 }
 
@@ -241,9 +244,9 @@ namespace cs_store_app_TextGame
             return null;
         }
 
-        public Item FindItem(string strKeyword, ITEM_TYPE itemType = ITEM_TYPE.ANY)
+        public Item FindItem(string strKeyword, ITEM_TYPE itemType = ITEM_TYPE.ANY, int nOrdinal = 0)
         {
-            return Items.Get(strKeyword, itemType);
+            return Items.Get(strKeyword, itemType, nOrdinal);
         }
 
         public void AddNPC(EntityNPC npc)
@@ -251,12 +254,25 @@ namespace cs_store_app_TextGame
             NPCs.Add(npc);
         }
 
-        public EntityNPC FindNPC(string strWord)
+        public EntityNPC FindNPC(string strWord, int ordinal = 0)
         {
-            foreach (EntityNPC npc in NPCs)
+            int nOccurrences = -1;
+
+            for (int i = NPCs.Count() - 1; i >= 0; i--)
             {
-                if (npc.IsKeyword(strWord)) { return npc; }
+                if (NPCs[i].IsKeyword(strWord))
+                {
+                    nOccurrences++;
+                    if (nOccurrences == ordinal)
+                    {
+                        return NPCs[i];
+                    }
+                } 
             }
+
+            //foreach (EntityNPC npc in NPCs)
+            //{
+            //}
 
             return null;
         }
@@ -286,7 +302,7 @@ namespace cs_store_app_TextGame
                 exit = Exits[nDirection]; 
             }
 
-            string direction = StaticMethods.ExitIntegerToStringFull(nDirection);
+            string direction = Statics.ExitIntegerToStringFull(nDirection);
 
             return new ExitWithDirection(exit, direction);
         }

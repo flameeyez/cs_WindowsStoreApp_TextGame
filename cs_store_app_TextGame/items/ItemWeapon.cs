@@ -12,14 +12,11 @@ namespace cs_store_app_TextGame
     public class ItemWeapon : Item
     {
         [DataMember]
-        public int MinimumDamage { get; set; }
-        [DataMember]
-        public int MaximumDamage { get; set; }
+        public int AttackPower { get; set; }
         public override ITEM_TYPE Type { get { return ITEM_TYPE.WEAPON; } }
         public ItemWeapon(XElement itemNode) : base(itemNode)
         {
-            MinimumDamage = int.Parse(itemNode.Element("minimum-damage").Value);
-            MaximumDamage = int.Parse(itemNode.Element("maximum-damage").Value);
+            AttackPower = int.Parse(itemNode.Element("attack-power").Value);
         }
     }
 }

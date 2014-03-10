@@ -8,11 +8,26 @@ using System.Runtime.Serialization;
 
 namespace cs_store_app_TextGame
 {
-    public static class StaticMethods
+    public static class Statics
     {
         public static Random r = new Random(DateTime.Now.Millisecond);
         public static int ItemCount = 0;
         public static int EntityCount = 0;
+        public static Dictionary<string, int> OrdinalStringToInt = new Dictionary<string, int>();
+
+        static Statics()
+        {
+            OrdinalStringToInt.Add("first", 0);
+            OrdinalStringToInt.Add("second", 1);
+            OrdinalStringToInt.Add("third", 2);
+            OrdinalStringToInt.Add("fourth", 3);
+            OrdinalStringToInt.Add("fifth", 4);
+            OrdinalStringToInt.Add("sixth", 5);
+            OrdinalStringToInt.Add("seventh", 6);
+            OrdinalStringToInt.Add("eighth", 7);
+            OrdinalStringToInt.Add("ninth", 8);
+            OrdinalStringToInt.Add("tenth", 9);
+        }
         public static bool IsVowel(this char character)
         {
             return new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(char.ToLower(character));
@@ -117,7 +132,7 @@ namespace cs_store_app_TextGame
                 if (item != null)
                 {
                     //item.UID = Guid.NewGuid();
-                    item.NID = StaticMethods.ItemCount++;
+                    item.NID = Statics.ItemCount++;
                 }
 
                 return returnObject;

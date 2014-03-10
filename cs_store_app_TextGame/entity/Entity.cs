@@ -27,28 +27,28 @@ namespace cs_store_app_TextGame
 
     public abstract class Entity
     {
+        #region Attributes
         public int ID { get; set; }
         public int NID { get; set; }
-        // TODO: see if we can avoid storing world references in each entity
-        // - how to move player?
-        public Entity() 
-        {
-            Posture = ENTITY_POSTURE.STANDING;
-        }
-
         public EntityAttributes Attributes = new EntityAttributes();
         public ENTITY_POSTURE Posture { get; set; }
-
         protected string _name { get; set; }
-        public virtual string Name 
+        public virtual string Name
         {
             get
             {
-                return _name +" (" + NID.ToString() + ")";
+                return (IsDead ? "dead " : "") + _name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
             set
             {
                 _name = value;
+            }
+        }
+        public virtual string NameBase
+        {
+            get
+            {
+                return _name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
         }
         public int MaximumHealth { get; set; }
@@ -57,9 +57,33 @@ namespace cs_store_app_TextGame
         public int CurrentMagic { get; set; }
         public int Gold { get; set; }
         public int DefensePower { get; set; }
+        public int AttackPower
+        {
+            get
+            {
+                int nAttackPower = Attributes.Strength;
 
-        public Item RightHand { get; set; }
-        public Item LeftHand { get; set; }
+                if (RightHand != null && RightHand.Type == ITEM_TYPE.WEAPON)
+                {
+                    ItemWeapon RightHandWeapon = RightHand as ItemWeapon;
+                    nAttackPower += RightHandWeapon.AttackPower;
+                }
+                if (LeftHand != null && LeftHand.Type == ITEM_TYPE.WEAPON)
+                {
+                    ItemWeapon LeftHandWeapon = LeftHand as ItemWeapon;
+                    nAttackPower += LeftHandWeapon.AttackPower;
+                }
+
+                return nAttackPower;
+            }
+        }
+        public bool IsDead
+        {
+            get
+            {
+                return CurrentHealth <= 0;
+            }
+        }
         public bool HandsAreFull
         {
             get
@@ -67,8 +91,56 @@ namespace cs_store_app_TextGame
                 return RightHand != null && LeftHand != null;
             }
         }
-        public virtual string HandsString { get { return ""; } }
+        public bool HandsAreEmpty
+        {
+            get
+            {
+                return RightHand == null && LeftHand == null;
+            }
+        }
 
+        #endregion
+        public bool Searched { get; set; }
+        #region Constructor
+        public Entity() 
+        {
+            Searched = false;
+            Posture = ENTITY_POSTURE.STANDING;
+        }
+        #endregion
+        #region Display Strings
+        public string HealthString
+        {
+            get
+            {
+                return CurrentHealth.ToString() + "/" + MaximumHealth.ToString();
+            }
+        }
+        public string MagicString
+        {
+            get
+            {
+                return CurrentMagic.ToString() + "/" + MaximumMagic.ToString();
+            }
+        }
+        public virtual string HandsString { get { return ""; } }
+        public virtual string InventoryString { get { return ""; } }
+        public virtual string DisplayString 
+        {
+            get 
+            {
+                if(IsDead)
+                {
+                    return "The " + NameBase + " is dead.";
+                }
+
+                return HandsString + "\n" + InventoryString; 
+            }
+        }
+        #endregion
+        #region Equipment
+        public Item RightHand { get; set; }
+        public Item LeftHand { get; set; }
         public ItemContainer Backpack { get; set; }
         public ItemArmorChest ArmorChest { get; set; }
         public ItemArmorFeet ArmorFeet { get; set; }
@@ -76,7 +148,8 @@ namespace cs_store_app_TextGame
         public ItemAccessoryAmulet Amulet { get; set; }
         public ItemAccessoryRing Ring1 { get; set; }
         public ItemAccessoryRing Ring2 { get; set; }
-
+        #endregion
+        #region World Coordinates
         public int CurrentRegionIndex { get; set; }
         public int CurrentSubregionIndex { get; set; }
         public int CurrentRoomIndex { get; set; }
@@ -105,7 +178,8 @@ namespace cs_store_app_TextGame
                 return _currentSubregion;
             }
         }
-
+        #endregion
+        #region Methods
         public void SetCurrentRoom(int nRegion, int nSubregion, int nRoom)
         {
             CurrentRegionIndex = nRegion;
@@ -115,14 +189,10 @@ namespace cs_store_app_TextGame
             _currentSubregion = CurrentRegion.Subregions[nSubregion];
             _currentRoom = CurrentSubregion.Rooms[nRoom];
         }
-
         public void SetCurrentRoom(Connection connection)
         {
             SetCurrentRoom(connection.DestinationRegion, connection.DestinationSubregion, connection.DestinationRoom);
         }
-
-        // GetItem(hand, strKeyword)
-        // ItemtoHand(item)
         public Item GetItemFromHand(string strKeyword, bool bRemoveFromHand, ITEM_TYPE itemType = ITEM_TYPE.ANY)
         {
             Item item = null;
@@ -167,11 +237,7 @@ namespace cs_store_app_TextGame
 
             return false;
         }
-
-        public virtual string InventoryString { get { return ""; } }
-
-        //////////////////////////////////////////
-
+        #endregion
         #region Input Handling
 
         public Handler ProcessInput(TranslatedInput input)
@@ -224,6 +290,10 @@ namespace cs_store_app_TextGame
                     return DoKneel(input);
                 case ACTION_ENUM.ATTACK:
                     return DoAttack(input);
+                case ACTION_ENUM.SHOW_HEALTH:
+                    return DoShowHealth(input);
+                case ACTION_ENUM.SEARCH:
+                    return DoSearch(input);
                 default:
                     return Handler.UNHANDLED;
             }
@@ -234,8 +304,9 @@ namespace cs_store_app_TextGame
         public virtual Handler DoLook(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoLook(string strWord) { return Handler.HANDLED; }
         public virtual Handler DoLook(string strWord1, string strWord2) { return Handler.HANDLED; }
+        public virtual Handler DoLook(string strWord1, string strWord2, string strWord3) { return Handler.HANDLED; }
         public virtual Handler DoLookHands(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoLookInContainer(string strKeyword) { return Handler.HANDLED; }
+        public virtual Handler DoLookInContainer(string strKeyword, int ordinal = 0) { return Handler.HANDLED; }
         public virtual Handler DoEat(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoDrink(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoOpen(TranslatedInput input) { return Handler.HANDLED; }
@@ -253,11 +324,64 @@ namespace cs_store_app_TextGame
         public virtual Handler DoGold(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoPrice(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoSell(TranslatedInput input) { return Handler.HANDLED; }
-
         public virtual Handler DoStand(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoKneel(TranslatedInput input) { return Handler.HANDLED; }
         public virtual Handler DoSit(TranslatedInput input) { return Handler.HANDLED; }
+        public virtual Handler DoShowHealth(TranslatedInput input) { return Handler.HANDLED; }
+        public virtual Handler DoSearch(TranslatedInput input) { return Handler.HANDLED; }
 
         #endregion
+
+        public virtual void BeSearched()
+        {
+            Searched = true;
+
+            // add inventory
+            if (ArmorHead != null) 
+            {
+                CurrentRoom.AddItem(ArmorHead);
+                ArmorHead = null;
+            }
+            if(ArmorChest != null)
+            {
+                CurrentRoom.AddItem(ArmorChest);
+                ArmorChest = null;
+            }
+            if(ArmorFeet!=null)
+            {
+                CurrentRoom.AddItem(ArmorFeet);
+                ArmorFeet = null;
+            }
+            if (RightHand != null)
+            {
+                CurrentRoom.AddItem(RightHand);
+                RightHand = null;
+            }
+            if (LeftHand != null)
+            {
+                CurrentRoom.AddItem(LeftHand);
+                LeftHand = null;
+            }
+            if (Backpack != null)
+            {
+                CurrentRoom.AddItem(Backpack);
+                Backpack = null;
+            }
+            if (Amulet != null)
+            {
+                CurrentRoom.AddItem(Amulet);
+                Amulet = null;
+            }
+            if (Ring1 != null)
+            {
+                CurrentRoom.AddItem(Ring1);
+                Ring1 = null;
+            }
+            if (Ring2 != null)
+            {
+                CurrentRoom.AddItem(Ring2);
+                Ring2 = null;
+            }
+        }
     }
 }

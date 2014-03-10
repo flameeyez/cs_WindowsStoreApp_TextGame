@@ -22,13 +22,6 @@ namespace cs_store_app_TextGame
 
         public DateTime LastActionTime = DateTime.Now;
         public int ActionPulse { get; set; }
-        public override string Name
-        {
-            get
-            {
-                return base.Name +" (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
-            }
-        }
         public List<string> Keywords = new List<string>();
         public override string HandsString
         {
@@ -124,8 +117,8 @@ namespace cs_store_app_TextGame
         public EntityNPC Clone()
         {
             EntityNPC npc = new EntityNPC();
-            npc.ActionPulse = 10000 + StaticMethods.r.Next(5000);
-            npc.NID = StaticMethods.EntityCount++;
+            npc.ActionPulse = 10000 + Statics.r.Next(5000);
+            npc.NID = Statics.EntityCount++;
             npc.ID = ID;
             npc.Name = _name;
             npc.Gold = Gold;
@@ -337,6 +330,8 @@ namespace cs_store_app_TextGame
 
         private Handler DoAction()
         {
+            if (IsDead) { return Handler.HANDLED; }
+
             Handler handler = Handler.UNHANDLED;
             TranslatedInput input = null;
 
@@ -353,7 +348,7 @@ namespace cs_store_app_TextGame
                 }
             }
 
-            switch (r.Next(6))
+            switch (r.Next(10))
             {
                 case 0:
                     return DoLook(input);
@@ -365,11 +360,36 @@ namespace cs_store_app_TextGame
                     return DoShowItem(input);
                 case 4:
                     return DoMoveConnection(input);
+                case 5:
+                    return DoAttack(input);
                 default:
                     return DoMoveBasic(input);
             }
         }
+        public override Handler DoMoveBasic(TranslatedInput input)
+        {
+            Handler handler = Handler.HANDLED;
 
+            ExitWithDirection exit = CurrentRoom.GetRandomExit();
+
+            // npc is leaving player's room
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, exit.Direction));
+            }
+
+            CurrentRoom.NPCs.Remove(this);
+            SetCurrentRoom(exit.Exit.Region, exit.Exit.Subregion, exit.Exit.Room);
+            CurrentRoom.NPCs.Add(this);
+
+            // npc has moved to player's room
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name));
+            }
+
+            return handler;
+        }
         public override Handler DoMoveConnection(TranslatedInput input)
         {
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.UNHANDLED; }
@@ -400,7 +420,6 @@ namespace cs_store_app_TextGame
 
             return handler;
         }
-
         public Handler DoShowItem(TranslatedInput input)
         {
             if (RightHand == null && LeftHand == null) { return DoGet(input); }
@@ -409,7 +428,34 @@ namespace cs_store_app_TextGame
 
             return Handler.UNHANDLED;
         }
+        public override Handler DoGet(TranslatedInput input)
+        {
+            // [possible] TODO: when npc picks up an item, add possible actions to some sort of list or flag field
+            // - for example, when food is picked up, or when npc enters room with food, the npc can eat
+            // duplicates are OK, if lefthand and righthand do similar things
+            // room needs to keep track of which item types it has; possibly which actions npcs can do in it
+            Item item = CurrentRoom.Items.GetRandomItem();
+            if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, Name));
+            }
 
+            if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL, Name, item.Name));
+            }
+
+            // item picked up; remove from room
+            if (RightHand == null) { RightHand = item; }
+            else if (LeftHand == null) { LeftHand = item; }
+            CurrentRoom.Items.Remove(item);
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_GET, Name, item.Name));
+            }
+
+            return Handler.HANDLED;
+        }
         public override Handler DoDrop(TranslatedInput input)
         {
             // TODO: see DoGet, remove possible actions from flag field
@@ -461,7 +507,6 @@ namespace cs_store_app_TextGame
             LeftHand = null;
             return handler;
         }
-
         public override Handler DoLook(TranslatedInput input)
         {
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
@@ -471,60 +516,46 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED;
         }
-
-        public override Handler DoMoveBasic(TranslatedInput input)
+        public override Handler DoAttack(TranslatedInput input)
         {
-            Handler handler = Handler.HANDLED;
+            EntityPlayer p = Game.Player;
+            if (!CurrentRoom.Equals(p.CurrentRoom)) { return Handler.UNHANDLED; }
+            if (p.IsDead) { return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, Name)); }
 
-            ExitWithDirection exit = CurrentRoom.GetRandomExit();
+            // if RightHand is holding a non-weapon
+            // TODO: LeftHand?
+            ItemWeapon weapon = null;
+            if (RightHand != null && RightHand.Type == ITEM_TYPE.WEAPON) { weapon = RightHand as ItemWeapon; }
+            else if (LeftHand != null && LeftHand.Type == ITEM_TYPE.WEAPON) { weapon = LeftHand as ItemWeapon; }
 
-            // npc is leaving player's room
-            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            if(weapon == null && !HandsAreEmpty)
             {
-                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, exit.Direction));
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NOT_A_WEAPON, Name, RightHand.Name)); 
             }
 
-            CurrentRoom.NPCs.Remove(this);
-            SetCurrentRoom(exit.Exit.Region, exit.Exit.Subregion, exit.Exit.Room);
-            CurrentRoom.NPCs.Add(this);
+            string strWeapon = weapon == null ? "fist" : weapon.Name;
 
-            // npc has moved to player's room
-            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
-            {
-                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name));
-            }
+            // calculate some damage
+            MESSAGE_ENUM message = MESSAGE_ENUM.NPC_ATTACKS_PLAYER;
+            int damage = 5;
+            p.CurrentHealth -= damage;
+            if (p.CurrentHealth <= 0) { message = MESSAGE_ENUM.NPC_KILLS_PLAYER; }
 
-            return handler;
+            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(message, Name, strWeapon, damage.ToString()));
+        }
+        public override Handler DoEquip(TranslatedInput input)
+        {
+            return Handler.UNHANDLED;
+        }
+        public override Handler DoRemove(TranslatedInput input)
+        {
+            return Handler.UNHANDLED;
+        }
+        public override Handler DoRemove(ITEM_SLOT item)
+        {
+            return Handler.UNHANDLED;
         }
 
-        public override Handler DoGet(TranslatedInput input)
-        {
-            // [possible] TODO: when npc picks up an item, add possible actions to some sort of list or flag field
-            // - for example, when food is picked up, or when npc enters room with food, the npc can eat
-            // duplicates are OK, if lefthand and righthand do similar things
-            // room needs to keep track of which item types it has; possibly which actions npcs can do in it
-            Item item = CurrentRoom.Items.GetRandomItem();
-            if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))  
-            {
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, Name)); 
-            }
-
-            if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
-            { 
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL,Name,item.Name)); 
-            }
-
-            // item picked up; remove from room
-            if (RightHand == null) { RightHand = item; }
-            else if (LeftHand == null) { LeftHand = item; }
-            CurrentRoom.Items.Remove(item);
-            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
-            {
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_GET, Name, item.Name));
-            }
-
-            return Handler.HANDLED;
-        }
         #endregion
 
         public bool IsKeyword(string strWord)
@@ -539,7 +570,7 @@ namespace cs_store_app_TextGame
         public Handler Update()
         {
             Handler handler = null;
-            if (CurrentHealth <= 0) 
+            if(IsDead && Searched)
             {
                 CurrentRoom.NPCs.Remove(this);
                 return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.DEBUG_REMOVE, Name));
