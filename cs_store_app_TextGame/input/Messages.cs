@@ -103,7 +103,8 @@ namespace cs_store_app_TextGame
         NPC_NO_ITEMS_IN_ROOM,
         NPC_NOT_A_WEAPON,
         NPC_NOT_DEAD,
-        NPC_ALREADY_DEAD
+        NPC_ALREADY_DEAD,
+        NEED_TO_IMPLEMENT
     };
     public static class Messages
     {
@@ -210,6 +211,12 @@ namespace cs_store_app_TextGame
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_A_WEAPON, "For some reason, the /1 tries to attack you with /an /2. It doesn't work very well.");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_DEAD, "But the /1 isn't dead yet!");
             ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_ALREADY_DEAD, "The /1 is already dead.");
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //
+            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NEED_TO_IMPLEMENT, "You should consider implementing this.");
+            //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
         private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)

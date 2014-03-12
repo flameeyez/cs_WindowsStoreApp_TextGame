@@ -174,12 +174,13 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoLook(string strWord)
         {
+            // room, then hands, then equipment(?), then npc
             if (strWord == "hands") { return DoLookHands(null); }
-                
-            Item item = GetItemFromHand(strWord, false);
-            if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
 
-            item = CurrentRoom.Items.Get(strWord);
+            Item item = CurrentRoom.Items.Get(strWord);
+            if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
+    
+            item = GetItemFromHand(strWord, false);
             if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
 
             EntityNPC npc = CurrentRoom.FindNPC(strWord);
@@ -356,6 +357,9 @@ namespace cs_store_app_TextGame
             if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
             ItemContainer container = null;
+            // close MY <container>
+            // hands, equipped backpack
+            if (input.Words.Length == 3 && input.Words[1] == "my") { return Handler.NEED_TO_IMPLEMENT; }
 
             if (Backpack != null) { container = Backpack; }
             else if (RightHand != null && RightHand.Type == ITEM_TYPE.CONTAINER) { container = RightHand as ItemContainer; }
@@ -373,9 +377,12 @@ namespace cs_store_app_TextGame
         public override Handler DoPut(TranslatedInput input)
         {
             // put <item> in <container> - TODO: <on surface>
-            if (input.Words.Length != 4) { return Handler.BAD_INPUT; }
+            if (input.Words.Length < 4) { return Handler.BAD_INPUT; }
             if (input.Words[2] != "in") { return Handler.BAD_INPUT; }
             if (IsDead) { return Handler.PLAYER_IS_DEAD; }
+
+            // put <item> in MY <container>
+            if (input.Words.Length == 5 && input.Words[3] == "my") { return Handler.NEED_TO_IMPLEMENT; }
 
             // must be holding item
             // don't remove item here
@@ -406,14 +413,15 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoEquip(TranslatedInput input)
         {
-            if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Equip")); }
-            if (input.Words.Length != 2) { return Handler.BAD_INPUT; }
+            if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, "Equip")); }            
             if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
-            Item itemToEquip = null;
+            string strItemToEquip = input.Words[1];
+            if (input.Words.Length == 3 && input.Words[1] == "my") { strItemToEquip = input.Words[2]; }
 
-            if (RightHand != null && RightHand.IsKeyword(input.Words[1])) { itemToEquip = RightHand; }
-            else if (LeftHand != null && LeftHand.IsKeyword(input.Words[1])) { itemToEquip = LeftHand; }
+            Item itemToEquip = null;
+            if (RightHand != null && RightHand.IsKeyword(strItemToEquip)) { itemToEquip = RightHand; }
+            else if (LeftHand != null && LeftHand.IsKeyword(strItemToEquip)) { itemToEquip = LeftHand; }
 
             if (itemToEquip == null) { return Handler.BAD_INPUT; }
 
@@ -454,6 +462,7 @@ namespace cs_store_app_TextGame
                     return Handler.ITEM_NOT_EQUIPPABLE;
             }
 
+            // TODO: ITEM_SOURCE?
             if (itemToEquip.Equals(RightHand)) { RightHand = null; }
             else if (itemToEquip.Equals(LeftHand)) { LeftHand = null; }
 

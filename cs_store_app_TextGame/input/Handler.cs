@@ -42,6 +42,7 @@ namespace cs_store_app_TextGame
         public static Handler SITTING = new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.SITTING));
         public static Handler KNEELING = new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.KNEELING));
         public static Handler PLAYER_IS_DEAD = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_IS_DEAD));
+        public static Handler NEED_TO_IMPLEMENT = new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NEED_TO_IMPLEMENT));
 
         public override bool Equals(object obj)
         {
