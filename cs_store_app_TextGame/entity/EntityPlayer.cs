@@ -8,11 +8,6 @@ namespace cs_store_app_TextGame
 {
     public class EntityPlayer : Entity
     {
-        // TODO: "look [at] <first|second|third|etc.> goblin"
-        // number string to index dictionary?
-        // - first - 0
-        // - second - 1
-        // - etc.
         public EntityPlayer() : base() 
         {
             CurrentHealth = 100;
@@ -166,28 +161,35 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoLook(TranslatedInput input)
         {
+            // "look"
             if (input == null || input.Words.Length < 2) { return new Handler(RETURN_CODE.HANDLED, CurrentRoomDisplayString); }
+            // look <item|npc>
             else if (input.Words.Length == 2) { return DoLook(input.Words[1]); }
+            // look <at|in|my|ordinal> <item|npc>
             else if (input.Words.Length == 3) { return DoLook(input.Words[1], input.Words[2]); }
+            // look <at|in> <my|ordinal> <item|npc>
             else if (input.Words.Length == 4) { return DoLook(input.Words[1], input.Words[2], input.Words[3]); }
+            // handling a five-word phrase seems impractical
             return Handler.BAD_INPUT;
         }
         public override Handler DoLook(string strWord)
         {
-            // room, then hands, then equipment(?), then npc
+            // look hands - special case
             if (strWord == "hands") { return DoLookHands(null); }
 
+            // TODO: consider more specific strings for held or equipped items
+            
             Item item = CurrentRoom.Items.Get(strWord);
             if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
-    
+
             item = GetItemFromHand(strWord, false);
             if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
 
+            item = GetItemFromEquipment(strWord, false);
+            if (item != null) { return new Handler(RETURN_CODE.HANDLED, item.Description + "\n"); }
+
             EntityNPC npc = CurrentRoom.FindNPC(strWord);
-            if (npc != null) 
-            {
-                return new Handler(RETURN_CODE.HANDLED, npc.DisplayString);
-            }
+            if (npc != null) { return new Handler(RETURN_CODE.HANDLED, npc.DisplayString); }
 
             return Handler.BAD_INPUT;
         }
@@ -195,6 +197,11 @@ namespace cs_store_app_TextGame
         {
             if (strWord1 == "at") { return DoLook(strWord2); }
             if (strWord1 == "in") { return DoLookInContainer(strWord2); }
+            
+            // TODO: handle "my"
+            // - look [at] my backpack, "at" is implied--not "in"
+            // can't simply call strWord1 version; needs to be specific for "my"
+            if (strWord1 == "my") { return Handler.NEED_TO_IMPLEMENT; }
 
             int ordinal;
             if (!Statics.OrdinalStringToInt.TryGetValue(strWord1, out ordinal)) { return Handler.BAD_INPUT; }
@@ -209,6 +216,7 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoLook(string strWord1, string strWord2, string strWord3)
         {
+            // TODO: strWord2 could be ordinal OR "my"
             if (strWord1 == "at") { return DoLook(strWord2, strWord3); }
             if (strWord1 == "in")
             {
@@ -216,9 +224,23 @@ namespace cs_store_app_TextGame
                 if (Statics.OrdinalStringToInt.TryGetValue(strWord2, out ordinal)) { return DoLookInContainer(strWord3, ordinal); }
                 else if(strWord2 == "my")
                 {
-                    // TODO: prioritize room items unless "my" is specified
-                    if (Backpack == null) { return Handler.BAD_INPUT; }
-                    return new Handler(RETURN_CODE.HANDLED, Backpack.ItemsString + "\n");
+                    // look in my <container>
+                    if (RightHand != null && RightHand.Type == ITEM_TYPE.CONTAINER) 
+                    {
+                        ItemContainer container = RightHand as ItemContainer;
+                        return new Handler(RETURN_CODE.HANDLED, container.ItemsString + "\n");
+                    }
+                    if (LeftHand != null && RightHand.Type == ITEM_TYPE.CONTAINER)
+                    {
+                        ItemContainer container = LeftHand as ItemContainer;
+                        return new Handler(RETURN_CODE.HANDLED, container.ItemsString + "\n");
+                    }
+                    if (Backpack != null) 
+                    {
+                        return new Handler(RETURN_CODE.HANDLED, Backpack.ItemsString + "\n");                        
+                    }
+
+                    return Handler.BAD_INPUT; 
                 }
             }
             return Handler.BAD_INPUT;
@@ -229,12 +251,15 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoLookInContainer(string strKeyword, int ordinal = 0)
         {
-            ItemContainer container = null;
-
-            if (Backpack != null && Backpack.IsKeyword(strKeyword)) { container = Backpack; }
-            else { container = GetItemFromHand(strKeyword, false, ITEM_TYPE.CONTAINER) as ItemContainer; }
-            if (container == null) { container = CurrentRoom.Items.Get(strKeyword, ITEM_TYPE.CONTAINER, ordinal) as ItemContainer; }
+            // priority: room, hand, equipped backpack
+            // TODO: ensure consistent priority throughout
+            // TODO: "my"
+            ItemContainer container = CurrentRoom.Items.Get(strKeyword, ITEM_TYPE.CONTAINER, ordinal) as ItemContainer;
+            if (container == null) { container = GetItemFromHand(strKeyword, false, ITEM_TYPE.CONTAINER) as ItemContainer; }
+            if (container == null && Backpack != null && Backpack.IsKeyword(strKeyword)) { container = Backpack; }
             if (container == null) { return Handler.BAD_INPUT; }
+
+            // container found
             if (container.Closed) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.CONTAINER_CLOSED, container.Name)); }
             return new Handler(RETURN_CODE.HANDLED, container.ItemsString + "\n");
         }

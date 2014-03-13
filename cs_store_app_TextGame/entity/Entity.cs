@@ -222,6 +222,41 @@ namespace cs_store_app_TextGame
 
             return item;
         }
+        public Item GetItemFromEquipment(string strKeyword, bool bRemoveFromHand)
+        {
+            Item item = null;
+            if(ArmorHead.IsKeyword(strKeyword))
+            {
+                item = ArmorHead;
+                if (bRemoveFromHand) { ArmorHead = null; }
+            }
+            else if(ArmorChest.IsKeyword(strKeyword))
+            {
+                item = ArmorChest;
+                if (bRemoveFromHand) { ArmorChest = null; }
+            }
+            else if(ArmorFeet.IsKeyword(strKeyword))
+            {
+                item = ArmorFeet;
+                if (bRemoveFromHand) { ArmorFeet = null; }
+            }
+            else if(Ring1.IsKeyword(strKeyword))
+            {
+                item = Ring1;
+                if (bRemoveFromHand) { Ring1 = null; }
+            }
+            else if(Ring2.IsKeyword(strKeyword))
+            {
+                item = Ring2;
+                if (bRemoveFromHand) { Ring2 = null; }
+            }
+            else if(Amulet.IsKeyword(strKeyword))
+            {
+                item = Amulet;
+                if (bRemoveFromHand) { Amulet = null; }
+            }
+            return item;
+        }
         public bool PutItemInHand(Item item)
         {
             if (RightHand == null)
