@@ -4,6 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 
 namespace cs_store_app_TextGame
 {
@@ -49,6 +52,20 @@ namespace cs_store_app_TextGame
             get
             {
                 return _name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
+            }
+        }
+        public virtual Run NameAsRun
+        {
+            get
+            {
+                return new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = Name };
+            }
+        }
+        public virtual Run NameBaseAsRun
+        {
+            get
+            {
+                return new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = NameBase };
             }
         }
         public int MaximumHealth { get; set; }

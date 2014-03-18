@@ -128,6 +128,12 @@ namespace cs_store_app_TextGame
                 //if (bScroll) { ScrollToBottom(); }
             }
         }
+        private void AppendParagraph(Paragraph p, bool bScroll = true)
+        {
+            this.txtOutput.Blocks.Add(p);
+            CheckParagraphCount();
+            txtDebugBlockCount.Text = txtOutput.Blocks.Count.ToString();
+        }
         private void AppendDebugText(string str)
         {
             if (str.Length > 0)

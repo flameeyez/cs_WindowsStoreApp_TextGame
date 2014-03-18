@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
@@ -26,6 +27,13 @@ namespace cs_store_app_TextGame
                 string strReturn = "[" + CurrentRegion.Name + " - " + CurrentSubregion.Name + "]\n";
                 strReturn += CurrentRoom.FullDisplayString;
                 return strReturn;
+            }
+        }
+        public Paragraph CurrentRoomDisplayParagraph
+        {
+            get
+            {
+                return new Paragraph();
             }
         }
         public override string HandsString
@@ -862,16 +870,16 @@ namespace cs_store_app_TextGame
             if (input.Words.Length == 1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.WHAT, input.Words[0].ToSentenceCase())); }
             if (IsDead) { return Handler.PLAYER_IS_DEAD; }
 
-            string NPCString = "";
+            string NPCName = "";
             int ordinal = 0;
-            if (input.Words.Length == 2) { NPCString = input.Words[1]; }
+            if (input.Words.Length == 2) { NPCName = input.Words[1]; }
             else if (input.Words.Length == 3) 
             {
                 if (!Statics.OrdinalStringToInt.TryGetValue(input.Words[1], out ordinal)) { return Handler.BAD_INPUT; }
-                NPCString = input.Words[2]; 
+                NPCName = input.Words[2]; 
             }
-            
-            EntityNPC npc = CurrentRoom.FindNPC(NPCString, ordinal);
+
+            EntityNPC npc = CurrentRoom.FindNPC(NPCName, ordinal);
             if (npc == null) { return Handler.BAD_INPUT; }
             if (npc.IsDead) { return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_ALREADY_DEAD, npc.NameBase)); }
 

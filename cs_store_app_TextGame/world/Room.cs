@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.UI;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
@@ -119,6 +121,79 @@ namespace cs_store_app_TextGame
             Items.Remove(itemToRemove);
         }
 
+        public Paragraph NPCStringAsParagraph
+        {
+            get
+            {
+                if (NPCs.Count == 0) { return null; }
+                
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(Statics.StringToRun("You also see ", Colors.Gray));
+
+                if (NPCs.Count > 2)
+                {
+                    string strA = "";
+                    for (int i = NPCs.Count() - 1; i >= 0; i--)
+                    {
+                        strA += "a";
+                        if ((NPCs[i].Name[0]).IsVowel())
+                        {
+                            strA += "n";
+                        }
+                        strA += " ";
+
+                        p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
+                        p.Inlines.Add(NPCs[i].NameAsRun);
+                        if (i == 1)
+                        {
+                            strA = ", and ";
+                        }
+                        else if (i > 0)
+                        {
+                            strA = ", ";
+                        }
+                    }
+                }
+                else if (NPCs.Count == 2)
+                {
+                    string strA = "a";
+                    if ((NPCs[1].Name[0]).IsVowel())
+                    {
+                        strA += "n";
+                    }
+                    strA += " ";
+
+                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
+                    p.Inlines.Add(NPCs[1].NameAsRun);
+
+                    strA = " and a";
+                    if ((NPCs[0].Name[0]).IsVowel())
+                    {
+                        strA += "n";
+                    }
+                    strA += " ";
+
+                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
+                    p.Inlines.Add(NPCs[0].NameAsRun);
+                }
+                else if (NPCs.Count == 1)
+                {
+                    string strA = "a";
+                    if ((NPCs[0].Name[0]).IsVowel())
+                    {
+                        strA += "n";
+                    }
+                    strA += " ";
+                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
+                    p.Inlines.Add(NPCs[0].NameAsRun);
+                }
+
+                p.Inlines.Add(Statics.StringToRun(".", Colors.Gray));
+
+                return p;
+            }
+        }
+
         public string NPCString
         {
             get
@@ -228,6 +303,15 @@ namespace cs_store_app_TextGame
             get
             {
                 return Description + "\n" + ItemsString + NPCString + ExitsString;
+            }
+        }
+
+        public Paragraph FullDisplayParagraph
+        {
+            get
+            {
+                // TODO: 
+                return new Paragraph();
             }
         }
 

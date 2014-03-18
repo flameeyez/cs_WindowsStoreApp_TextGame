@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using Windows.UI.Xaml.Documents;
+using Windows.UI;
+using Windows.UI.Xaml.Media;
 
 namespace cs_store_app_TextGame
 {
@@ -119,6 +122,11 @@ namespace cs_store_app_TextGame
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
+        public static Run StringToRun(string s, Color c)
+        {
+            return new Run
+                { Foreground = new SolidColorBrush(c), Text = s };
+        }
         public static T DeepClone<T>(this T a)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -137,6 +145,19 @@ namespace cs_store_app_TextGame
 
                 return returnObject;
             }
+        }
+
+        // TODO: implement entity levels, experience (npcs gain experience?)
+        public static Color LevelToColor(int level)
+        {
+            int delta = 10 - r.Next(20); // level - Game.Player.Level;
+            if (delta > 5) { return Colors.Purple; }
+            else if (delta > 3) { return Colors.Red; }
+            else if (delta > 1) { return Colors.Orange; }
+            else if (delta == 0) { return Colors.Yellow; }
+            else if (delta > -2) { return Colors.Blue; }
+            else if (delta > -3) { return Colors.LightGreen; }
+            else { return Colors.Gray; }
         }
     }
 }
