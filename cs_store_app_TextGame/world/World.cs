@@ -13,8 +13,9 @@ namespace cs_store_app_TextGame
 {
     public static class World
     {
+        #region Attributes
         public static List<Region> Regions = new List<Region>();
-        public static string DisplayString
+        public static string DebugDisplayString
         {
             get
             {
@@ -36,7 +37,9 @@ namespace cs_store_app_TextGame
                 return strReturn;
             }
         }
+        #endregion
 
+        #region Load
         public static async Task Load()
         {
             try
@@ -88,6 +91,7 @@ namespace cs_store_app_TextGame
 
             await Load();
         }
+        #endregion
 
         public static List<Handler> Update()
         {

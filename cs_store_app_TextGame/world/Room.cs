@@ -11,24 +11,24 @@ namespace cs_store_app_TextGame
 {
     public class Room
     {
-        private static int NUMBER_OF_EXITS = 9;
+        #region Attributes
         public int ID { get; set; }
         public string Description { get; set; }
-        public Inventory Items = new Inventory();
-        public Exit[] Exits = new Exit[NUMBER_OF_EXITS];
-        public List<Connection> Connections = new List<Connection>();
 
-        // friendly, unfriendly, and everything in-between
-        public List<EntityNPC> NPCs = new List<EntityNPC>();
+        public ExitCollection Exits = new ExitCollection();
+        public ItemCollection Items = new ItemCollection();
+        public ConnectionCollection Connections = new ConnectionCollection();
+        public EntityNPCCollection NPCs = new EntityNPCCollection();
+        #endregion
 
+        #region Constructors
         public Room()
         {
-            for(int i = 0; i < NUMBER_OF_EXITS; i++)
+            for (int i = 0; i < ExitCollection.NUMBER_OF_EXITS; i++)
             {
-                Exits[i] = new Exit(-1, -1, -1);
+                Exits.Set(i, new Exit(-1, -1, -1));
             }
         }
-
         public Room(XElement roomNode) : this()
         {
             ID = int.Parse(roomNode.Element("id").Value);
@@ -39,65 +39,83 @@ namespace cs_store_app_TextGame
             var northwestNode = exitNode.Element("northwest");
             if (northwestNode != null)
             {
-                Exits[0].Region = int.Parse(northwestNode.Element("region").Value);
-                Exits[0].Subregion = int.Parse(northwestNode.Element("subregion").Value);
-                Exits[0].Room = int.Parse(northwestNode.Element("room").Value);
+                int nRegion = int.Parse(northwestNode.Element("region").Value);
+                int nSubregion = int.Parse(northwestNode.Element("subregion").Value);
+                int nRoom = int.Parse(northwestNode.Element("room").Value);
+
+                Exits.Set(0, new Exit(nRegion, nSubregion, nRoom));
             }
             var northNode = exitNode.Element("north");
             if (northNode != null)
             {
-                Exits[1].Region = int.Parse(northNode.Element("region").Value);
-                Exits[1].Subregion = int.Parse(northNode.Element("subregion").Value);
-                Exits[1].Room = int.Parse(northNode.Element("room").Value);
+                int nRegion = int.Parse(northNode.Element("region").Value);
+                int nSubregion = int.Parse(northNode.Element("subregion").Value);
+                int nRoom = int.Parse(northNode.Element("room").Value);
+
+                Exits.Set(1, new Exit(nRegion, nSubregion, nRoom));
             }
             var northeastNode = exitNode.Element("northeast");
             if (northeastNode != null)
             {
-                Exits[2].Region = int.Parse(northeastNode.Element("region").Value);
-                Exits[2].Subregion = int.Parse(northeastNode.Element("subregion").Value);
-                Exits[2].Room = int.Parse(northeastNode.Element("room").Value);
+                int nRegion = int.Parse(northeastNode.Element("region").Value);
+                int nSubregion = int.Parse(northeastNode.Element("subregion").Value);
+                int nRoom = int.Parse(northeastNode.Element("room").Value);
+
+                Exits.Set(2, new Exit(nRegion, nSubregion, nRoom));
             }
             var westNode = exitNode.Element("west");
             if (westNode != null)
             {
-                Exits[3].Region = int.Parse(westNode.Element("region").Value);
-                Exits[3].Subregion = int.Parse(westNode.Element("subregion").Value);
-                Exits[3].Room = int.Parse(westNode.Element("room").Value);
+                int nRegion = int.Parse(westNode.Element("region").Value);
+                int nSubregion = int.Parse(westNode.Element("subregion").Value);
+                int nRoom = int.Parse(westNode.Element("room").Value);
+
+                Exits.Set(3, new Exit(nRegion, nSubregion, nRoom));
             }
             var outNode = exitNode.Element("out");
             if (outNode != null)
             {
-                Exits[4].Region = int.Parse(outNode.Element("region").Value);
-                Exits[4].Subregion = int.Parse(outNode.Element("subregion").Value);
-                Exits[4].Room = int.Parse(outNode.Element("room").Value);
+                int nRegion = int.Parse(outNode.Element("region").Value);
+                int nSubregion = int.Parse(outNode.Element("subregion").Value);
+                int nRoom = int.Parse(outNode.Element("room").Value);
+
+                Exits.Set(4, new Exit(nRegion, nSubregion, nRoom));
             }
             var eastNode = exitNode.Element("east");
             if (eastNode != null)
             {
-                Exits[5].Region = int.Parse(eastNode.Element("region").Value);
-                Exits[5].Subregion = int.Parse(eastNode.Element("subregion").Value);
-                Exits[5].Room = int.Parse(eastNode.Element("room").Value);
+                int nRegion = int.Parse(eastNode.Element("region").Value);
+                int nSubregion = int.Parse(eastNode.Element("subregion").Value);
+                int nRoom = int.Parse(eastNode.Element("room").Value);
+
+                Exits.Set(5, new Exit(nRegion, nSubregion, nRoom));
             }
             var southwestNode = exitNode.Element("southwest");
             if (southwestNode != null)
             {
-                Exits[6].Region = int.Parse(southwestNode.Element("region").Value);
-                Exits[6].Subregion = int.Parse(southwestNode.Element("subregion").Value);
-                Exits[6].Room = int.Parse(southwestNode.Element("room").Value);
+                int nRegion = int.Parse(southwestNode.Element("region").Value);
+                int nSubregion = int.Parse(southwestNode.Element("subregion").Value);
+                int nRoom = int.Parse(southwestNode.Element("room").Value);
+
+                Exits.Set(6, new Exit(nRegion, nSubregion, nRoom));
             }
             var southNode = exitNode.Element("south");
             if (southNode != null)
             {
-                Exits[7].Region = int.Parse(southNode.Element("region").Value);
-                Exits[7].Subregion = int.Parse(southNode.Element("subregion").Value);
-                Exits[7].Room = int.Parse(southNode.Element("room").Value);
+                int nRegion = int.Parse(southNode.Element("region").Value);
+                int nSubregion = int.Parse(southNode.Element("subregion").Value);
+                int nRoom = int.Parse(southNode.Element("room").Value);
+
+                Exits.Set(7, new Exit(nRegion, nSubregion, nRoom));
             }
             var southeastNode = exitNode.Element("southeast");
             if (southeastNode != null)
             {
-                Exits[8].Region = int.Parse(southeastNode.Element("region").Value);
-                Exits[8].Subregion = int.Parse(southeastNode.Element("subregion").Value);
-                Exits[8].Room = int.Parse(southeastNode.Element("room").Value);
+                int nRegion = int.Parse(southeastNode.Element("region").Value);
+                int nSubregion = int.Parse(southeastNode.Element("subregion").Value);
+                int nRoom = int.Parse(southeastNode.Element("room").Value);
+
+                Exits.Set(8, new Exit(nRegion, nSubregion, nRoom));
             }
 
             // room.connections
@@ -112,290 +130,35 @@ namespace cs_store_app_TextGame
 
             // TODO:room.inventory
         }
-        public void AddItem(Item itemToAdd)
-        {
-            Items.Add(itemToAdd);
-        }
-        public void RemoveItem(Item itemToRemove)
-        {
-            Items.Remove(itemToRemove);
-        }
+        #endregion
 
-        public Paragraph NPCStringAsParagraph
-        {
-            get
-            {
-                if (NPCs.Count == 0) { return null; }
-                
-                Paragraph p = new Paragraph();
-                p.Inlines.Add(Statics.StringToRun("You also see ", Colors.Gray));
-
-                if (NPCs.Count > 2)
-                {
-                    string strA = "";
-                    for (int i = NPCs.Count() - 1; i >= 0; i--)
-                    {
-                        strA += "a";
-                        if ((NPCs[i].Name[0]).IsVowel())
-                        {
-                            strA += "n";
-                        }
-                        strA += " ";
-
-                        p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
-                        p.Inlines.Add(NPCs[i].NameAsRun);
-                        if (i == 1)
-                        {
-                            strA = ", and ";
-                        }
-                        else if (i > 0)
-                        {
-                            strA = ", ";
-                        }
-                    }
-                }
-                else if (NPCs.Count == 2)
-                {
-                    string strA = "a";
-                    if ((NPCs[1].Name[0]).IsVowel())
-                    {
-                        strA += "n";
-                    }
-                    strA += " ";
-
-                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
-                    p.Inlines.Add(NPCs[1].NameAsRun);
-
-                    strA = " and a";
-                    if ((NPCs[0].Name[0]).IsVowel())
-                    {
-                        strA += "n";
-                    }
-                    strA += " ";
-
-                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
-                    p.Inlines.Add(NPCs[0].NameAsRun);
-                }
-                else if (NPCs.Count == 1)
-                {
-                    string strA = "a";
-                    if ((NPCs[0].Name[0]).IsVowel())
-                    {
-                        strA += "n";
-                    }
-                    strA += " ";
-                    p.Inlines.Add(Statics.StringToRun(strA, Colors.Gray));
-                    p.Inlines.Add(NPCs[0].NameAsRun);
-                }
-
-                p.Inlines.Add(Statics.StringToRun(".", Colors.Gray));
-
-                return p;
-            }
-        }
-
-        public string NPCString
-        {
-            get
-            {
-                if (NPCs.Count == 0) { return ""; }
-
-                string strReturn = "You also see ";
-
-                if (NPCs.Count > 2)
-                {
-                    for (int i = NPCs.Count() - 1; i >= 0; i--)
-                    {
-                        strReturn += "a";
-                        if ((NPCs[i].Name[0]).IsVowel())
-                        {
-                            strReturn += "n";
-                        }
-                        strReturn += " ";
-                        strReturn += NPCs[i].Name;
-                        if (i == 1)
-                        {
-                            strReturn += ", and ";
-                        }
-                        else if (i > 0)
-                        {
-                            strReturn += ", ";
-                        } 
-                    }
-                    //for (int i = 0; i < NPCs.Count; i++)
-                    //{
-                    //}
-                }
-                else if (NPCs.Count == 2)
-                {
-                    strReturn += "a";
-                    if ((NPCs[1].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += NPCs[1].Name;
-                    strReturn += " and a";
-                    if ((NPCs[0].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += NPCs[0].Name;
-                }
-                else if (NPCs.Count == 1)
-                {
-                    strReturn += "a";
-                    if ((NPCs[0].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += NPCs[0].Name;
-                }
-
-                strReturn += ".\n";
-
-                return strReturn;
-            }
-        }
-
-        public string ItemsString
-        {
-            get
-            {
-                if (Items.Items.Count == 0) { return ""; }
-               	
-        		string strReturn = "You also see " + Items.DisplayString() + "\n";
-	            return strReturn;
-            }
-        }
-
-        public string ExitsString
-        {
-            get
-            {
-                string strReturn = "";
-                for (int i = 0; i < NUMBER_OF_EXITS; i++)
-                {
-                    if (Exits[i].Region == -1) { continue; }
-
-                    strReturn += Statics.ExitIntegerToStringAbbreviated(i);
-                    strReturn += ", ";
-                }
-
-                if(strReturn.Length > 0)
-                {
-                    strReturn = strReturn.Substring(0, strReturn.Length - 2);
-                    strReturn = "Obvious exits: " + strReturn + "\n";
-                }
-                else
-                {
-                    strReturn = "Obvious exits: none" + "\n";
-                }
-
-                return strReturn;
-            }
-        }
-
+        #region Display
         public string FullDisplayString
         {
             get
             {
-                return Description + "\n" + ItemsString + NPCString + ExitsString;
+                return Description + "\n" + Items.RoomDisplayString + NPCs.RoomDisplayString + Exits.RoomDisplayString;
             }
         }
-
         public Paragraph FullDisplayParagraph
         {
             get
             {
-                // TODO: 
-                return new Paragraph();
+                Paragraph p = new Paragraph();
+
+                p.Inlines.Add(Description.ToRun(Colors.Gray));
+                foreach (Inline i in Items.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
+                foreach (Inline i in NPCs.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
+                foreach (Inline i in Exits.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
+                
+                return p;
             }
         }
-
-        public Connection GetConnection(string strActionVerb, string strActionNoun)
-        {
-            foreach(Connection c in Connections)
-            {
-                if(c.Match(strActionVerb, strActionNoun))
-                {
-                    return c;
-                }
-            }
-
-            return null;
-        }
-
-        public Item FindItem(string strKeyword, ITEM_TYPE itemType = ITEM_TYPE.ANY, int nOrdinal = 0)
-        {
-            return Items.Get(strKeyword, itemType, nOrdinal);
-        }
-
-        public void AddNPC(EntityNPC npc)
-        {
-            NPCs.Add(npc);
-        }
-
-        public EntityNPC FindNPC(string strWord, int ordinal = 0)
-        {
-            int nOccurrences = -1;
-
-            for (int i = NPCs.Count() - 1; i >= 0; i--)
-            {
-                if (NPCs[i].IsKeyword(strWord))
-                {
-                    nOccurrences++;
-                    if (nOccurrences == ordinal)
-                    {
-                        return NPCs[i];
-                    }
-                } 
-            }
-
-            //foreach (EntityNPC npc in NPCs)
-            //{
-            //}
-
-            return null;
-        }
+        #endregion
 
         public List<Handler> Update()
         {
-            List<Handler> handlers = new List<Handler>();
-
-            for (int i = NPCs.Count - 1; i >= 0; i--)
-            {
-                Handler handler = NPCs[i].Update();
-                if (handler != null) { handlers.Add(handler); }
-            }
-
-            return handlers;
-        }
-
-        public ExitWithDirection GetRandomExit()
-        {
-            Random r = new Random(DateTime.Now.Millisecond);
-
-            int nDirection = r.Next(9);
-            Exit exit = Exits[nDirection];
-            while ( exit.Region == -1) 
-            {
-                nDirection = r.Next(9);
-                exit = Exits[nDirection]; 
-            }
-
-            string direction = Statics.ExitIntegerToStringFull(nDirection);
-
-            return new ExitWithDirection(exit, direction);
-        }
-
-        public Connection GetRandomConnection()
-        {
-            if (Connections.Count == 0) { return null; }
-            Random r = new Random(DateTime.Now.Millisecond);
-            return Connections[r.Next(Connections.Count)];
+            return NPCs.Update();
         }
     }
 }

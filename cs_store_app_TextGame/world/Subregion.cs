@@ -9,10 +9,13 @@ namespace cs_store_app_TextGame
 {
     public class Subregion
     {
+        #region Attributes
         public int ID { get; set; }
         public string Name { get; set; }
         public List<Room> Rooms = new List<Room>();
+        #endregion
 
+        #region Constructor
         public Subregion(XElement regionNode)
         {
             ID = int.Parse(regionNode.Element("id").Value);
@@ -33,6 +36,7 @@ namespace cs_store_app_TextGame
                 }
             }
         }
+        #endregion
 
         public List<Handler> Update()
         {

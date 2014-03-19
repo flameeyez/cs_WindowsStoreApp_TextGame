@@ -8,7 +8,6 @@ namespace cs_store_app_TextGame
 {
     public enum MESSAGE_ENUM
     {
-        BASE_STRING,
         PLAYER_GET,
         PLAYER_DROP,
         PLAYER_PUT_IN_PLAYER_CONTAINER,
@@ -69,51 +68,47 @@ namespace cs_store_app_TextGame
         NPC_KILLS_PLAYER,
         PLAYER_SHOW_HEALTH,
         NPC_ATTACKS_DEAD_PLAYER,
-        PLAYER_IS_DEAD,
         NPC_SEARCH_WITH_GOLD,
         NPC_SEARCH_NO_GOLD,
-        PLAYER_CONTAINER_CLOSED
-    };
-    public enum ERROR_MESSAGE_ENUM
-    {
-        OK = -1,
-        BAD_INPUT,
-        WRONG_DIRECTION,
-        GO_WHERE,
-        BAD_ITEM,
-        HANDS_ARE_FULL,
-        NOT_CARRYING_ITEM,
-        CONTAINER_CLOSED,
-        CONTAINER_ALREADY_OPEN,
-        CONTAINER_ALREADY_CLOSED,
-        WHAT,
-        CONTAINER_NOT_CLOSABLE,
-        ITEM_NOT_EQUIPPABLE,
-        ALREADY_EQUIPPED,
-        NOT_A_SHOP,
-        BAD_SHOP,
-        NOT_ENOUGH_GOLD,
-        ALREADY_STANDING,
-        ALREADY_SITTING,
-        ALREADY_KNEELING,
-        SITTING,
-        KNEELING,
-        NOT_A_WEAPON,
-        NPC_HANDS_ARE_FULL,
-        NPC_NO_ITEMS_IN_ROOM,
-        NPC_NOT_A_WEAPON,
-        NPC_NOT_DEAD,
-        NPC_ALREADY_DEAD,
-        NEED_TO_IMPLEMENT
+        
+        
+        // ERROR MESSAGES
+        ERROR_PLAYER_IS_DEAD,
+        ERROR_PLAYER_CONTAINER_CLOSED,
+        ERROR_BAD_INPUT,
+        ERROR_WRONG_DIRECTION,
+        ERROR_GO_WHERE,
+        ERROR_BAD_ITEM,
+        ERROR_HANDS_ARE_FULL,
+        ERROR_NOT_CARRYING_ITEM,
+        ERROR_CONTAINER_CLOSED,
+        ERROR_CONTAINER_ALREADY_OPEN,
+        ERROR_CONTAINER_ALREADY_CLOSED,
+        ERROR_WHAT,
+        ERROR_CONTAINER_NOT_CLOSABLE,
+        ERROR_ITEM_NOT_EQUIPPABLE,
+        ERROR_ALREADY_EQUIPPED,
+        ERROR_NOT_A_SHOP,
+        ERROR_BAD_SHOP,
+        ERROR_NOT_ENOUGH_GOLD,
+        ERROR_ALREADY_STANDING,
+        ERROR_ALREADY_SITTING,
+        ERROR_ALREADY_KNEELING,
+        ERROR_SITTING,
+        ERROR_KNEELING,
+        ERROR_NOT_A_WEAPON,
+        ERROR_NPC_HANDS_ARE_FULL,
+        ERROR_NPC_NO_ITEMS_IN_ROOM,
+        ERROR_NPC_NOT_A_WEAPON,
+        ERROR_NPC_NOT_DEAD,
+        ERROR_NPC_ALREADY_DEAD,
+        ERROR_NEED_TO_IMPLEMENT
     };
     public static class Messages
     {
         private static Dictionary<MESSAGE_ENUM, string> MessageDictionary = new Dictionary<MESSAGE_ENUM, string>();
-        private static Dictionary<ERROR_MESSAGE_ENUM, string> ErrorMessageDictionary = new Dictionary<ERROR_MESSAGE_ENUM, string>();
-
         static Messages()
         {
-            MessageDictionary.Add(MESSAGE_ENUM.BASE_STRING, "/1");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET, "You pick up /an /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DROP, "You drop /an /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT, "You take a bite of your /1. You have /2 bite/s left.");
@@ -144,7 +139,6 @@ namespace cs_store_app_TextGame
             MessageDictionary.Add(MESSAGE_ENUM.DEBUG_REMOVE, "DEBUG: Removing /1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SHOW_HEALTH, "Health: /1\nMagic: /2");
             MessageDictionary.Add(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, "The /1 pokes at your lifeless body.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_IS_DEAD, "But you're dead!");
             
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SELL_ITEM, "You sell the /1 for /2 gold pieces.");
@@ -184,37 +178,38 @@ namespace cs_store_app_TextGame
             // TODO: can anything be sold for 1 gold piece?
             MessageDictionary.Add(MESSAGE_ENUM.NPC_SELL_ITEM, "The /1 sells /an /2 to the shopkeeper.");
 
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.BAD_INPUT, "I don't understand what you've typed.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.WRONG_DIRECTION, "You can't go in that direction.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.GO_WHERE, "Where would you like to go?");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.BAD_ITEM, "I can't find that item.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.HANDS_ARE_FULL, "Your hands are full.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_CARRYING_ITEM, "You aren't carrying that item.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.CONTAINER_CLOSED, "The /1 is closed.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.CONTAINER_ALREADY_OPEN, "The /1 is already open.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.CONTAINER_ALREADY_CLOSED, "The /1 is already closed.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.WHAT, "/1 what?");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.CONTAINER_NOT_CLOSABLE , "The /1 isn't closable.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ITEM_NOT_EQUIPPABLE , "You can't equip that.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ALREADY_EQUIPPED, "You can't equip another item of that type.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_A_SHOP, "You don't see a shop around here.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.BAD_SHOP, "This store won't buy that type of item.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_ENOUGH_GOLD, "You can't afford the /1.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ALREADY_STANDING, "You are already standing.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ALREADY_SITTING, "You are already sitting.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.ALREADY_KNEELING, "You are already kneeling.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.SITTING, "You can't move while sitting.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.KNEELING, "You can't move while kneeling.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NOT_A_WEAPON, "You can't attack with /an /1!");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL, "The /1 greedily eyes /an /2 that is lying on the ground, but its hands are full.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, "The /1 searches the area for something useful.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_A_WEAPON, "For some reason, the /1 tries to attack you with /an /2. It doesn't work very well.");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_NOT_DEAD, "But the /1 isn't dead yet!");
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NPC_ALREADY_DEAD, "The /1 is already dead.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD, "But you're dead!");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_INPUT, "I don't understand what you've typed.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_WRONG_DIRECTION, "You can't go in that direction.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_GO_WHERE, "Where would you like to go?");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_ITEM, "I can't find that item.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_HANDS_ARE_FULL, "Your hands are full.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_CARRYING_ITEM, "You aren't carrying that item.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_CLOSED, "The /1 is closed.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_ALREADY_OPEN, "The /1 is already open.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_ALREADY_CLOSED, "The /1 is already closed.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_WHAT, "/1 what?");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_NOT_CLOSABLE , "The /1 isn't closable.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ITEM_NOT_EQUIPPABLE , "You can't equip that.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED, "You can't equip another item of that type.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_A_SHOP, "You don't see a shop around here.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_SHOP, "This store won't buy that type of item.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_ENOUGH_GOLD, "You can't afford the /1.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_STANDING, "You are already standing.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_SITTING, "You are already sitting.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_KNEELING, "You are already kneeling.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_SITTING, "You can't move while sitting.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_KNEELING, "You can't move while kneeling.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_A_WEAPON, "You can't attack with /an /1!");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, "The /1 greedily eyes /an /2 that is lying on the ground, but its hands are full.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, "The /1 searches the area for something useful.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, "For some reason, the /1 tries to attack you with /an /2. It doesn't work very well.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NOT_DEAD, "But the /1 isn't dead yet!");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_ALREADY_DEAD, "The /1 is already dead.");
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //
-            ErrorMessageDictionary.Add(ERROR_MESSAGE_ENUM.NEED_TO_IMPLEMENT, "You should consider implementing this.");
+            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NEED_TO_IMPLEMENT, "You should consider implementing this.");
             //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
@@ -262,10 +257,6 @@ namespace cs_store_app_TextGame
         public static string GetMessage(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
         {
             return ProcessMessage(MessageDictionary[message], strParameter1, strParameter2, strParameter3) + "\n";
-        }
-        public static string GetErrorMessage(ERROR_MESSAGE_ENUM errorMessage, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
-        {
-            return ProcessMessage(ErrorMessageDictionary[errorMessage], strParameter1, strParameter2, strParameter3) + "\n";
         }
     }
 }

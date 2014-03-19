@@ -122,7 +122,16 @@ namespace cs_store_app_TextGame
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
-        public static Run StringToRun(string s, Color c)
+        public static string IndefiniteArticle(this string s, bool bIncludeSpace = true)
+        {
+            if(s.Length == 0){return "";}
+            return "a" + (s[0].IsVowel() ? "n" : "") + (bIncludeSpace ? " " : "");
+        }
+        public static Run ToRun(this string s)
+        {
+            return new Run { Foreground = new SolidColorBrush(Colors.Gray), Text = s };
+        }
+        public static Run ToRun(this string s, Color c)
         {
             return new Run
                 { Foreground = new SolidColorBrush(c), Text = s };

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
     [DataContract(Name = "Inventory", Namespace = "cs_store_app_TextGame")]
-    public class Inventory
+    public class ItemCollection
     {
         [DataMember]
         public List<Item> Items = new List<Item>();
@@ -21,6 +23,7 @@ namespace cs_store_app_TextGame
                 return _weight; 
             }
         }
+        public int Count { get { return Items.Count; } }
 
         // TODO: maximum weight?
 
@@ -47,7 +50,7 @@ namespace cs_store_app_TextGame
         }
         
         // does NOT remove the item
-        public Item Get(string strKeyword, ITEM_TYPE itemType = ITEM_TYPE.ANY, int nRequestedOccurrence = 0)
+        public Item Find(string strKeyword, ITEM_TYPE itemType = ITEM_TYPE.ANY, int nRequestedOccurrence = 0)
         {
             if (Items.Count == 0) { return null; }
             if (strKeyword == "") { return null; }
@@ -67,9 +70,6 @@ namespace cs_store_app_TextGame
                     }
                 }                
             }
-            //foreach(Item item in Items)
-            //{
-            //}
 
             return null;
         }
@@ -109,70 +109,85 @@ namespace cs_store_app_TextGame
             if (items.Count == 0) { return null; }
             return items[r.Next(items.Count)];
         }
-        public string DisplayString(bool bAppendPeriod = true)
+        public string BaseDisplayString
         {
-            string strReturn = "";
-
-            if (Items.Count > 2)
+            get
             {
-                for (int i = Items.Count() - 1; i >= 0; i--)
+                if (Items.Count == 0) { return ""; }
+
+                string strReturn = "";
+                if (Items.Count > 2)
+                {
+                    for (int i = Items.Count() - 1; i >= 0; i--)
+                    {
+                        strReturn += "a";
+                        if ((Items[i].Name[0]).IsVowel())
+                        {
+                            strReturn += "n";
+                        }
+                        strReturn += " ";
+                        strReturn += Items[i].Name;
+                        if (i == 1)
+                        {
+                            strReturn += ", and ";
+                        }
+                        else if (i > 0)
+                        {
+                            strReturn += ", ";
+                        }
+                    }
+                }
+                else if (Items.Count == 2)
                 {
                     strReturn += "a";
-                    if ((Items[i].Name[0]).IsVowel())
+                    if ((Items[1].Name[0]).IsVowel())
                     {
                         strReturn += "n";
                     }
                     strReturn += " ";
-                    strReturn += Items[i].Name;
-                    if (i == 1)
+                    strReturn += Items[1].Name;
+                    strReturn += " and a";
+                    if ((Items[0].Name[0]).IsVowel())
                     {
-                        strReturn += ", and ";
+                        strReturn += "n";
                     }
-                    else if (i > 0)
+                    strReturn += " ";
+                    strReturn += Items[0].Name;
+                }
+                else if (Items.Count == 1)
+                {
+                    strReturn += "a";
+                    if ((Items[0].Name[0]).IsVowel())
                     {
-                        strReturn += ", ";
+                        strReturn += "n";
                     }
+                    strReturn += " ";
+                    strReturn += Items[0].Name;
                 }
-                //for (int i = 0; i < Items.Count; i++)
-                //{
-                //}
-            }
-            else if (Items.Count == 2)
-            {
-                strReturn += "a";
-                if ((Items[1].Name[0]).IsVowel())
-                {
-                    strReturn += "n";
-                }
-                strReturn += " ";
-                strReturn += Items[1].Name;
-                strReturn += " and a";
-                if ((Items[0].Name[0]).IsVowel())
-                {
-                    strReturn += "n";
-                }
-                strReturn += " ";
-                strReturn += Items[0].Name;
-            }
-            else if (Items.Count == 1)
-            {
-                strReturn += "a";
-                if ((Items[0].Name[0]).IsVowel())
-                {
-                    strReturn += "n";
-                }
-                strReturn += " ";
-                strReturn += Items[0].Name;
-            }
 
-            if (bAppendPeriod)
-            {
-                strReturn += ".";
+                return strReturn;
             }
-
-            return strReturn;
         }
+        public string RoomDisplayString
+        {
+            get
+            {
+                if (Items.Count == 0) { return ""; }
+                return "You also see " + BaseDisplayString + ".\n";
+            }
+        }
+        public Paragraph RoomDisplayParagraph
+        {
+            get
+            {
+                if (Items.Count == 0) { return null; }
 
+                // TODO: color individual items
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(RoomDisplayString.ToRun());
+                return p;
+            }
+        }
         public void RemoveItem(Item item)
         {
             Items.Remove(item);

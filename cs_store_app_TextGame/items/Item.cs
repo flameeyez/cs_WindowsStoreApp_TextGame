@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.UI;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
@@ -70,6 +72,20 @@ namespace cs_store_app_TextGame
             set
             {
                 _name = value;
+            }
+        }
+        public Run NameAsRun
+        {
+            get
+            {
+                return Name.ToRun(Colors.LightGreen);
+            }
+        }
+        public string NameIndefiniteArticle
+        {
+            get
+            {
+                return _name.IndefiniteArticle();
             }
         }
         [DataMember]

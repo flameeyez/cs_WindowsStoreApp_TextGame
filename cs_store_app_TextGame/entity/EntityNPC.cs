@@ -370,7 +370,7 @@ namespace cs_store_app_TextGame
         {
             Handler handler = Handler.HANDLED;
 
-            ExitWithDirection exit = CurrentRoom.GetRandomExit();
+            ExitWithDirection exit = CurrentRoom.Exits.RandomWithDirection();
 
             // npc is leaving player's room
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
@@ -396,7 +396,7 @@ namespace cs_store_app_TextGame
             if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.UNHANDLED; }
 
             Handler handler = Handler.UNHANDLED;
-            Connection connection = CurrentRoom.GetRandomConnection();
+            Connection connection = CurrentRoom.Connections.Random();
             if (connection == null) { return DoMoveBasic(input); }
 
             // TODO: connections need a special display string for NPC exit (and arrival?)
@@ -437,12 +437,12 @@ namespace cs_store_app_TextGame
             Item item = CurrentRoom.Items.GetRandomItem();
             if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NO_ITEMS_IN_ROOM, Name));
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, Name));
             }
 
             if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_HANDS_ARE_FULL, Name, item.Name));
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, Name, item.Name));
             }
 
             // item picked up; remove from room
@@ -530,7 +530,7 @@ namespace cs_store_app_TextGame
 
             if(weapon == null && !HandsAreEmpty)
             {
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetErrorMessage(ERROR_MESSAGE_ENUM.NPC_NOT_A_WEAPON, Name, RightHand.Name)); 
+                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, Name, RightHand.Name)); 
             }
 
             string strWeapon = weapon == null ? "fist" : weapon.Name;

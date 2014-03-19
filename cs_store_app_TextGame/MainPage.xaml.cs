@@ -204,7 +204,7 @@ namespace cs_store_app_TextGame
         public void ProcessInput(TranslatedInput input)
         {
             if (input.Words.Length == 0) { return; }
-            if (input.Action == ACTION_ENUM.NONE) { AppendText(Handler.BAD_INPUT.StringToAppend); }
+            if (input.Action == ACTION_ENUM.NONE) { AppendText(Handler.ERROR_BAD_INPUT.StringToAppend); }
             Handler handler = Game.Player.ProcessInput(input);
             // TODO: HANDLED vs UNHANDLED?
             AppendText(handler.StringToAppend);
@@ -271,19 +271,19 @@ namespace cs_store_app_TextGame
             // DEBUG ITEMS
             for (int i = 0; i < nItemPasses; i++)
             {
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsDrink[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsFood[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsJunk[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsWeapon[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsContainer[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsContainer[1].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorChest[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorFeet[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorHead[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsAccessoryAmulet[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsAccessoryRing[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsAccessoryRing[1].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorShield[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsDrink[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsFood[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsJunk[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsWeapon[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainer[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainer[1].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorChest[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorFeet[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorHead[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryAmulet[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryRing[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryRing[1].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorShield[0].DeepClone());
             }
 
             // DEBUG NPCS
@@ -294,7 +294,7 @@ namespace cs_store_app_TextGame
                 int room = r.Next(9);
                 EntityNPC npc = EntityNPCTemplates.NPCs[r.Next(EntityNPCTemplates.NPCs.Count)].Clone();
                 npc.SetCurrentRoom(region, subregion, room);
-                World.Regions[region].Subregions[subregion].Rooms[room].AddNPC(npc);
+                World.Regions[region].Subregions[subregion].Rooms[room].NPCs.Add(npc);
             }
         }
         #endregion

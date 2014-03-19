@@ -19,7 +19,7 @@ namespace cs_store_app_TextGame
         public int MaximumWeight { get; set; }
         public override ITEM_TYPE Type { get { return ITEM_TYPE.CONTAINER; } }
         [DataMember]
-        public Inventory Items = new Inventory();
+        public ItemCollection Items = new ItemCollection();
         public ItemContainer(XElement itemNode) : base(itemNode)
         {
             Closed = bool.Parse(itemNode.Element("closed").Value);
@@ -31,13 +31,13 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                if(Items.Items.Count == 0)
+                if(Items.Count == 0)
                 {
                     return "The " + Name + " is empty.";
                 }
 
                 string strItemsString = "In the " + Name + ", you see ";
-                strItemsString += Items.DisplayString();
+                strItemsString += Items.BaseDisplayString + ".\n";
                 return strItemsString;
             }
         }

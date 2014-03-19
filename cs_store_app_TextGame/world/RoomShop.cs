@@ -4,15 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
     public class RoomShop : Room
     {
+        #region Attributes
         public List<Item> SoldItems = new List<Item>();
         public ITEM_TYPE ShopItemTypes { get; set; }
         public double BuysAt { get; set; }
         public double SellsAt { get; set; }
+        #endregion
+
+        #region Constructor
         public RoomShop(XElement roomNode) : base(roomNode) 
         {
             var shopNode = roomNode.Element("shop");
@@ -79,7 +84,9 @@ namespace cs_store_app_TextGame
                 ShopItemTypes |= Item.StringToEnum[itemTypeNode.Value];
             }
         }
+        #endregion
 
+        #region Display
         public string SoldItemsString
         {
             get
@@ -96,19 +103,29 @@ namespace cs_store_app_TextGame
                 return strItemsString;
             }
         }
-
-        public Handler PriceItem(Item item, string strKeyword)
+        public Paragraph SoldItemsParagraph
         {
-            if (item == null) { return Handler.BAD_ITEM; }
-            if (!item.IsKeyword(strKeyword)) { return Handler.BAD_ITEM; }
-            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.BAD_SHOP; }
+            get
+            {
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(SoldItemsString.ToRun());
+                return p;
+            }
+        }
+        #endregion
+
+        #region Handlers
+        public Handler DoPriceItem(Item item, string strKeyword)
+        {
+            if (item == null) { return Handler.ERROR_BAD_ITEM; }
+            if (!item.IsKeyword(strKeyword)) { return Handler.ERROR_BAD_ITEM; }
+            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.ERROR_BAD_SHOP; }
 
             // shop will buy this item type
             int nPrice = (int)(item.Value * BuysAt);
 
             return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.Name, nPrice.ToString()));
         }
-
         public Handler DoBuyFromEntity(Entity entity, string strKeyword)
         {
             bool bValidItem = false;
@@ -151,16 +168,17 @@ namespace cs_store_app_TextGame
                 if (bValidItem)
                 {
                     // item found, but shop wouldn't buy
-                    return Handler.BAD_SHOP;
+                    return Handler.ERROR_BAD_SHOP;
                 }
                 else
                 {
                     // item not found
-                    return Handler.BAD_ITEM;
+                    return Handler.ERROR_BAD_ITEM;
                 }
             }
 
             return handler;
         }
+        #endregion
     }
 }

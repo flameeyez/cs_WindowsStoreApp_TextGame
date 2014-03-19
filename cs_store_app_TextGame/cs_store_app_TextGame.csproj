@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="Debug.cs" />
     <Compile Include="entity\EntityAttributes.cs" />
+    <Compile Include="entity\EntityNPCCollection.cs" />
     <Compile Include="entity\EntityNPC.cs" />
     <Compile Include="entity\EntityNPCTemplates.cs" />
     <Compile Include="entity\EntityPlayer.cs" />
@@ -128,8 +129,9 @@
     <Compile Include="input\TranslatedInput.cs" />
     <Compile Include="entity\EntityNPCBehavior.cs" />
     <Compile Include="world\Connection.cs" />
+    <Compile Include="world\ConnectionCollection.cs" />
     <Compile Include="world\Exit.cs" />
-    <Compile Include="items\Inventory.cs" />
+    <Compile Include="items\ItemCollection.cs" />
     <Compile Include="items\Item.cs" />
     <Compile Include="items\ItemContainer.cs" />
     <Compile Include="items\ItemJunk.cs" />
@@ -141,6 +143,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="world\ExitCollection.cs" />
     <Compile Include="world\Region.cs" />
     <Compile Include="world\Room.cs" />
     <Compile Include="static\Statics.cs" />

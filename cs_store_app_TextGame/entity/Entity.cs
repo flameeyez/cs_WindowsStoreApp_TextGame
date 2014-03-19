@@ -242,32 +242,32 @@ namespace cs_store_app_TextGame
         public Item GetItemFromEquipment(string strKeyword, bool bRemoveFromHand)
         {
             Item item = null;
-            if(ArmorHead.IsKeyword(strKeyword))
+            if(ArmorHead != null && ArmorHead.IsKeyword(strKeyword))
             {
                 item = ArmorHead;
                 if (bRemoveFromHand) { ArmorHead = null; }
             }
-            else if(ArmorChest.IsKeyword(strKeyword))
+            else if(ArmorChest != null && ArmorChest.IsKeyword(strKeyword))
             {
                 item = ArmorChest;
                 if (bRemoveFromHand) { ArmorChest = null; }
             }
-            else if(ArmorFeet.IsKeyword(strKeyword))
+            else if(ArmorFeet != null && ArmorFeet.IsKeyword(strKeyword))
             {
                 item = ArmorFeet;
                 if (bRemoveFromHand) { ArmorFeet = null; }
             }
-            else if(Ring1.IsKeyword(strKeyword))
+            else if(Ring1 != null && Ring1.IsKeyword(strKeyword))
             {
                 item = Ring1;
                 if (bRemoveFromHand) { Ring1 = null; }
             }
-            else if(Ring2.IsKeyword(strKeyword))
+            else if(Ring2 != null && Ring2.IsKeyword(strKeyword))
             {
                 item = Ring2;
                 if (bRemoveFromHand) { Ring2 = null; }
             }
-            else if(Amulet.IsKeyword(strKeyword))
+            else if(Amulet != null && Amulet.IsKeyword(strKeyword))
             {
                 item = Amulet;
                 if (bRemoveFromHand) { Amulet = null; }
@@ -391,47 +391,47 @@ namespace cs_store_app_TextGame
             // add inventory
             if (ArmorHead != null) 
             {
-                CurrentRoom.AddItem(ArmorHead);
+                CurrentRoom.Items.Add(ArmorHead);
                 ArmorHead = null;
             }
             if(ArmorChest != null)
             {
-                CurrentRoom.AddItem(ArmorChest);
+                CurrentRoom.Items.Add(ArmorChest);
                 ArmorChest = null;
             }
             if(ArmorFeet!=null)
             {
-                CurrentRoom.AddItem(ArmorFeet);
+                CurrentRoom.Items.Add(ArmorFeet);
                 ArmorFeet = null;
             }
             if (RightHand != null)
             {
-                CurrentRoom.AddItem(RightHand);
+                CurrentRoom.Items.Add(RightHand);
                 RightHand = null;
             }
             if (LeftHand != null)
             {
-                CurrentRoom.AddItem(LeftHand);
+                CurrentRoom.Items.Add(LeftHand);
                 LeftHand = null;
             }
             if (Backpack != null)
             {
-                CurrentRoom.AddItem(Backpack);
+                CurrentRoom.Items.Add(Backpack);
                 Backpack = null;
             }
             if (Amulet != null)
             {
-                CurrentRoom.AddItem(Amulet);
+                CurrentRoom.Items.Add(Amulet);
                 Amulet = null;
             }
             if (Ring1 != null)
             {
-                CurrentRoom.AddItem(Ring1);
+                CurrentRoom.Items.Add(Ring1);
                 Ring1 = null;
             }
             if (Ring2 != null)
             {
-                CurrentRoom.AddItem(Ring2);
+                CurrentRoom.Items.Add(Ring2);
                 Ring2 = null;
             }
         }
