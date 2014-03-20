@@ -116,23 +116,28 @@ namespace cs_store_app_TextGame
         {
             if (str.Length > 0)
             {
-
                 Paragraph p = new Paragraph();
                 Run r = new Run();
                 r.Text = str;
+                
                 p.Inlines.Add(r);
-                this.txtOutput.Blocks.Add(p);
+                Statics.RunningInlineCount++;
 
-                CheckParagraphCount();
-                txtDebugBlockCount.Text = txtOutput.Blocks.Count.ToString();
-                //if (bScroll) { ScrollToBottom(); }
+                this.txtOutput.Blocks.Add(p);
+                //CheckParagraphCount();
             }
         }
         private void AppendParagraph(Paragraph p, bool bScroll = true)
         {
+            if (p == null) { return; }
+
+            foreach (Inline i in p.Inlines) 
+            { 
+                Statics.RunningInlineCount++; 
+            }
+
             this.txtOutput.Blocks.Add(p);
-            CheckParagraphCount();
-            txtDebugBlockCount.Text = txtOutput.Blocks.Count.ToString();
+            //CheckParagraphCount();
         }
         private void AppendDebugText(string str)
         {
@@ -171,18 +176,18 @@ namespace cs_store_app_TextGame
         private void CheckParagraphCount()
         {
             // TODO: modify to work with total text length
-            if (txtOutput.Blocks.Count > 150)
+            if (Statics.RunningInlineCount > 200)
             {
                 AppendDebugText("Cleaning up!");
-                while (txtOutput.Blocks.Count > 100)
+                while (Statics.RunningInlineCount > 200)
                 {
+                    Paragraph p = txtOutput.Blocks[0] as Paragraph;
+                    Statics.RunningInlineCount -= p.Inlines.Count;
                     txtOutput.Blocks.RemoveAt(0);
                 }
-
-                //ScrollToBottom();
             }
 
-            //txtParagraphCount.Text = txtOutput.Blocks.Count.ToString();
+            txtDebugBlockCount.Text = Statics.RunningInlineCount.ToString();
         }
         private void ScrollToBottom()
         {
@@ -198,7 +203,8 @@ namespace cs_store_app_TextGame
             PreviousInput.Add(input);
             nPreviousInputIndex = PreviousInput.Count;
 
-            AppendText("> " + input + "\n", false); 
+            AppendText("> " + input + "\n", false);
+
             ProcessInput(new TranslatedInput(input));
         }
         public void ProcessInput(TranslatedInput input)
@@ -207,7 +213,14 @@ namespace cs_store_app_TextGame
             if (input.Action == ACTION_ENUM.NONE) { AppendText(Handler.ERROR_BAD_INPUT.StringToAppend); }
             Handler handler = Game.Player.ProcessInput(input);
             // TODO: HANDLED vs UNHANDLED?
-            AppendText(handler.StringToAppend);
+            if (handler.ParagraphToAppend != null)
+            {
+                AppendParagraph(handler.ParagraphToAppend);
+            }
+            else
+            {
+                AppendText(handler.StringToAppend);
+            }
         }
         #endregion
         #region Update
@@ -228,17 +241,36 @@ namespace cs_store_app_TextGame
                     string input = InputQueue.Dequeue();
                     HandleInput(input);
                 }
+            });
 
+            List<Handler> handlers = null;
+
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
                 // update world
                 updateWorldStart = DateTime.Now;
-                List<Handler> handlers = World.Update();
+                handlers = World.Update();
                 updateWorldEnd = DateTime.Now;
                 updateWorldDelta = updateWorldEnd - updateWorldStart;
+            });
 
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
                 foreach (Handler handler in handlers)
                 {
                     AppendText(handler.StringToAppend);
+                    AppendParagraph(handler.ParagraphToAppend);
                 }
+            });
+
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                ScrollToBottom();
+            });
+
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                CheckParagraphCount();
             });
 
             DateTime updateEnd = DateTime.Now;
@@ -256,8 +288,6 @@ namespace cs_store_app_TextGame
                     AppendDebugText("World: " + updateWorldDelta.TotalMilliseconds.ToString());
                 }
                 #endregion
-
-                ScrollToBottom();
             });
         }
         #endregion
@@ -265,11 +295,9 @@ namespace cs_store_app_TextGame
         public void AddDebug()
         {
             Random r = new Random(DateTime.Now.Millisecond);
-            int nItemPasses = 1;
-            int nNPCCount = 5;
 
             // DEBUG ITEMS
-            for (int i = 0; i < nItemPasses; i++)
+            for (int i = 0; i < Statics.DebugItemPasses; i++)
             {
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsDrink[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsFood[0].DeepClone());
@@ -287,7 +315,7 @@ namespace cs_store_app_TextGame
             }
 
             // DEBUG NPCS
-            for (int i = 0; i < nNPCCount; i++)
+            for (int i = 0; i < Statics.DebugNPCCount; i++)
             {
                 int region = 0;
                 int subregion = 0;

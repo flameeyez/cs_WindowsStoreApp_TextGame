@@ -182,9 +182,69 @@ namespace cs_store_app_TextGame
             {
                 if (Items.Count == 0) { return null; }
 
-                // TODO: color individual items
                 Paragraph p = new Paragraph();
-                p.Inlines.Add(RoomDisplayString.ToRun());
+                string str = "You also see ";
+
+                if (Items.Count > 2)
+                {
+                    for (int i = Items.Count() - 1; i >= 0; i--)
+                    {
+                        str += "a";
+                        if ((Items[i].Name[0]).IsVowel())
+                        {
+                            str += "n";
+                        }
+                        str += " ";
+                        
+                        p.Inlines.Add(str.ToRun());
+                        p.Inlines.Add(Items[i].Name.ToRun(Colors.LightGreen));
+
+                        if (i == 1)
+                        {
+                            str = ", and ";
+                        }
+                        else if (i > 0)
+                        {
+                            str = ", ";
+                        }
+                    }
+                }
+                else if (Items.Count == 2)
+                {
+                    str += "a";
+                    if ((Items[1].Name[0]).IsVowel())
+                    {
+                        str += "n";
+                    }
+                    str += " ";
+
+                    p.Inlines.Add(str.ToRun());
+                    p.Inlines.Add(Items[1].Name.ToRun(Colors.LightGreen));
+                    
+                    str = " and a";
+                    if ((Items[0].Name[0]).IsVowel())
+                    {
+                        str += "n";
+                    }
+                    str += " ";
+                    
+                    p.Inlines.Add(str.ToRun());
+                    p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                }
+                else if (Items.Count == 1)
+                {
+                    str += "a";
+                    if ((Items[0].Name[0]).IsVowel())
+                    {
+                        str += "n";
+                    }
+                    str += " ";
+
+                    p.Inlines.Add(str.ToRun());
+                    p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                }
+
+                p.Inlines.Add((".\n").ToRun());
                 return p;
             }
         }

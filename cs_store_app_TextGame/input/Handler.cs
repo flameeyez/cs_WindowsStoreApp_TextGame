@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
@@ -16,16 +17,18 @@ namespace cs_store_app_TextGame
     {
         public RETURN_CODE ReturnCode { get; set; }
         public string StringToAppend { get; set; }
+        public Paragraph ParagraphToAppend { get; set; }
 
-        public Handler(RETURN_CODE returnCode, string stringToAppend = "")
+        public Handler(RETURN_CODE returnCode, string stringToAppend = "", Paragraph paragraphToAppend = null)
         {
             ReturnCode = returnCode;
             StringToAppend = stringToAppend;
+            ParagraphToAppend = paragraphToAppend;
         }
 
         public static Handler HANDLED = new Handler(RETURN_CODE.HANDLED);
         public static Handler UNHANDLED = new Handler(RETURN_CODE.UNHANDLED);
-        public static Handler ERROR_WRONG_DIRECTION = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_WRONG_DIRECTION));
+        public static Handler ERROR_WRONG_DIRECTION = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_WRONG_DIRECTION), Messages.GetMessageAsParagraph(MESSAGE_ENUM.ERROR_WRONG_DIRECTION));
         public static Handler ERROR_BAD_INPUT = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_BAD_INPUT));
         public static Handler ERROR_BAD_ITEM = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_BAD_ITEM));
         public static Handler ERROR_NOT_CARRYING_ITEM = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_NOT_CARRYING_ITEM));

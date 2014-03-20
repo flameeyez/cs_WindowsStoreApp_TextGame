@@ -19,15 +19,18 @@
             <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
+        
         <Border BorderThickness="5" BorderBrush="White" Margin="10,10,10,10" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
             <ScrollViewer x:Name="txtDebugOutputScroll">
                 <RichTextBlock Name="txtDebug" Margin="10,10,10,10" FontSize="24"/>
             </ScrollViewer>
         </Border>
+        
         <Border BorderThickness="5" BorderBrush="White" Margin="10,10,10,10" Grid.Row="0" Grid.Column="1">
             <ScrollViewer x:Name="txtOutputScroll">
-                <RichTextBlock Name="txtOutput" Margin="10,10,10,10" FontSize="24"/>
+                <RichTextBlock Name="txtOutput" Margin="10,10,10,10" FontSize="24" DataContext="">
+                    <Paragraph></Paragraph>
+                </RichTextBlock>
             </ScrollViewer>
         </Border>
 

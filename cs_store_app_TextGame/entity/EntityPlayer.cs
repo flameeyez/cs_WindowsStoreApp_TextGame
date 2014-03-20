@@ -21,18 +21,27 @@ namespace cs_store_app_TextGame
         
         #region Display Strings
         
-        public string CurrentRegionDisplayString
+        public string CurrentRegionString
         {
             get
             {
                 return "[" + CurrentRegion.Name + " - " + CurrentSubregion.Name + "]\n";
             }
         }
+        public Paragraph CurrentRegionParagraph
+        {
+            get
+            {
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(("[" + CurrentRegion.Name + " - " + CurrentSubregion.Name + "]\n").ToRun());
+                return p;                
+            }
+        }
         public string CurrentRoomDisplayString
         {
             get
             {
-                return CurrentRegionDisplayString + CurrentRoom.FullDisplayString;
+                return CurrentRegionString + CurrentRoom.FullDisplayString;
             }
         }
         public override string HandsString
@@ -129,15 +138,8 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                Paragraph p = new Paragraph();
-
-                p.Inlines.Add(CurrentRegionDisplayString.ToRun(Colors.Gray));
-
-                foreach (Inline i in CurrentRoomDisplayParagraph.Inlines)
-                {
-                    p.Inlines.Add(i);
-                }
-
+                Paragraph p = CurrentRegionParagraph;
+                p.Merge(CurrentRoom.FullDisplayParagraph);
                 return p;
             }
         }
@@ -210,10 +212,10 @@ namespace cs_store_app_TextGame
                 Paragraph p = new Paragraph();
                 List<Run> inventory = new List<Run>();
 
-                if (Backpack != null) 
-                { 
+                if (Backpack != null)
+                {
                     inventory.Add(Backpack.NameIndefiniteArticle.ToRun(Colors.Gray));
-                    inventory.Add(Backpack.NameAsRun); 
+                    inventory.Add(Backpack.NameAsRun);
                 }
                 if (ArmorChest != null) 
                 {
@@ -246,34 +248,34 @@ namespace cs_store_app_TextGame
                     inventory.Add(Amulet.NameAsRun);
                 }
 
-                p.Inlines.Add(("You are wearing ").ToRun(Colors.Gray));
+                p.Inlines.Add(("You are wearing ").ToRun());
 
                 switch (inventory.Count)
                 {
                     case 0:
-                        p.Inlines.Add(("You aren't wearing anything!\n").ToRun(Colors.Gray));
+                        p.Inlines.Add(("You aren't wearing anything!\n").ToRun());
                         return p;
                     case 1:
                         p.Inlines.Add(inventory[0]);
                         break;
                     case 2:
                         p.Inlines.Add(inventory[0]);
-                        p.Inlines.Add((" and ").ToRun(Colors.Gray));
+                        p.Inlines.Add((" and ").ToRun());
                         p.Inlines.Add(inventory[1]);
                         break;
                     default:
                         for (int i = 0; i < inventory.Count - 1; i++)
                         {
                             p.Inlines.Add(inventory[i]);
-                            p.Inlines.Add((", ").ToRun(Colors.Gray));
+                            p.Inlines.Add((", ").ToRun());
                         }
 
-                        p.Inlines.Add(("and ").ToRun(Colors.Gray));
+                        p.Inlines.Add(("and ").ToRun());
                         p.Inlines.Add(inventory[inventory.Count - 1]);
                         break;
                 }
 
-                p.Inlines.Add((".\n").ToRun(Colors.Gray));
+                p.Inlines.Add((".\n").ToRun());
                 return p;
             }
         }
@@ -295,10 +297,10 @@ namespace cs_store_app_TextGame
             else { nDirection = int.Parse(input.Words[0]); }
 
             Exit exit = CurrentRoom.Exits.Get(nDirection);
-            if (exit.Region == -1) { return Handler.ERROR_WRONG_DIRECTION; }
+            if (exit.Region == -1) { return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_WRONG_DIRECTION), Messages.GetMessageAsParagraph(MESSAGE_ENUM.ERROR_WRONG_DIRECTION)); }
 
             SetCurrentRoom(exit.Region, exit.Subregion, exit.Room);
-            return new Handler(RETURN_CODE.HANDLED, CurrentRoomDisplayString);
+            return new Handler(RETURN_CODE.HANDLED, CurrentRoomDisplayString, CurrentRoomDisplayParagraph);
         }
         public override Handler DoMoveConnection(TranslatedInput input)
         {

@@ -13,7 +13,19 @@ namespace cs_store_app_TextGame
     {
         #region Attributes
         public int ID { get; set; }
-        public string Description { get; set; }
+
+        private string _description { get; set; }
+        public string Description
+        {
+            get
+            {
+                return _description + "\n";
+            }
+            set
+            {
+                _description = value;
+            }
+        }
 
         public ExitCollection Exits = new ExitCollection();
         public ItemCollection Items = new ItemCollection();
@@ -147,9 +159,10 @@ namespace cs_store_app_TextGame
                 Paragraph p = new Paragraph();
 
                 p.Inlines.Add(Description.ToRun(Colors.Gray));
-                foreach (Inline i in Items.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
-                foreach (Inline i in NPCs.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
-                foreach (Inline i in Exits.RoomDisplayParagraph.Inlines) { p.Inlines.Add(i); }
+
+                p.Merge(Items.RoomDisplayParagraph);
+                p.Merge(NPCs.RoomDisplayParagraph);
+                p.Merge(Exits.RoomDisplayParagraph);
                 
                 return p;
             }

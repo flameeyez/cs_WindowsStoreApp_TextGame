@@ -128,6 +128,7 @@
     <Compile Include="input\Messages.cs" />
     <Compile Include="input\TranslatedInput.cs" />
     <Compile Include="entity\EntityNPCBehavior.cs" />
+    <Compile Include="RichTextManager.cs" />
     <Compile Include="world\Connection.cs" />
     <Compile Include="world\ConnectionCollection.cs" />
     <Compile Include="world\Exit.cs" />

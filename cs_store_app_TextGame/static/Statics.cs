@@ -13,6 +13,11 @@ namespace cs_store_app_TextGame
 {
     public static class Statics
     {
+        public static int DebugNPCCount = 200;
+        public static int DebugItemPasses = 10;
+
+        public static int RunningInlineCount = 0;
+
         public static Random r = new Random(DateTime.Now.Millisecond);
         public static int ItemCount = 0;
         public static int EntityCount = 0;
@@ -130,6 +135,28 @@ namespace cs_store_app_TextGame
         public static Run ToRun(this string s)
         {
             return new Run { Foreground = new SolidColorBrush(Colors.Gray), Text = s };
+        }
+        public static Paragraph ToParagraph(this string s)
+        {
+            Paragraph p = new Paragraph();
+            p.Inlines.Add(s.ToRun());
+            return p;
+        }
+        public static void Merge(this Paragraph p1, Paragraph p2)
+        {
+            if (p2 == null) { return; }
+
+            while (p2.Inlines.Count > 0)
+            {
+                Inline i = p2.Inlines[0];
+                p2.Inlines.Remove(i);
+                p1.Inlines.Add(i);
+            }
+        }
+        public static void Merge(this Run r1, Run r2)
+        {
+            if (r2 == null) { return; }
+            r1.Text += " " + r2.Text;
         }
         public static Run ToRun(this string s, Color c)
         {

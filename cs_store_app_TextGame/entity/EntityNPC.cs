@@ -528,7 +528,7 @@ namespace cs_store_app_TextGame
             if (RightHand != null && RightHand.Type == ITEM_TYPE.WEAPON) { weapon = RightHand as ItemWeapon; }
             else if (LeftHand != null && LeftHand.Type == ITEM_TYPE.WEAPON) { weapon = LeftHand as ItemWeapon; }
 
-            if(weapon == null && !HandsAreEmpty)
+            if(weapon == null && RightHand != null)
             {
                 return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, Name, RightHand.Name)); 
             }

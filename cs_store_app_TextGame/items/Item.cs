@@ -88,6 +88,18 @@ namespace cs_store_app_TextGame
                 return _name.IndefiniteArticle();
             }
         }
+        public Paragraph NameWithIndefiniteArticle
+        {
+            get
+            {
+                Paragraph p = new Paragraph();
+
+                p.Inlines.Add((NameIndefiniteArticle + " ").ToRun());
+                p.Inlines.Add(NameAsRun);
+
+                return p;
+            }
+        }
         [DataMember]
         private string _description;
         public string Description 

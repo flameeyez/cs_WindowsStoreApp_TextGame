@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
@@ -214,6 +215,54 @@ namespace cs_store_app_TextGame
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
+        private static Paragraph ProcessMessageAsParagraph(string strMessage, Run runParameter1 = null, Run runParameter2 = null, Run runParameter3 = null)
+        {
+            Paragraph p = new Paragraph();
+
+            // TODO: any number of parameters?
+            //int n = 1;
+            //string strN = "/" + n.ToString();
+            //while(strMessage.IndexOf(strN) != -1)
+            //{
+            //    // found this one
+            //}
+
+            int firstParameterIndex = strMessage.IndexOf("/1");
+            int secondParameterIndex = strMessage.IndexOf("/2");
+            int thirdParameterIndex = strMessage.IndexOf("/3");
+
+            if (firstParameterIndex == -1) { return strMessage.ToParagraph(); }
+
+            // .Trim for simple workaround to leading "/1",
+            // as opposed to (firstParameterIndex - 1), to otherwise remove the leading space
+            p.Inlines.Add(strMessage.Substring(0, firstParameterIndex).Trim().ToRun());
+            p.Inlines.Add(runParameter1);
+
+            if (secondParameterIndex != -1)
+            {
+                p.Inlines.Add(strMessage.Substring(firstParameterIndex + 3, secondParameterIndex - firstParameterIndex).ToRun());
+                p.Inlines.Add(runParameter2);
+            }
+            else
+            {
+                p.Inlines.Add(strMessage.Substring(firstParameterIndex + 3).ToRun());
+                return p;
+            }
+
+            if (thirdParameterIndex != -1)
+            {
+                p.Inlines.Add(strMessage.Substring(secondParameterIndex + 3, thirdParameterIndex - secondParameterIndex).ToRun());
+                p.Inlines.Add(runParameter3);
+                p.Inlines.Add(strMessage.Substring(thirdParameterIndex + 3).ToRun());
+            }
+            else
+            {
+                p.Inlines.Add(strMessage.Substring(secondParameterIndex + 3).ToRun());
+            }
+
+            return p;
+        }
+
         private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)
         {
             string strReturn = strMessage;
@@ -257,6 +306,11 @@ namespace cs_store_app_TextGame
         public static string GetMessage(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
         {
             return ProcessMessage(MessageDictionary[message], strParameter1, strParameter2, strParameter3) + "\n";
+        }
+
+        public static Paragraph GetMessageAsParagraph(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
+        {
+            return GetMessage(message, strParameter1, strParameter2, strParameter3).ToParagraph();
         }
     }
 }
