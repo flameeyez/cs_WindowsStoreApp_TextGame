@@ -60,7 +60,7 @@ namespace cs_store_app_TextGame
             // initialize player
             Game.Initialize();
             TranslatedInput input = null;
-            AppendText(Game.Player.DoLook(input).StringToAppend);
+            AppendParagraph(Game.Player.DoLook(input).ParagraphToAppend);
 
             txtInput.Focus(FocusState.Programmatic);
         }
@@ -203,14 +203,17 @@ namespace cs_store_app_TextGame
             PreviousInput.Add(input);
             nPreviousInputIndex = PreviousInput.Count;
 
-            AppendText("> " + input + "\n", false);
+            AppendParagraph(("> " + input + "\n").ToParagraph(), false);
 
             ProcessInput(new TranslatedInput(input));
         }
         public void ProcessInput(TranslatedInput input)
         {
             if (input.Words.Length == 0) { return; }
-            if (input.Action == ACTION_ENUM.NONE) { AppendText(Handler.ERROR_BAD_INPUT.StringToAppend); }
+            if (input.Action == ACTION_ENUM.NONE) 
+            {
+                AppendParagraph(Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT).ParagraphToAppend); 
+            }
             Handler handler = Game.Player.ProcessInput(input);
             // TODO: HANDLED vs UNHANDLED?
             if (handler.ParagraphToAppend != null)
@@ -258,8 +261,14 @@ namespace cs_store_app_TextGame
             {
                 foreach (Handler handler in handlers)
                 {
-                    AppendText(handler.StringToAppend);
-                    AppendParagraph(handler.ParagraphToAppend);
+                    if (handler.ParagraphToAppend != null)
+                    {
+                        AppendParagraph(handler.ParagraphToAppend);
+                    }
+                    else
+                    {
+                        AppendText(handler.StringToAppend);
+                    }
                 }
             });
 

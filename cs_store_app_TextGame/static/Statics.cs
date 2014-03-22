@@ -14,7 +14,7 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         public static int DebugNPCCount = 200;
-        public static int DebugItemPasses = 10;
+        public static int DebugItemPasses = 5;
 
         public static int RunningInlineCount = 0;
 
@@ -127,10 +127,10 @@ namespace cs_store_app_TextGame
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
-        public static string IndefiniteArticle(this string s, bool bIncludeSpace = true)
+        public static string IndefiniteArticle(this string s, bool bCapitalize = false)
         {
             if(s.Length == 0){return "";}
-            return "a" + (s[0].IsVowel() ? "n" : "") + (bIncludeSpace ? " " : "");
+            return (bCapitalize ? "A" : "a") + (s[0].IsVowel() ? "n" : "") + " ";
         }
         public static Run ToRun(this string s)
         {
@@ -141,6 +141,19 @@ namespace cs_store_app_TextGame
             Paragraph p = new Paragraph();
             p.Inlines.Add(s.ToRun());
             return p;
+        }
+        public static Paragraph Clone(this Paragraph p)
+        {
+            Paragraph clone = new Paragraph();
+            foreach(Inline i in p.Inlines)
+            {
+                Run r = i as Run;
+                Run cloneRun = new Run();
+                cloneRun.Text = r.Text;
+                cloneRun.Foreground = r.Foreground;
+                clone.Inlines.Add(cloneRun);
+            }
+            return clone;
         }
         public static void Merge(this Paragraph p1, Paragraph p2)
         {

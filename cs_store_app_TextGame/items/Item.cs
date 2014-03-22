@@ -81,6 +81,15 @@ namespace cs_store_app_TextGame
                 return Name.ToRun(Colors.LightGreen);
             }
         }
+        public Paragraph NameAsParagraph
+        {
+            get
+            {
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(NameAsRun);
+                return p;
+            }
+        }
         public string NameIndefiniteArticle
         {
             get
@@ -94,7 +103,7 @@ namespace cs_store_app_TextGame
             {
                 Paragraph p = new Paragraph();
 
-                p.Inlines.Add((NameIndefiniteArticle + " ").ToRun());
+                p.Inlines.Add((NameIndefiniteArticle).ToRun());
                 p.Inlines.Add(NameAsRun);
 
                 return p;

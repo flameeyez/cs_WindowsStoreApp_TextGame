@@ -61,12 +61,36 @@ namespace cs_store_app_TextGame
                 return new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = Name };
             }
         }
-        public virtual Run NameBaseAsRun
+        public virtual Paragraph NameAsParagraph
         {
             get
             {
-                return new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = NameBase };
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(NameAsRun);
+                return p;
             }
+        }
+        public virtual Paragraph NameBaseAsParagraph
+        {
+            get
+            {
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = NameBase });
+                return p;
+            }
+        }
+        public virtual string NameIndefiniteArticle(bool bCapitalize)
+        {
+            return _name.IndefiniteArticle(bCapitalize);
+        }
+        public Paragraph NameWithIndefiniteArticle(bool bCapitalize = false)
+        {
+            Paragraph p = new Paragraph();
+
+            p.Inlines.Add((NameIndefiniteArticle(bCapitalize)).ToRun());
+            p.Inlines.Add(NameAsRun);
+
+            return p;
         }
         public int MaximumHealth { get; set; }
         public int CurrentHealth { get; set; }
@@ -351,36 +375,36 @@ namespace cs_store_app_TextGame
             }
         }
 
-        public virtual Handler DoAttack(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoMoveBasic(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoLook(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoLook(string strWord) { return Handler.HANDLED; }
-        public virtual Handler DoLook(string strWord1, string strWord2) { return Handler.HANDLED; }
-        public virtual Handler DoLook(string strWord1, string strWord2, string strWord3) { return Handler.HANDLED; }
-        public virtual Handler DoLookHands(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoLookInContainer(string strKeyword, int ordinal = 0) { return Handler.HANDLED; }
-        public virtual Handler DoEat(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoDrink(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoOpen(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoClose(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoMoveConnection(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoPut(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoEquip(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoRemove(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoRemove(ITEM_SLOT item) { return Handler.HANDLED; }
-        public virtual Handler DoShowInventory(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoGetExtended(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoGet(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoDrop(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoBuy(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoGold(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoPrice(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoSell(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoStand(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoKneel(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoSit(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoShowHealth(TranslatedInput input) { return Handler.HANDLED; }
-        public virtual Handler DoSearch(TranslatedInput input) { return Handler.HANDLED; }
+        public virtual Handler DoAttack(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoMoveBasic(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLook(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLook(string strWord) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLook(string strWord1, string strWord2) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLook(string strWord1, string strWord2, string strWord3) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLookHands(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoLookInContainer(string strKeyword, int ordinal = 0) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoEat(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoDrink(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoOpen(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoClose(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoMoveConnection(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoPut(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoEquip(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoRemove(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoRemove(ITEM_SLOT item) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoShowInventory(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoGetExtended(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoGet(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoDrop(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoBuy(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoGold(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoPrice(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoSell(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoStand(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoKneel(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoSit(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoShowHealth(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+        public virtual Handler DoSearch(TranslatedInput input) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
 
         #endregion
 

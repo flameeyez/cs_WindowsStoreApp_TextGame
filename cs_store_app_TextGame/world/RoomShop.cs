@@ -117,9 +117,9 @@ namespace cs_store_app_TextGame
         #region Handlers
         public Handler DoPriceItem(Item item, string strKeyword)
         {
-            if (item == null) { return Handler.ERROR_BAD_ITEM; }
-            if (!item.IsKeyword(strKeyword)) { return Handler.ERROR_BAD_ITEM; }
-            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.ERROR_BAD_SHOP; }
+            if (item == null) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM); }
+            if (!item.IsKeyword(strKeyword)) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM); }
+            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_SHOP); }
 
             // shop will buy this item type
             int nPrice = (int)(item.Value * BuysAt);
@@ -168,12 +168,12 @@ namespace cs_store_app_TextGame
                 if (bValidItem)
                 {
                     // item found, but shop wouldn't buy
-                    return Handler.ERROR_BAD_SHOP;
+                    return Handler.Default(MESSAGE_ENUM.ERROR_BAD_SHOP);
                 }
                 else
                 {
                     // item not found
-                    return Handler.ERROR_BAD_ITEM;
+                    return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM);
                 }
             }
 
