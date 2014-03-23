@@ -16,23 +16,31 @@ namespace cs_store_app_TextGame
     public class Handler
     {
         public RETURN_CODE ReturnCode { get; set; }
+        public MESSAGE_ENUM MessageCode { get; set; }
         public string StringToAppend { get; set; }
         public Paragraph ParagraphToAppend { get; set; }
 
         #region Constructor
-        public Handler(RETURN_CODE returnCode, string stringToAppend = "", Paragraph paragraphToAppend = null)
+        //public Handler(RETURN_CODE returnCode, string stringToAppend = "", Paragraph paragraphToAppend = null)
+        //{
+        //    ReturnCode = returnCode;
+        //    StringToAppend = stringToAppend;
+        //    ParagraphToAppend = paragraphToAppend;
+        //}
+
+        public Handler(RETURN_CODE returnCode, MESSAGE_ENUM messageCode, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
         {
             ReturnCode = returnCode;
-            StringToAppend = stringToAppend;
-            ParagraphToAppend = paragraphToAppend;
+            MessageCode = messageCode;
+            ParagraphToAppend = Messages.GetMessageAsParagraph(messageCode, p1, p2, p3);
         }
         #endregion
         #region Statics
         public static Handler Default(MESSAGE_ENUM message)
         {
-            return new Handler(RETURN_CODE.HANDLED, "", Messages.GetMessageAsParagraph(message));
+            return new Handler(RETURN_CODE.HANDLED, message);
         }
-        public static Handler UNHANDLED = new Handler(RETURN_CODE.UNHANDLED);
+        public static Handler UNHANDLED = new Handler(RETURN_CODE.UNHANDLED, MESSAGE_ENUM.NO_MESSAGE);
         #endregion
         #region Equals
         public override bool Equals(object obj)
@@ -40,7 +48,7 @@ namespace cs_store_app_TextGame
             Handler handler = obj as Handler;
             if (obj == null) { return false; }
 
-            return handler.ReturnCode == this.ReturnCode && handler.StringToAppend == this.StringToAppend;
+            return handler.ReturnCode == this.ReturnCode && handler.MessageCode == this.MessageCode; // handler.StringToAppend == this.StringToAppend;
         }
         public override int GetHashCode()
         {

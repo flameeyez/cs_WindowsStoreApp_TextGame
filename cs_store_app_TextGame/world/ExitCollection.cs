@@ -13,7 +13,7 @@ namespace cs_store_app_TextGame
         #region Attributes
         public static int NUMBER_OF_EXITS = 9;
         private Exit[] Exits = new Exit[NUMBER_OF_EXITS];
-        public string RoomDisplayString
+        private string RoomDisplayString
         {
             get
             {
@@ -43,9 +43,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                Paragraph p = new Paragraph();
-                p.Inlines.Add(RoomDisplayString.ToRun(Colors.Gray));
-                return p;
+                return RoomDisplayString.ToParagraph();
             }
         }
         #endregion

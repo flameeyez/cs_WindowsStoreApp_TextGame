@@ -15,28 +15,6 @@ namespace cs_store_app_TextGame
     {
         #region Attributes
         public static List<Region> Regions = new List<Region>();
-        public static string DebugDisplayString
-        {
-            get
-            {
-                string strReturn = "";
-
-                foreach (Region region in Regions)
-                {
-                    strReturn += "Region " + region.ID.ToString() + ": " + region.Name + "\n";
-                    foreach(Subregion subregion in region.Subregions)
-                    {
-                        strReturn += "Subregion " + subregion.ID.ToString() + ": " + subregion.Name + "\n";
-                        foreach (Room room in subregion.Rooms)
-                        {
-                            strReturn += room.FullDisplayString + "\n";
-                        }
-                    }
-                }
-
-                return strReturn;
-            }
-        }
         #endregion
 
         #region Load

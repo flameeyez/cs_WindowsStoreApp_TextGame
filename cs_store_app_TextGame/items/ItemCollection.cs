@@ -12,6 +12,9 @@ namespace cs_store_app_TextGame
     [DataContract(Name = "Inventory", Namespace = "cs_store_app_TextGame")]
     public class ItemCollection
     {
+        // TODO: maximum weight?
+
+        #region Attributes
         [DataMember]
         public List<Item> Items = new List<Item>();
         [DataMember]
@@ -24,9 +27,9 @@ namespace cs_store_app_TextGame
             }
         }
         public int Count { get { return Items.Count; } }
+        #endregion
 
-        // TODO: maximum weight?
-
+        #region Methods
         public void Add(Item itemToAdd)
         {
             Items.Add(itemToAdd);
@@ -109,6 +112,13 @@ namespace cs_store_app_TextGame
             if (items.Count == 0) { return null; }
             return items[r.Next(items.Count)];
         }
+        public void RemoveItem(Item item)
+        {
+            Items.Remove(item);
+        }
+        #endregion
+
+        #region Display
         public string BaseDisplayString
         {
             get
@@ -248,9 +258,85 @@ namespace cs_store_app_TextGame
                 return p;
             }
         }
-        public void RemoveItem(Item item)
+        public Paragraph ContainerDisplayParagraph(Paragraph NameAsParagraph)
         {
-            Items.Remove(item);
+            Paragraph p = new Paragraph();
+
+            if (Items.Count == 0)
+            {
+                p.Inlines.Add("The ".ToRun());
+                p.Merge(NameAsParagraph);
+                p.Inlines.Add(" is empty.".ToRun());
+                return p;
+            }
+
+            p.Inlines.Add("In the ".ToRun());
+            p.Merge(NameAsParagraph);
+
+            string str = ", you see ";
+
+            if (Items.Count > 2)
+            {
+                for (int i = Items.Count() - 1; i >= 0; i--)
+                {
+                    str += "a";
+                    if ((Items[i].Name[0]).IsVowel())
+                    {
+                        str += "n";
+                    }
+                    str += " ";
+
+                    p.Inlines.Add(str.ToRun());
+                    p.Inlines.Add(Items[i].Name.ToRun(Colors.LightGreen));
+
+                    if (i == 1)
+                    {
+                        str = ", and ";
+                    }
+                    else if (i > 0)
+                    {
+                        str = ", ";
+                    }
+                }
+            }
+            else if (Items.Count == 2)
+            {
+                str += "a";
+                if ((Items[1].Name[0]).IsVowel())
+                {
+                    str += "n";
+                }
+                str += " ";
+
+                p.Inlines.Add(str.ToRun());
+                p.Inlines.Add(Items[1].Name.ToRun(Colors.LightGreen));
+
+                str = " and a";
+                if ((Items[0].Name[0]).IsVowel())
+                {
+                    str += "n";
+                }
+                str += " ";
+
+                p.Inlines.Add(str.ToRun());
+                p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+            }
+            else if (Items.Count == 1)
+            {
+                str += "a";
+                if ((Items[0].Name[0]).IsVowel())
+                {
+                    str += "n";
+                }
+                str += " ";
+
+                p.Inlines.Add(str.ToRun());
+                p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+            }
+
+            p.Inlines.Add((".\n").ToRun());
+            return p;
         }
+        #endregion
     }
 }

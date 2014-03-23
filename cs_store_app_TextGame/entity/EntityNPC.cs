@@ -377,8 +377,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 handler = new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, exit.Direction),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, exit.Direction.ToParagraph()));
+                    MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, exit.Direction.ToParagraph());
             }
 
             CurrentRoom.NPCs.Remove(this);
@@ -389,8 +388,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 handler = new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name), 
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true)));
+                    MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
             }
 
             return handler;
@@ -410,8 +408,8 @@ namespace cs_store_app_TextGame
             if(CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 // npc is leaving player's current room
-                handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.NPC_LEAVES, Name, "through a connection"),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, ("through a connection").ToParagraph()));
+                handler = new Handler(RETURN_CODE.HANDLED, 
+                    MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, ("through a connection").ToParagraph());
             }
             
             // set current room
@@ -422,8 +420,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 handler = new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_ARRIVES, Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true)));
+                    MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
             }
 
             return handler;
@@ -434,14 +431,12 @@ namespace cs_store_app_TextGame
             if (RightHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_SHOW_ITEM, Name, RightHand.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, RightHand.NameAsParagraph)); 
+                    MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, RightHand.NameAsParagraph);
             }
             else if (LeftHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_SHOW_ITEM, Name, LeftHand.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, LeftHand.NameAsParagraph)); 
+                    MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, LeftHand.NameAsParagraph);
             }
 
             return Handler.UNHANDLED;
@@ -456,15 +451,13 @@ namespace cs_store_app_TextGame
             if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, NameAsParagraph));
+                    MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, NameAsParagraph);
             }
 
             if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, Name, item.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, NameAsParagraph, item.NameWithIndefiniteArticle));
+                    MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, NameAsParagraph, item.NameWithIndefiniteArticle);
             }
 
             // item picked up; remove from room
@@ -474,8 +467,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_GET, Name, item.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_GET, NameAsParagraph, item.NameWithIndefiniteArticle));
+                    MESSAGE_ENUM.NPC_GET, NameAsParagraph, item.NameWithIndefiniteArticle);
             }
 
             return Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
@@ -515,8 +507,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 handler = new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_DROP, Name, RightHand.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_DROP, NameAsParagraph, RightHand.NameWithIndefiniteArticle));
+                    MESSAGE_ENUM.NPC_DROP, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
             }
             RightHand = null;
             return handler;
@@ -529,8 +520,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 handler = new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_DROP, Name, LeftHand.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_DROP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle));
+                    MESSAGE_ENUM.NPC_DROP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle);
             }
             LeftHand = null;
             return handler;
@@ -540,8 +530,7 @@ namespace cs_store_app_TextGame
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_LOOK, Name), 
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_LOOK, NameAsParagraph));
+                    MESSAGE_ENUM.NPC_LOOK, NameAsParagraph);
             }
 
             return Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
@@ -553,8 +542,7 @@ namespace cs_store_app_TextGame
             if (p.IsDead) 
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, NameAsParagraph)); 
+                    MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, NameAsParagraph);
             }
 
             // if RightHand is holding a non-weapon
@@ -566,8 +554,7 @@ namespace cs_store_app_TextGame
             if(weapon == null && RightHand != null)
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    Messages.GetMessage(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, Name, RightHand.Name),
-                    Messages.GetMessageAsParagraph(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle)); 
+                    MESSAGE_ENUM.ERROR_NOT_A_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
             }
 
             Paragraph pWeapon = weapon == null ? "fist".ToParagraph() : weapon.NameAsParagraph;
@@ -579,7 +566,8 @@ namespace cs_store_app_TextGame
             if (p.CurrentHealth <= 0) { message = MESSAGE_ENUM.NPC_KILLS_PLAYER; }
 
             // TODO: remove "" for Messages.GetMessage on cleanup
-            return new Handler(RETURN_CODE.HANDLED, "", Messages.GetMessageAsParagraph(message, NameAsParagraph, pWeapon, damage.ToString().ToParagraph()));
+            return new Handler(RETURN_CODE.HANDLED, 
+                message, NameAsParagraph, pWeapon, damage.ToString().ToParagraph());
         }
         public override Handler DoEquip(TranslatedInput input)
         {
@@ -611,7 +599,8 @@ namespace cs_store_app_TextGame
             if(IsDead && Searched)
             {
                 CurrentRoom.NPCs.Remove(this);
-                return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.DEBUG_REMOVE, Name));
+                return new Handler(RETURN_CODE.HANDLED, 
+                    MESSAGE_ENUM.DEBUG_REMOVE, NameAsParagraph);
             }
 
             DateTime now = DateTime.Now;

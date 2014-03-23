@@ -165,7 +165,9 @@ namespace cs_store_app_TextGame
             }
         }
         public virtual string HandsString { get { return ""; } }
+        public virtual Paragraph HandsParagraph { get { return null; } }
         public virtual string InventoryString { get { return ""; } }
+        public virtual Paragraph InventoryParagraph { get { return null; } }
         public virtual string DisplayString 
         {
             get 
@@ -176,6 +178,26 @@ namespace cs_store_app_TextGame
                 }
 
                 return HandsString + "\n" + InventoryString; 
+            }
+        }
+        public virtual Paragraph DisplayParagraph
+        {
+            get
+            {
+                if(IsDead)
+                {
+                    Paragraph p = new Paragraph();
+                    p.Inlines.Add(("The ").ToRun());
+                    p.Merge(NameBaseAsParagraph);
+                    p.Inlines.Add((" is dead.").ToRun());
+                    return p;
+                }
+
+                // TODO: implement these paragraphs for EntityNPC
+                Paragraph p1 = HandsParagraph.Clone();
+                Paragraph p2 = InventoryParagraph.Clone();
+                p1.Merge(p2);
+                return p1;
             }
         }
         #endregion
@@ -321,7 +343,7 @@ namespace cs_store_app_TextGame
             switch (input.Action)
             {
                 case ACTION_ENUM.NONE:
-                    return Handler.UNHANDLED;
+                    return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT);
                 case ACTION_ENUM.MOVE_BASIC:
                     return DoMoveBasic(input);
                 case ACTION_ENUM.MOVE_CONNECTION:

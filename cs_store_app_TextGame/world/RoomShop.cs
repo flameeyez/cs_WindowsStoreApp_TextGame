@@ -107,9 +107,8 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                Paragraph p = new Paragraph();
-                p.Inlines.Add(SoldItemsString.ToRun());
-                return p;
+                // TODO: fix this
+                return SoldItemsString.ToParagraph();
             }
         }
         #endregion
@@ -124,7 +123,8 @@ namespace cs_store_app_TextGame
             // shop will buy this item type
             int nPrice = (int)(item.Value * BuysAt);
 
-            return new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.Name, nPrice.ToString()));
+            return new Handler(RETURN_CODE.HANDLED, 
+                MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.NameAsParagraph, nPrice.ToString().ToParagraph());
         }
         public Handler DoBuyFromEntity(Entity entity, string strKeyword)
         {
@@ -140,7 +140,9 @@ namespace cs_store_app_TextGame
                 {
                     // shop will buy this item type
                     int nPrice = (int)(entity.RightHand.Value * BuysAt);
-                    handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.RightHand.Name, nPrice.ToString()));
+                    
+                    handler = new Handler(RETURN_CODE.HANDLED, 
+                        MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.RightHand.NameAsParagraph, nPrice.ToString().ToParagraph());
 
                     entity.Gold += nPrice;
                     entity.RightHand = null;
@@ -156,7 +158,9 @@ namespace cs_store_app_TextGame
                 {
                     // shop will buy this item type
                     int nPrice = (int)(entity.LeftHand.Value * BuysAt);
-                    handler = new Handler(RETURN_CODE.HANDLED, Messages.GetMessage(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.LeftHand.Name, nPrice.ToString()));
+                    
+                    handler = new Handler(RETURN_CODE.HANDLED,
+                        MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.LeftHand.NameAsParagraph, nPrice.ToString().ToParagraph());
 
                     entity.Gold += nPrice;
                     entity.LeftHand = null;

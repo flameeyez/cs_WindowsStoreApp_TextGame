@@ -13,16 +13,19 @@ namespace cs_store_app_TextGame
 {
     public static class Statics
     {
-        public static int DebugNPCCount = 200;
-        public static int DebugItemPasses = 5;
+        // DEBUG
+        public static int DebugNPCCount = 5;
+        public static int DebugItemPasses = 2;
 
         public static int RunningInlineCount = 0;
-
-        public static Random r = new Random(DateTime.Now.Millisecond);
         public static int ItemCount = 0;
         public static int EntityCount = 0;
+        // END DEBUG
+
+        public static Random r = new Random(DateTime.Now.Millisecond);
         public static Dictionary<string, int> OrdinalStringToInt = new Dictionary<string, int>();
 
+        #region Static Constructor
         static Statics()
         {
             OrdinalStringToInt.Add("first", 0);
@@ -36,17 +39,98 @@ namespace cs_store_app_TextGame
             OrdinalStringToInt.Add("ninth", 8);
             OrdinalStringToInt.Add("tenth", 9);
         }
-        public static bool IsVowel(this char character)
-        {
-            return new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(char.ToLower(character));
-        }
+        #endregion
 
+        #region String Operations
         public static string ToSentenceCase(this string str)
         {
             if (str.Length == 0) { return str; }
             if (str.Length == 1) { return char.ToUpper(str[0]).ToString(); }
             return char.ToUpper(str[0]) + str.Substring(1);
         }
+        public static Run ToRun(this string s)
+        {
+            return new Run { Foreground = new SolidColorBrush(Colors.Orange), Text = s };
+        }
+        public static Run ToRun(this string s, Color c)
+        {
+            return new Run { Foreground = new SolidColorBrush(c), Text = s };
+        }
+        public static Paragraph ToParagraph(this string s)
+        {
+            Paragraph p = new Paragraph();
+            p.Inlines.Add(s.ToRun());
+            return p;
+        }
+        public static string IndefiniteArticle(this string s, bool bCapitalize = false)
+        {
+            if (s.Length == 0) { return ""; }
+            return (bCapitalize ? "A" : "a") + (s[0].IsVowel() ? "n" : "") + " ";
+        }
+        #endregion
+
+        #region Run Operations
+        public static void Merge(this Run r1, Run r2)
+        {
+            if (r2 == null) { return; }
+            r1.Text += " " + r2.Text;
+        }
+        #endregion
+
+        #region Paragraph Operations
+        public static void Compress(this Paragraph p)
+        {
+            if (p.Inlines.Count <= 1) { return; }
+
+            for (int i = p.Inlines.Count - 1; i > 0; i--)
+            {
+                Run current = p.Inlines[i - 1] as Run;
+                Run next = p.Inlines[i] as Run;
+
+                SolidColorBrush currentBrush = current.Foreground as SolidColorBrush;
+                SolidColorBrush nextBrush = next.Foreground as SolidColorBrush;
+
+                if (currentBrush.Color.Equals(nextBrush.Color))
+                {
+                    current.Text += next.Text;
+                    p.Inlines.Remove(next);
+                }
+            }
+        }
+        public static Paragraph Clone(this Paragraph p)
+        {
+            Paragraph clone = new Paragraph();
+            foreach (Inline i in p.Inlines)
+            {
+                Run r = i as Run;
+                Run cloneRun = new Run();
+                cloneRun.Text = r.Text;
+                cloneRun.Foreground = r.Foreground;
+                clone.Inlines.Add(cloneRun);
+            }
+            return clone;
+        }
+        public static void Merge(this Paragraph p1, Paragraph p2)
+        {
+            if (p2 == null) { return; }
+
+            while (p2.Inlines.Count > 0)
+            {
+                Inline i = p2.Inlines[0];
+                p2.Inlines.Remove(i);
+                p1.Inlines.Add(i);
+            }
+        }
+        #endregion
+
+        #region Char Operations
+        public static bool IsVowel(this char character)
+        {
+            return new[] { 'a', 'e', 'i', 'o', 'u' }.Contains(char.ToLower(character));
+        }
+        #endregion
+
+
 
         public static string ExitIntegerToStringAbbreviated(int nDirection)
         {
@@ -100,7 +184,6 @@ namespace cs_store_app_TextGame
                     return "";
             }
         }
-
         public static int DirectionToInt(string strInput)
         {
 	        int nReturn = -1;
@@ -117,7 +200,6 @@ namespace cs_store_app_TextGame
 
 	        return nReturn;
         }
-
         public static string ReplaceFirst(string text, string search, string replace)
         {
             int pos = text.IndexOf(search);
@@ -126,55 +208,6 @@ namespace cs_store_app_TextGame
                 return text;
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-        }
-        public static string IndefiniteArticle(this string s, bool bCapitalize = false)
-        {
-            if(s.Length == 0){return "";}
-            return (bCapitalize ? "A" : "a") + (s[0].IsVowel() ? "n" : "") + " ";
-        }
-        public static Run ToRun(this string s)
-        {
-            return new Run { Foreground = new SolidColorBrush(Colors.Gray), Text = s };
-        }
-        public static Paragraph ToParagraph(this string s)
-        {
-            Paragraph p = new Paragraph();
-            p.Inlines.Add(s.ToRun());
-            return p;
-        }
-        public static Paragraph Clone(this Paragraph p)
-        {
-            Paragraph clone = new Paragraph();
-            foreach(Inline i in p.Inlines)
-            {
-                Run r = i as Run;
-                Run cloneRun = new Run();
-                cloneRun.Text = r.Text;
-                cloneRun.Foreground = r.Foreground;
-                clone.Inlines.Add(cloneRun);
-            }
-            return clone;
-        }
-        public static void Merge(this Paragraph p1, Paragraph p2)
-        {
-            if (p2 == null) { return; }
-
-            while (p2.Inlines.Count > 0)
-            {
-                Inline i = p2.Inlines[0];
-                p2.Inlines.Remove(i);
-                p1.Inlines.Add(i);
-            }
-        }
-        public static void Merge(this Run r1, Run r2)
-        {
-            if (r2 == null) { return; }
-            r1.Text += " " + r2.Text;
-        }
-        public static Run ToRun(this string s, Color c)
-        {
-            return new Run
-                { Foreground = new SolidColorBrush(c), Text = s };
         }
         public static T DeepClone<T>(this T a)
         {

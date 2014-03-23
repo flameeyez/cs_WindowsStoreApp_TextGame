@@ -145,20 +145,13 @@ namespace cs_store_app_TextGame
         #endregion
 
         #region Display
-        public string FullDisplayString
-        {
-            get
-            {
-                return Description + "\n" + Items.RoomDisplayString + NPCs.RoomDisplayString + Exits.RoomDisplayString;
-            }
-        }
         public Paragraph FullDisplayParagraph
         {
             get
             {
                 Paragraph p = new Paragraph();
 
-                p.Inlines.Add(Description.ToRun(Colors.Gray));
+                p.Inlines.Add(Description.ToRun());
 
                 p.Merge(Items.RoomDisplayParagraph);
                 p.Merge(NPCs.RoomDisplayParagraph);

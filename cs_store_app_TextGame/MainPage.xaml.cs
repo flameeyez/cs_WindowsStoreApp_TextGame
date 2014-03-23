@@ -112,32 +112,24 @@ namespace cs_store_app_TextGame
                     break;
             }
         }
-        private void AppendText(string str, bool bScroll = true)
-        {
-            if (str.Length > 0)
-            {
-                Paragraph p = new Paragraph();
-                Run r = new Run();
-                r.Text = str;
-                
-                p.Inlines.Add(r);
-                Statics.RunningInlineCount++;
-
-                this.txtOutput.Blocks.Add(p);
-                //CheckParagraphCount();
-            }
-        }
         private void AppendParagraph(Paragraph p, bool bScroll = true)
         {
             if (p == null) { return; }
+        
+            // DEBUG
+            int before = p.Inlines.Count;
+            // END DEBUG
 
-            foreach (Inline i in p.Inlines) 
-            { 
-                Statics.RunningInlineCount++; 
-            }
+            // one point of compression
+            p.Compress();
+            
+            // DEBUG
+            int savings = before - p.Inlines.Count;
+            AppendDebugText("Compressed: " + savings.ToString());
+            Statics.RunningInlineCount += p.Inlines.Count;
+            // END DEBUG
 
             this.txtOutput.Blocks.Add(p);
-            //CheckParagraphCount();
         }
         private void AppendDebugText(string str)
         {
@@ -176,7 +168,7 @@ namespace cs_store_app_TextGame
         private void CheckParagraphCount()
         {
             // TODO: modify to work with total text length
-            if (Statics.RunningInlineCount > 200)
+            if (Statics.RunningInlineCount > 20000)
             {
                 AppendDebugText("Cleaning up!");
                 while (Statics.RunningInlineCount > 200)
@@ -210,20 +202,10 @@ namespace cs_store_app_TextGame
         public void ProcessInput(TranslatedInput input)
         {
             if (input.Words.Length == 0) { return; }
-            if (input.Action == ACTION_ENUM.NONE) 
-            {
-                AppendParagraph(Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT).ParagraphToAppend); 
-            }
+
             Handler handler = Game.Player.ProcessInput(input);
             // TODO: HANDLED vs UNHANDLED?
-            if (handler.ParagraphToAppend != null)
-            {
-                AppendParagraph(handler.ParagraphToAppend);
-            }
-            else
-            {
-                AppendText(handler.StringToAppend);
-            }
+            AppendParagraph(handler.ParagraphToAppend);
         }
         #endregion
         #region Update
@@ -261,14 +243,7 @@ namespace cs_store_app_TextGame
             {
                 foreach (Handler handler in handlers)
                 {
-                    if (handler.ParagraphToAppend != null)
-                    {
-                        AppendParagraph(handler.ParagraphToAppend);
-                    }
-                    else
-                    {
-                        AppendText(handler.StringToAppend);
-                    }
+                    AppendParagraph(handler.ParagraphToAppend);
                 }
             });
 

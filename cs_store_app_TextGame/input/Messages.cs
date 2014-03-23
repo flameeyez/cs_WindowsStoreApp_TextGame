@@ -10,6 +10,7 @@ namespace cs_store_app_TextGame
     public enum MESSAGE_ENUM
     {
         NO_MESSAGE,
+        BASE_STRING,
         PLAYER_GET,
         PLAYER_DROP,
         PLAYER_PUT_IN_PLAYER_CONTAINER,
@@ -112,6 +113,7 @@ namespace cs_store_app_TextGame
         static Messages()
         {
             MessageDictionary.Add(MESSAGE_ENUM.NO_MESSAGE, "DEBUG: Shouldn't be seeing this.");
+            MessageDictionary.Add(MESSAGE_ENUM.BASE_STRING, "1");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET, "You pick up 1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DROP, "You drop 1.");
             MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT, "You take a bite of your 1.\nYou have 2 bite/s left.");

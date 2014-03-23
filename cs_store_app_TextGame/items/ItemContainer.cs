@@ -5,12 +5,14 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.UI.Xaml.Documents;
 
 namespace cs_store_app_TextGame
 {
     [DataContract(Name = "ItemContainer", Namespace = "cs_store_app_TextGame")]
     public class ItemContainer : Item
     {
+        #region Attributes
         [DataMember]
         public bool Closed { get; set; }
         [DataMember]
@@ -20,26 +22,25 @@ namespace cs_store_app_TextGame
         public override ITEM_TYPE Type { get { return ITEM_TYPE.CONTAINER; } }
         [DataMember]
         public ItemCollection Items = new ItemCollection();
+        #endregion
+
+        #region Constructor
         public ItemContainer(XElement itemNode) : base(itemNode)
         {
             Closed = bool.Parse(itemNode.Element("closed").Value);
             Closable = bool.Parse(itemNode.Element("closable").Value);
             MaximumWeight = int.Parse(itemNode.Element("maximum-weight").Value);
         }
+        #endregion
 
-        public string ItemsString
+        #region Display
+        public Paragraph ItemsParagraph
         {
             get
             {
-                if(Items.Count == 0)
-                {
-                    return "The " + Name + " is empty.";
-                }
-
-                string strItemsString = "In the " + Name + ", you see ";
-                strItemsString += Items.BaseDisplayString + ".\n";
-                return strItemsString;
+                return Items.ContainerDisplayParagraph(NameAsParagraph);
             }
         }
+        #endregion
     }
 }
