@@ -1,0 +1,708 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<messages>
+  <message>
+    <id>NO_MESSAGE</id>
+    <strings>
+      <string>DEBUG: Shouldn't be seeing this.</string>
+    </strings>
+  </message>
+  <message>
+    <id>BASE_STRING</id>
+    <strings>
+      <string>1</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_GET</id>
+    <strings>
+      <string>You pick up 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_DROP</id>
+    <strings>
+      <string>You drop the 1.</string>
+      <string>You place the 1 on the ground.</string>
+      <string>You drop the 1 on the ground.</string>
+      <string>You gently place the 1 on the ground.</string>
+      <string>You casually drop the 1 on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EAT</id>
+    <strings>
+      <string>You take a bite of your 1.\nYou have 2 bite/s left.</string>
+      <string>Hungrily, you take a large bite of your 1.\nYou have 2 bite/s left.</string>
+      <string>You bite off a piece of your 1.\nYou have 2 bite/s left.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EAT_LAST</id>
+    <strings>
+      <string>You take a bite of your 1.\nThat was the last of it.</string>
+      <string>You take the last bite of your 1.</string>
+      <string>You stuff the rest of your 1 into your mouth.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EAT_GROUND_ITEM</id>
+    <strings>
+      <string>Hungrily, you take a large bite of the 1 that is lying on the ground.\nYou regain 2 health.\nThere are 3 bite/s left.</string>
+      <string>You bite off a piece of the 1 that is lying on the ground.\nYou regain 2 health.\nThere are 3 bite/s left.</string>
+      <string>You take a bite of the 1 that is lying on the ground.\nYou regain 2 health.\nThere are 3 bite/s left.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EAT_LAST_GROUND_ITEM</id>
+    <strings>
+      <string>You take the last bite of the 1 that is lying on the ground.</string>
+      <string>You stuff the rest of the 1 that is lying on the ground into your mouth.</string>
+      <string>You take a bite of the 1 that is lying on the ground.\nYou regain 2 health.\nThat was the last of it.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_DRINK</id>
+    <strings>
+      <string>You take a sip from your 1.\nYou have 2 sip/s left.</string>
+      <string>You take a swig of your 1.\nYou have 2 sip/s left.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_DRINK_LAST</id>
+    <strings>
+      <string>You take a sip from the 1.\nThat was the last of it.</string>
+      <string>You take a swig of your 1.\nThat was the last of it.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_DRINK_GROUND_ITEM</id>
+    <strings>
+      <string>You take a sip from the 1 that is lying on the ground.\nYou regain 2 magic.\nThere are 3 sip/s left.</string>
+      <string>You take a swig of the 1 that is lying on the ground.\nYou regain 2 magic.\nThere are 3 sip/s left.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_DRINK_LAST_GROUND_ITEM</id>
+    <strings>
+      <string>You take a sip from the 1 that is lying on the ground.\nYou regain 2 magic.\nThat was the last of it.</string>
+      <string>You take a swig of the 1 that is lying on the ground.\nYou regain 2 magic.\nThat was the last of it.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_OPEN</id>
+    <strings>
+      <string>You open the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_CLOSE</id>
+    <strings>
+      <string>You close the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_GET_FROM_CONTAINER</id>
+    <strings>
+      <string>You remove 1 from the 2.</string>
+      <string>You grab 1 from the 2.</string>
+      <string>You take 1 from the 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_GET_FROM_ROOM_CONTAINER</id>
+    <strings>
+      <string>You remove 1 from 2 that is lying on the ground.</string>
+      <string>You grab 1 from 2 that is lying on the ground.</string>
+      <string>You take 1 from 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_PUT_IN_PLAYER_CONTAINER</id>
+    <strings>
+      <string>You put 1 in your 2.</string>
+      <string>You place 1 in your 2.</string>
+      <string>You store 1 in your 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_PUT_IN_GROUND_CONTAINER</id>
+    <strings>
+      <string>You put 1 in 2 that is lying on the ground.</string>
+      <string>You place 1 in 2 that is lying on the ground.</string>
+      <string>You store 1 in 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP</id>
+    <strings>
+      <string>You equip the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_ARMOR_CHEST</id>
+    <strings>
+      <string>You equip the 1.</string>
+      <string>You slide into the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_ARMOR_HEAD</id>
+    <strings>
+      <string>You equip the 1.</string>
+      <string>You place the 1 onto your head.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_ARMOR_FEET</id>
+    <strings>
+      <string>You equip the 1.</string>
+      <string>You slide your feet into the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_ACCESSORY_RING</id>
+    <strings>
+      <string>You equip the 1.</string>
+      <string>You slide the 1 onto your finger.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_ACCESSORY_AMULET</id>
+    <strings>
+      <string>You place the 1 around your neck.</string>
+      <string>You wear the 1 around your neck.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_EQUIP_BACKPACK</id>
+    <strings>
+      <string>You toss the 1 over your shoulders.</string>
+      <string>You sling the 1 over your shoulders.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE</id>
+    <strings>
+      <string>You remove your 1.</string>
+    </strings>
+  </message>
+    <message>
+    <id>PLAYER_REMOVE_ARMOR_CHEST</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You work your way out of the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE_ARMOR_HEAD</id>
+    <strings>
+      <string>You remove the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE_ARMOR_FEET</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You pull the 1 off of your feet.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE_ACCESSORY_RING</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You remove the 1 from your finger.</string>
+      <string>You slide the 1 off of your finger.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE_ACCESSORY_AMULET</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You remove the 1 from around your neck.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_REMOVE_BACKPACK</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You slide the 1 off of your shoulders.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_BUY</id>
+    <strings>
+      <string>You buy 1 from the shopkeeper for 2 gold pieces.</string>
+      <string>You purchase 1 from the shopkeeper for 2 gold pieces.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_PRICE_ITEM</id>
+    <strings>
+      <string>The shopkeeper carefully examines the 1.\n'I'll offer 2 gold pieces for it,' he says.</string>
+      <string>The shopkeeper looks over the 1.\n'2 gold pieces is a fair price, wouldn't you say?' he says.</string>
+      <string>The shopkeeper meticulously examines the 1.\n'I can offer 2 gold pieces for it, and no more,' he says.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_CARRYING_GOLD</id>
+    <strings>
+      <string>You are carrying 1 gold pieces.</string>
+      <string>You have 1 gold pieces.</string>
+      <string>Meticulously examining your worth, you discover that you have 1 gold pieces.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_CARRYING_NO_GOLD</id>
+    <strings>
+      <string>You don't have any gold.</string>
+      <string>You check your pockets for gold, sadly finding none.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_STAND</id>
+    <strings>
+      <string>You stand up.</string>
+      <string>You stand.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_SIT</id>
+    <strings>
+      <string>You sit down.</string>
+      <string>You sit.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_KNEEL</id>
+    <strings>
+      <string>You kneel.</string>
+      <string>You kneel down.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_ATTACKS_NPC</id>
+    <strings>
+      <string>You attack the 1 with your 2 and hit for 3 damage.</string>
+      <string>You swing at the 1 with your 2 and hit for 3 damage.</string>
+      <string>You swing a 2 at the 1, hitting for 3 damage.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_KILLS_NPC</id>
+    <strings>
+      <string>You attack the 1 with your 2 and hit for 3 damage.\nThe 1 dies.</string>
+      <string>You swing at the 1 with your 2 and hit for 3 damage.\nThe 1 dies.</string>
+      <string>You swing a 2 at the 1, hitting for 3 damage.\nThe 1 dies.</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_SHOW_HEALTH</id>
+    <strings>
+      <string>Health: 1\nMagic: 2</string>
+    </strings>
+  </message>
+  <message>
+    <id>PLAYER_SELL_ITEM</id>
+    <strings>
+      <string>You sell the 1 for 2 gold pieces.</string>
+      <string>You hand your 1 to the shopkeeper.\nThe shopkeeper smiles and hands you 2 gold pieces.</string>
+      <string>You ask the shopkeeper if he would like to buy your 1. He nods, taking the 1 and handing you 2 gold pieces.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_ARRIVES</id>
+    <strings>
+      <string>1 appears!</string>
+      <string>1 runs in!</string>
+      <string>1 arrives!</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_LEAVES</id>
+    <strings>
+      <string>The 1 heads 2.</string>
+      <string>The 1 leaves, heading 2.</string>
+      <string>The 1 runs 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_GET</id>
+    <strings>
+      <string>The 1 picks up 2.</string>
+      <string>The 1 collects 2.</string>
+      <string>The 1 snatches up 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_DROP</id>
+    <strings>
+      <string>The 1 drops 2.</string>
+      <string>The 1 carelessly discards 2.</string>
+      <string>The 1 throws 2 to the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EAT</id>
+    <strings>
+      <string>The 1 takes a bite of its 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EAT_LAST</id>
+    <strings>
+      <string>The 1 shoves the last bit of the 2 into its mouth.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EAT_GROUND_ITEM</id>
+    <strings>
+      <string>The 1 takes a bite of the 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EAT_LAST_GROUND_ITEM</id>
+    <strings>
+      <string>The 1 eats the last bit of the 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_DRINK</id>
+    <strings>
+      <string>The 1 takes a sip from its 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_DRINK_LAST</id>
+    <strings>
+      <string>The 1 takes the last sip from its 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_DRINK_GROUND_ITEM</id>
+    <strings>
+      <string>The 1 takes a sip from the 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_DRINK_LAST_GROUND_ITEM</id>
+    <strings>
+      <string>The 1 takes the last sip from the 2 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_OPEN</id>
+    <strings>
+      <string>The 1 opens 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_CLOSE</id>
+    <strings>
+      <string>The 1 closes 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_GET_FROM_CONTAINER</id>
+    <strings>
+      <string>The 1 removes 2 from 3.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_GET_FROM_ROOM_CONTAINER</id>
+    <strings>
+      <string>The 1 removes 2 from 3 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_PUT_IN_NPC_CONTAINER</id>
+    <strings>
+      <string>The 1 puts 2 in its 3.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_PUT_IN_GROUND_CONTAINER</id>
+    <strings>
+      <string>The 1 puts 2 in 3 that is lying on the ground.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EQUIP</id>
+    <strings>
+      <string>The 1 equips 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_EQUIP_BACKPACK</id>
+    <strings>
+      <string>The 1 tosses 2 over its shoulders.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_REMOVE</id>
+    <strings>
+      <string>The 1 removes 2.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_BUY</id>
+    <strings>
+      <string>The 1 buys 2 from the shopkeeper.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_PRICE_ITEM</id>
+    <strings>
+      <string>The shopkeeper converses with the 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_CARRYING_GOLD</id>
+    <strings>
+      <string>The 1 checks its pockets for gold.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_LOOK</id>
+    <strings>
+      <string>The 1 checks its surroundings.</string>
+      <string>The 1 looks around.</string>
+      <string>The 1 appears curious about its surroundings.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_SHOW_ITEM</id>
+    <strings>
+      <string>The 1 waves its 2 around in the air. A treasure, indeed!</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_ATTACKS_PLAYER</id>
+    <strings>
+      <string>The 1 attacks you with its 2. You take 3 damage.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_KILLS_PLAYER</id>
+    <strings>
+      <string>The 1 attacks you with its 2. You take 3 damage.\n\nYou have died.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_SEARCH_WITH_GOLD</id>
+    <strings>
+      <string>You search the 1 and remove its equipment. You find 2 gold.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_SEARCH_NO_GOLD</id>
+    <strings>
+      <string>You search the 1 and remove its equipment.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_ATTACKS_DEAD_PLAYER</id>
+    <strings>
+      <string>The 1 pokes at your lifeless body.</string>
+    </strings>
+  </message>
+  <message>
+    <id>NPC_SELL_ITEM</id>
+    <strings>
+      <string>The 1 sells 2 to the shopkeeper.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_PLAYER_IS_DEAD</id>
+    <strings>
+      <string>But you're dead!</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_BAD_INPUT</id>
+    <strings>
+      <string>I don't understand what you've typed.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_WRONG_DIRECTION</id>
+    <strings>
+      <string>You can't go in that direction.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_GO_WHERE</id>
+    <strings>
+      <string>Where would you like to go?</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_BAD_ITEM</id>
+    <strings>
+      <string>I can't find that item.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_HANDS_ARE_FULL</id>
+    <strings>
+      <string>Your hands are full.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NOT_CARRYING_ITEM</id>
+    <strings>
+      <string>You aren't carrying that item.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_CONTAINER_CLOSED</id>
+    <strings>
+      <string>The 1 is closed.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_CONTAINER_ALREADY_OPEN</id>
+    <strings>
+      <string>The 1 is already open.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_CONTAINER_ALREADY_CLOSED</id>
+    <strings>
+      <string>The 1 is already closed.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_WHAT</id>
+    <strings>
+      <string>1 what?</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_CONTAINER_NOT_CLOSABLE </id>
+    <strings>
+      <string>The 1 isn't closable.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_ITEM_NOT_EQUIPPABLE </id>
+    <strings>
+      <string>You can't equip that.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_ALREADY_EQUIPPED</id>
+    <strings>
+      <string>You can't equip another item of that type.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NOT_A_SHOP</id>
+    <strings>
+      <string>You don't see a shop around here.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_BAD_SHOP</id>
+    <strings>
+      <string>This store won't buy that type of item.</string>
+      <string>The store doesn't want that type of item.</string>
+      <string>The store doesn't deal in that type of item.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NOT_ENOUGH_GOLD</id>
+    <strings>
+      <string>You can't afford the 1.</string>
+      <string>The 1 costs more than you can afford.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_ALREADY_STANDING</id>
+    <strings>
+      <string>You are already standing.</string>
+      <string>You try to stand a little taller.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_ALREADY_SITTING</id>
+    <strings>
+      <string>You are already sitting.</string>
+      <string>You try to sit even more, but fail.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_ALREADY_KNEELING</id>
+    <strings>
+      <string>You are already kneeling.</string>
+      <string>You can't kneel again.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_SITTING</id>
+    <strings>
+      <string>You can't move while sitting.</string>
+      <string>It's difficult to walk while sitting.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_KNEELING</id>
+    <strings>
+      <string>You can't move while kneeling.</string>
+      <string>Alas, you are kneeling.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NOT_A_WEAPON</id>
+    <strings>
+      <string>You can't attack with 1!</string>
+      <string>Though determined, you are unable to attack with 1.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NPC_HANDS_ARE_FULL</id>
+    <strings>
+      <string>The 1 greedily eyes 2 that is lying on the ground, but its hands are full.</string>
+      <string>The 1 attempts to pick up 2 before realizing that its hands are full.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NPC_NO_ITEMS_IN_ROOM</id>
+    <strings>
+      <string>The 1 searches the area for something useful.</string>
+      <string>The 1 rummages around for something to scavenge.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NPC_NOT_A_WEAPON</id>
+    <strings>
+      <string>For some reason, the 1 tries to attack you with 2. It doesn't work very well.</string>
+      <string>The 1 swings 2 at you. It's not very effective.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NPC_NOT_DEAD</id>
+    <strings>
+      <string>But the 1 isn't dead yet!</string>
+      <string>The 1 is still alive and kicking. It's probably best not to try that.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NPC_ALREADY_DEAD</id>
+    <strings>
+      <string>The 1 is already dead.</string>
+      <string>The 1 is dead enough already.</string>
+    </strings>
+  </message>
+  <message>
+    <id>ERROR_NEED_TO_IMPLEMENT</id>
+    <strings>
+      <string>You should consider implementing this.</string>
+    </strings>
+  </message>
+  <message>
+    <id>DEBUG_REMOVE</id>
+    <strings>
+      <string>DEBUG: Removing 1.</string>
+    </strings>
+  </message>
+</messages>

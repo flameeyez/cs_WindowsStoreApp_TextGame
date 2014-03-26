@@ -94,7 +94,7 @@ namespace cs_store_app_TextGame
                 switch (inventory.Count)
                 {
                     case 0:
-                        return "You aren't wearing anything!\n";
+                        return "You aren't wearing anything!";
                     case 1:
                         strReturn += inventory[0];
                         break;
@@ -111,7 +111,7 @@ namespace cs_store_app_TextGame
                         break;
                 }
 
-                strReturn += ".\n";
+                strReturn += ".";
                 return strReturn;
             }
         }        
@@ -140,49 +140,30 @@ namespace cs_store_app_TextGame
                     return p;
                 }
 
-                string strReturn = "";
-
                 // guaranteed to be holding something here
 
                 // RIGHT HAND
-                if (RightHand == null) { strReturn += "Your right hand is empty and "; }
-                else
+                if (RightHand != null)
                 {
-                    strReturn = "You are holding a";
-                    if (RightHand.Name[0].IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-
-                    p.Inlines.Add(strReturn.ToRun());
-                    p.Inlines.Add(RightHand.Name.ToRun(Colors.LightGreen));
-
-                    strReturn = " in your right hand";
+                    p.Inlines.Add("You are holding ".ToRun());
+                    p.Merge(RightHand.NameWithIndefiniteArticle);
+                    p.Inlines.Add(" in your right hand".ToRun());
                 }
 
                 // LEFT HAND
-                if (LeftHand == null) { strReturn += "."; }
+                if (LeftHand == null) { p.Inlines.Add(".".ToRun()); }
                 else
                 {
                     if (RightHand == null)
                     {
-                        strReturn = "You are holding a";
+                        p.Inlines.Add("You are holding ".ToRun());
                     }
                     else
                     {
-                        strReturn += " and a";
+                        p.Inlines.Add(" and ".ToRun());
                     }
 
-                    if (LeftHand.Name[0].IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-
-                    strReturn += " ";
-                    
-                    p.Inlines.Add(strReturn.ToRun());
-                    p.Inlines.Add(LeftHand.Name.ToRun(Colors.LightGreen));
+                    p.Merge(LeftHand.NameWithIndefiniteArticle);
                     p.Inlines.Add((" in your left hand.").ToRun());
                 }
 
@@ -190,7 +171,7 @@ namespace cs_store_app_TextGame
             }
         }
         // TODO: optimize to minimize run count
-        public Paragraph InventoryParagraph
+        public override Paragraph InventoryParagraph
         {
             get
             {
@@ -235,32 +216,38 @@ namespace cs_store_app_TextGame
 
                 p.Inlines.Add(("You are wearing ").ToRun());
 
-                switch (inventory.Count)
+                switch (inventory.Count / 2)
                 {
                     case 0:
-                        p.Inlines.Add(("You aren't wearing anything!\n").ToRun());
+                        p.Inlines.Clear();
+                        p.Inlines.Add(("You aren't wearing anything!").ToRun());
                         return p;
                     case 1:
                         p.Inlines.Add(inventory[0]);
+                        p.Inlines.Add(inventory[1]);
                         break;
                     case 2:
                         p.Inlines.Add(inventory[0]);
-                        p.Inlines.Add((" and ").ToRun());
                         p.Inlines.Add(inventory[1]);
+                        p.Inlines.Add((" and ").ToRun());
+                        p.Inlines.Add(inventory[2]);
+                        p.Inlines.Add(inventory[3]);
                         break;
                     default:
-                        for (int i = 0; i < inventory.Count - 1; i++)
+                        for (int i = 0; i < inventory.Count - 2; i += 2)
                         {
                             p.Inlines.Add(inventory[i]);
+                            p.Inlines.Add(inventory[i + 1]);
                             p.Inlines.Add((", ").ToRun());
                         }
 
                         p.Inlines.Add(("and ").ToRun());
+                        p.Inlines.Add(inventory[inventory.Count - 2]);
                         p.Inlines.Add(inventory[inventory.Count - 1]);
                         break;
                 }
 
-                p.Inlines.Add((".\n").ToRun());
+                p.Inlines.Add((".").ToRun());
                 return p;
             }
         }
@@ -295,6 +282,7 @@ namespace cs_store_app_TextGame
         public override Handler DoMoveConnection(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return Handler.Default(MESSAGE_ENUM.ERROR_GO_WHERE); }
+            if (input.Words.Length > 2) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT); }
 
             if (IsDead) { return Handler.Default(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.Default(MESSAGE_ENUM.ERROR_SITTING); }
@@ -403,6 +391,7 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoLookHands(TranslatedInput input)
         {
+            if (input != null && input.Words.Length > 1) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.BASE_STRING, HandsParagraph);
         }
         public override Handler DoLookInContainer(string strKeyword, int ordinal = 0)
@@ -614,30 +603,35 @@ namespace cs_store_app_TextGame
             {
                 case ITEM_TYPE.ARMOR_CHEST:
                     if (ArmorChest != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
+                    message = MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_CHEST;
                     ArmorChest = itemToEquip as ItemArmorChest;
                     DefensePower += ArmorChest.ArmorFactor;
                     break;
                 case ITEM_TYPE.ARMOR_FEET:
                     if (ArmorFeet != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
+                    message = MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_FEET;
                     ArmorFeet = itemToEquip as ItemArmorFeet;
                     DefensePower += ArmorFeet.ArmorFactor;
                     break;
                 case ITEM_TYPE.ARMOR_HEAD:
                     if (ArmorHead != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
+                    message = MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_HEAD;
                     ArmorHead = itemToEquip as ItemArmorHead;
                     DefensePower += ArmorHead.ArmorFactor;
                     break;
                 case ITEM_TYPE.CONTAINER:
                     if (Backpack != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
-                    Backpack = itemToEquip as ItemContainer;
                     message = MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK;
+                    Backpack = itemToEquip as ItemContainer;
                     break;
                 case ITEM_TYPE.ACCESSORY_AMULET:
                     if (Amulet != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
+                    message = MESSAGE_ENUM.PLAYER_EQUIP_ACCESSORY_AMULET;
                     Amulet = itemToEquip as ItemAccessoryAmulet;
                     break;
                 case ITEM_TYPE.ACCESSORY_RING:
                     if (Ring1 != null && Ring2 != null) { return Handler.Default(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED); }
+                    message = MESSAGE_ENUM.PLAYER_EQUIP_ACCESSORY_RING;
                     if (Ring1 == null) { Ring1 = itemToEquip as ItemAccessoryRing; }
                     else if (Ring2 == null) { Ring2 = itemToEquip as ItemAccessoryRing; }
                     break;
@@ -704,18 +698,21 @@ namespace cs_store_app_TextGame
             if (HandsAreFull) { return Handler.Default(MESSAGE_ENUM.ERROR_HANDS_ARE_FULL); }
 
             Paragraph pRemovedItem = null;
+            MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_REMOVE;
 
             switch (itemSlot)
             {
                 case ITEM_SLOT.AMULET:
                     if (RightHand == null) { RightHand = Amulet; }
                     else if (LeftHand == null) { LeftHand = Amulet; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ACCESSORY_AMULET;
                     pRemovedItem = Amulet.NameAsParagraph;
                     Amulet = null;
                     break;
                 case ITEM_SLOT.ARMOR_CHEST:
                     if (RightHand == null) { RightHand = ArmorChest; }
                     else if (LeftHand == null) { LeftHand = ArmorChest; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_CHEST;
                     DefensePower -= ArmorChest.ArmorFactor;
                     pRemovedItem = ArmorChest.NameAsParagraph;
                     ArmorChest = null;
@@ -723,6 +720,7 @@ namespace cs_store_app_TextGame
                 case ITEM_SLOT.ARMOR_FEET:
                     if (RightHand == null) { RightHand = ArmorFeet; }
                     else if (LeftHand == null) { LeftHand = ArmorFeet; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_FEET;
                     DefensePower -= ArmorFeet.ArmorFactor;
                     pRemovedItem = ArmorFeet.NameAsParagraph;
                     ArmorFeet = null;
@@ -730,6 +728,7 @@ namespace cs_store_app_TextGame
                 case ITEM_SLOT.ARMOR_HEAD:
                     if (RightHand == null) { RightHand = ArmorHead; }
                     else if (LeftHand == null) { LeftHand = ArmorHead; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_HEAD;
                     DefensePower -= ArmorHead.ArmorFactor;
                     pRemovedItem = ArmorHead.NameAsParagraph;
                     ArmorHead = null;
@@ -737,27 +736,31 @@ namespace cs_store_app_TextGame
                 case ITEM_SLOT.BACKPACK:
                     if (RightHand == null) { RightHand = Backpack; }
                     else if (LeftHand == null) { LeftHand = Backpack; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_BACKPACK;
                     pRemovedItem = Backpack.NameAsParagraph;
                     Backpack = null;
                     break;
                 case ITEM_SLOT.RING_1:
                     if (RightHand == null) { RightHand = Ring1; }
                     else if (LeftHand == null) { LeftHand = Ring1; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ACCESSORY_RING;
                     pRemovedItem = Ring1.NameAsParagraph;
                     Ring1 = null;
                     break;
                 case ITEM_SLOT.RING_2:
                     if (RightHand == null) { RightHand = Ring2; }
                     else if (LeftHand == null) { LeftHand = Ring2; }
+                    message = MESSAGE_ENUM.PLAYER_REMOVE_ACCESSORY_RING;
                     pRemovedItem = Ring2.NameAsParagraph;
                     Ring2 = null;
                     break;
             }
 
-            return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.PLAYER_REMOVE, pRemovedItem);
+            return new Handler(RETURN_CODE.HANDLED, message, pRemovedItem);
         }
         public override Handler DoShowInventory(TranslatedInput input)
         {
+            if (input.Words.Length > 1) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.BASE_STRING, InventoryParagraph);
         }
         public override Handler DoGetExtended(TranslatedInput input)
@@ -927,11 +930,17 @@ namespace cs_store_app_TextGame
             else if (LeftHand == null) { LeftHand = boughtItem; }
 
             Gold -= nPrice;
-            return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.PLAYER_BUY, boughtItem.NameAsParagraph, nPrice.ToString().ToParagraph());
+            return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.PLAYER_BUY, boughtItem.NameWithIndefiniteArticle, nPrice.ToString().ToParagraph());
         }
         public override Handler DoGold(TranslatedInput input)
         {
-            return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.PLAYER_CARRYING_GOLD, Gold.ToString().ToParagraph());
+            if (input.Words.Length > 1) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT); }
+            if (Gold > 0)
+            {
+                return new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.PLAYER_CARRYING_GOLD, Gold.ToString().ToParagraph());
+            }
+
+            return Handler.Default(MESSAGE_ENUM.PLAYER_CARRYING_NO_GOLD);
         }
         public override Handler DoPrice(TranslatedInput input)
         {
@@ -1027,6 +1036,7 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoShowHealth(TranslatedInput input)
         {
+            if (input.Words.Length > 1) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_INPUT);}
             return new Handler(RETURN_CODE.HANDLED, 
                 MESSAGE_ENUM.PLAYER_SHOW_HEALTH, HealthString.ToParagraph(), MagicString.ToParagraph());
         }

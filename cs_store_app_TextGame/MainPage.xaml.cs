@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Windows.Storage;
 using Windows.Storage.Compression;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -45,10 +47,14 @@ namespace cs_store_app_TextGame
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            //MessageDialog m = new MessageDialog("Test!");
+            //await m.ShowAsync();
+
             await ItemTemplates.Load();
             await World.Load();
             //await World.LoadCompressed();
             await EntityNPCTemplates.Load();
+            await Messages.Load();
 
             // world update timer
             t = new Timer(Update, null, 1000, 50);
@@ -116,16 +122,10 @@ namespace cs_store_app_TextGame
         {
             if (p == null) { return; }
         
-            // DEBUG
-            int before = p.Inlines.Count;
-            // END DEBUG
-
             // one point of compression
             p.Compress();
             
             // DEBUG
-            int savings = before - p.Inlines.Count;
-            AppendDebugText("Compressed: " + savings.ToString());
             Statics.RunningInlineCount += p.Inlines.Count;
             // END DEBUG
 
@@ -168,10 +168,10 @@ namespace cs_store_app_TextGame
         private void CheckParagraphCount()
         {
             // TODO: modify to work with total text length
-            if (Statics.RunningInlineCount > 20000)
+            if (Statics.RunningInlineCount > Statics.RunningInlineThreshold)
             {
-                AppendDebugText("Cleaning up!");
-                while (Statics.RunningInlineCount > 200)
+                // AppendDebugText("Cleaning up!");
+                while (Statics.RunningInlineCount > Statics.RunningInlineCutCount)
                 {
                     Paragraph p = txtOutput.Blocks[0] as Paragraph;
                     Statics.RunningInlineCount -= p.Inlines.Count;
@@ -185,7 +185,7 @@ namespace cs_store_app_TextGame
         {
             if (txtOutputScroll.ExtentHeight > txtOutputScroll.ViewportHeight)
             {
-                txtOutputScroll.ChangeView(null, txtOutputScroll.ExtentHeight, null);
+                txtOutputScroll.ChangeView(null, txtOutputScroll.ExtentHeight, null, true);
             }
         }
         #endregion
@@ -226,48 +226,33 @@ namespace cs_store_app_TextGame
                     string input = InputQueue.Dequeue();
                     HandleInput(input);
                 }
-            });
 
-            List<Handler> handlers = null;
+                List<Handler> handlers = null;
 
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
                 // update world
                 updateWorldStart = DateTime.Now;
                 handlers = World.Update();
                 updateWorldEnd = DateTime.Now;
                 updateWorldDelta = updateWorldEnd - updateWorldStart;
-            });
 
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
                 foreach (Handler handler in handlers)
                 {
                     AppendParagraph(handler.ParagraphToAppend);
                 }
-            });
 
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
                 ScrollToBottom();
-            });
 
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
                 CheckParagraphCount();
-            });
 
-            DateTime updateEnd = DateTime.Now;
-            TimeSpan updateDelta = updateEnd - updateStart;
+                DateTime updateEnd = DateTime.Now;
+                TimeSpan updateDelta = updateEnd - updateStart;
 
-            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
                 #region Debug
-                if (updateDelta.TotalMilliseconds > 10)
+                if (updateDelta.TotalMilliseconds > 15)
                 {
                     AppendDebugText("Update: " + updateDelta.TotalMilliseconds.ToString());
                 }
-                if(updateWorldDelta.TotalMilliseconds > 5)
+                if (updateWorldDelta.TotalMilliseconds > 5)
                 {
                     AppendDebugText("World: " + updateWorldDelta.TotalMilliseconds.ToString());
                 }

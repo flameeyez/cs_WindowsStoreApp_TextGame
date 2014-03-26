@@ -17,22 +17,14 @@ namespace cs_store_app_TextGame
     {
         public RETURN_CODE ReturnCode { get; set; }
         public MESSAGE_ENUM MessageCode { get; set; }
-        public string StringToAppend { get; set; }
         public Paragraph ParagraphToAppend { get; set; }
 
         #region Constructor
-        //public Handler(RETURN_CODE returnCode, string stringToAppend = "", Paragraph paragraphToAppend = null)
-        //{
-        //    ReturnCode = returnCode;
-        //    StringToAppend = stringToAppend;
-        //    ParagraphToAppend = paragraphToAppend;
-        //}
-
         public Handler(RETURN_CODE returnCode, MESSAGE_ENUM messageCode, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
         {
             ReturnCode = returnCode;
             MessageCode = messageCode;
-            ParagraphToAppend = Messages.GetMessageAsParagraph(messageCode, p1, p2, p3);
+            ParagraphToAppend = Messages.Get(messageCode, p1, p2, p3);
         }
         #endregion
         #region Statics

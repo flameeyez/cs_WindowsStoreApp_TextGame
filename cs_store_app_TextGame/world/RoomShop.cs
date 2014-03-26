@@ -99,7 +99,7 @@ namespace cs_store_app_TextGame
                     int nPrice = (int)(SoldItems[i].Value * SellsAt);
                     strItemsString += "   " + (i + 1).ToString() + ". " + SoldItems[i].Name + " - " + nPrice.ToString() + " gold pieces\n";
                 }
-                strItemsString += "\n";
+
                 return strItemsString;
             }
         }
@@ -107,7 +107,6 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                // TODO: fix this
                 return SoldItemsString.ToParagraph();
             }
         }

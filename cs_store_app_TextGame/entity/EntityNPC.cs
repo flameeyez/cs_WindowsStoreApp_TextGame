@@ -24,6 +24,56 @@ namespace cs_store_app_TextGame
         public DateTime LastActionTime = DateTime.Now;
         public int ActionPulse { get; set; }
         public List<string> Keywords = new List<string>();
+        public override Paragraph HandsParagraph
+        {
+            get
+            {
+                Paragraph p = new Paragraph();
+
+                if (LeftHand == null && RightHand == null)
+                {
+                    p.Inlines.Add("The ".ToRun());
+                    p.Merge(NameAsParagraph);
+                    p.Inlines.Add(" isn't holding anything.".ToRun());
+                    return p;
+                }
+
+                if (RightHand == null) 
+                {
+                    p.Inlines.Add("The ".ToRun());
+                    p.Merge(NameAsParagraph);
+                    p.Inlines.Add("'s right hand is empty and ".ToRun()); 
+                }
+                else
+                {
+                    p.Inlines.Add("The ".ToRun());
+                    p.Merge(NameAsParagraph);
+                    p.Inlines.Add(" is holding ".ToRun());
+                    p.Merge(RightHand.NameWithIndefiniteArticle);
+                    p.Inlines.Add(" in its right hand".ToRun());
+                }
+
+                if (LeftHand == null) { p.Inlines.Add(".".ToRun()); }
+                else
+                {
+                    if (RightHand == null)
+                    {
+                        p.Inlines.Add("The ".ToRun());
+                        p.Merge(NameAsParagraph);
+                        p.Inlines.Add(" is holding ".ToRun());
+                    }
+                    else
+                    {
+                        p.Inlines.Add(" and a".ToRun());
+                    }
+
+                    p.Merge(LeftHand.NameWithIndefiniteArticle);
+                    p.Inlines.Add(" in its left hand.".ToRun());
+                }
+
+                return p;
+            }
+        }
         public override string HandsString
         {
             get
@@ -88,7 +138,7 @@ namespace cs_store_app_TextGame
                 switch (inventory.Count)
                 {
                     case 0:
-                        return "The " + Name + " isn't wearing anything special.\n";
+                        return "The " + Name + " isn't wearing anything special.";
                     case 1:
                         strReturn += inventory[0];
                         break;
@@ -105,8 +155,58 @@ namespace cs_store_app_TextGame
                         break;
                 }
 
-                strReturn += ".\n";
+                strReturn += ".";
                 return strReturn;
+            }
+        }
+        public override Paragraph InventoryParagraph
+        {
+            get
+            {
+                List<string> inventory = new List<string>();
+
+                if (Backpack != null) { inventory.Add("a" + (Backpack.Name[0].IsVowel() ? "n" : "") + " " + Backpack.Name); }
+                if (ArmorChest != null) { inventory.Add("a" + (ArmorChest.Name[0].IsVowel() ? "n" : "") + " " + ArmorChest.Name); }
+                if (ArmorFeet != null) { inventory.Add("a" + (ArmorFeet.Name[0].IsVowel() ? "n" : "") + " " + ArmorFeet.Name); }
+                if (ArmorHead != null) { inventory.Add("a" + (ArmorHead.Name[0].IsVowel() ? "n" : "") + " " + ArmorHead.Name); }
+                if (Ring1 != null) { inventory.Add("a" + (Ring1.Name[0].IsVowel() ? "n" : "") + " " + Ring1.Name); }
+                if (Ring2 != null) { inventory.Add("a" + (Ring2.Name[0].IsVowel() ? "n" : "") + " " + Ring2.Name); }
+                if (Amulet != null) { inventory.Add("a" + (Amulet.Name[0].IsVowel() ? "n" : "") + " " + Amulet.Name); }
+
+                Paragraph p = new Paragraph();
+                p.Inlines.Add("The ".ToRun());
+                p.Merge(NameAsParagraph);
+                p.Inlines.Add(" is wearing ".ToRun());
+
+                switch (inventory.Count)
+                {
+                    case 0:
+                        p.Inlines.Clear();
+                        p.Inlines.Add("The ".ToRun());
+                        p.Merge(NameAsParagraph);
+                        p.Inlines.Add(" isn't wearing anything special.".ToRun());
+                        return p;
+                    case 1:
+                        p.Inlines.Add(inventory[0].ToRun());
+                        break;
+                    case 2:
+                        p.Inlines.Add(inventory[0].ToRun());
+                        p.Inlines.Add(" and ".ToRun());
+                        p.Inlines.Add(inventory[1].ToRun());
+                        break;
+                    default:
+                        for (int i = 0; i < inventory.Count - 1; i++)
+                        {
+                            p.Inlines.Add(inventory[i].ToRun());
+                            p.Inlines.Add(", ".ToRun());
+                        }
+                        p.Inlines.Add("and ".ToRun());
+                        p.Inlines.Add(inventory[inventory.Count - 1].ToRun());
+                        break;
+                }
+
+                p.Inlines.Add(".".ToRun());
+                return p;
             }
         }
         public static List<EntityNPCBehavior> Behavior = new List<EntityNPCBehavior>();
@@ -554,7 +654,7 @@ namespace cs_store_app_TextGame
             if(weapon == null && RightHand != null)
             {
                 return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.ERROR_NOT_A_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
+                    MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
             }
 
             Paragraph pWeapon = weapon == null ? "fist".ToParagraph() : weapon.NameAsParagraph;

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Documents;
+using System.IO;
+using System.Xml.Linq;
+using Windows.UI.Popups;
 
 namespace cs_store_app_TextGame
 {
@@ -11,6 +14,8 @@ namespace cs_store_app_TextGame
     {
         NO_MESSAGE,
         BASE_STRING,
+
+        // PLAYER
         PLAYER_GET,
         PLAYER_DROP,
         PLAYER_PUT_IN_PLAYER_CONTAINER,
@@ -22,8 +27,19 @@ namespace cs_store_app_TextGame
         PLAYER_GET_FROM_ROOM_CONTAINER,
         PLAYER_GET_FROM_CONTAINER,
         PLAYER_EQUIP,
+        PLAYER_EQUIP_ARMOR_CHEST,
+        PLAYER_EQUIP_ARMOR_HEAD,
+        PLAYER_EQUIP_ARMOR_FEET,
+        PLAYER_EQUIP_ACCESSORY_RING,
+        PLAYER_EQUIP_ACCESSORY_AMULET,
         PLAYER_EQUIP_BACKPACK,
         PLAYER_REMOVE,
+        PLAYER_REMOVE_ARMOR_CHEST,
+        PLAYER_REMOVE_ARMOR_HEAD,
+        PLAYER_REMOVE_ARMOR_FEET,
+        PLAYER_REMOVE_ACCESSORY_RING,
+        PLAYER_REMOVE_ACCESSORY_AMULET,
+        PLAYER_REMOVE_BACKPACK,
         PLAYER_EAT_LAST,
         PLAYER_DRINK_LAST,
         PLAYER_EAT_GROUND_ITEM,
@@ -37,6 +53,12 @@ namespace cs_store_app_TextGame
         PLAYER_STAND,
         PLAYER_SIT,
         PLAYER_KNEEL,
+        PLAYER_ATTACKS_NPC,
+        PLAYER_KILLS_NPC,
+        PLAYER_SHOW_HEALTH,
+
+
+        // NPC
         NPC_GET,
         NPC_DROP,
         NPC_PUT_IN_NPC_CONTAINER,
@@ -62,19 +84,15 @@ namespace cs_store_app_TextGame
         NPC_CARRYING_GOLD,
         NPC_ARRIVES,
         NPC_LEAVES,
-        PLAYER_ATTACKS_NPC,
-        PLAYER_KILLS_NPC,
-        DEBUG_REMOVE,
         NPC_LOOK,
         NPC_SHOW_ITEM,
         NPC_ATTACKS_PLAYER,
         NPC_KILLS_PLAYER,
-        PLAYER_SHOW_HEALTH,
         NPC_ATTACKS_DEAD_PLAYER,
         NPC_SEARCH_WITH_GOLD,
         NPC_SEARCH_NO_GOLD,
-        
-        
+
+
         // ERROR MESSAGES
         ERROR_PLAYER_IS_DEAD,
         ERROR_PLAYER_CONTAINER_CLOSED,
@@ -105,133 +123,64 @@ namespace cs_store_app_TextGame
         ERROR_NPC_NOT_A_WEAPON,
         ERROR_NPC_NOT_DEAD,
         ERROR_NPC_ALREADY_DEAD,
-        ERROR_NEED_TO_IMPLEMENT
+        ERROR_NEED_TO_IMPLEMENT,
+
+
+        // DEBUG
+        DEBUG_REMOVE,
+        PLAYER_CARRYING_NO_GOLD
     };
     public static class Messages
     {
-        private static Dictionary<MESSAGE_ENUM, string> MessageDictionary = new Dictionary<MESSAGE_ENUM, string>();
-        static Messages()
+        private static Dictionary<MESSAGE_ENUM, List<string>> MessageDictionary = new Dictionary<MESSAGE_ENUM, List<string>>();
+        private static Dictionary<string, MESSAGE_ENUM> StringToMessageEnum = new Dictionary<string, MESSAGE_ENUM>();
+
+        public static async Task Load()
         {
-            MessageDictionary.Add(MESSAGE_ENUM.NO_MESSAGE, "DEBUG: Shouldn't be seeing this.");
-            MessageDictionary.Add(MESSAGE_ENUM.BASE_STRING, "1");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET, "You pick up 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DROP, "You drop 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT, "You take a bite of your 1.\nYou have 2 bite/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_LAST, "You take a bite of the 1.\nThat was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_GROUND_ITEM, "You take a bite of the 1 that is lying on the ground.\nYou regain 2 health.\nThere are 3 bite/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EAT_LAST_GROUND_ITEM, "You take a bite of the 1 that is lying on the ground.\nYou regain 2 health.\nThat was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK, "You take a sip from your 1.\nYou have 2 sip/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_LAST, "You take a sip from the 1.\nThat was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_GROUND_ITEM, "You take a sip from the 1 that is lying on the ground.\nYou regain 2 magic.\nThere are 3 sip/s left.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_DRINK_LAST_GROUND_ITEM, "You take a sip from the 1 that is lying on the ground.\nYou regain 2 magic.\nThat was the last of it.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_OPEN, "You open the 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_CLOSE, "You close the 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET_FROM_CONTAINER, "You remove 1 from the 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_GET_FROM_ROOM_CONTAINER, "You remove 1 from 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_PUT_IN_PLAYER_CONTAINER, "You put 1 in your 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_PUT_IN_GROUND_CONTAINER, "You put 1 in 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EQUIP, "You equip the 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK, "You toss 1 over your shoulders.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_REMOVE, "You remove your 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_BUY, "You buy 1 from the shopkeeper for 2 gold pieces.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_PRICE_ITEM, "The shopkeeper carefully examines the 1. 'I'll offer 2 gold pieces for it,' he says.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_CARRYING_GOLD, "You are carrying 1 gold pieces.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_STAND, "You stand up.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SIT, "You sit down.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_KNEEL, "You kneel.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_ATTACKS_NPC, "You attack the 1 with your 2 and hit for 3 damage.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_KILLS_NPC, "You attack the 1 with your 2 and hit for 3 damage.\nThe 1 dies.");
-            MessageDictionary.Add(MESSAGE_ENUM.DEBUG_REMOVE, "DEBUG: Removing 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SHOW_HEALTH, "Health: 1\nMagic: 2");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, "The 1 pokes at your lifeless body.");
-            
-            // TODO: can anything be sold for 1 gold piece?
-            MessageDictionary.Add(MESSAGE_ENUM.PLAYER_SELL_ITEM, "You sell the 1 for 2 gold pieces.");
-
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_ARRIVES, "1 appears!");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_LEAVES, "The 1 heads 2.");
-
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_GET, "The 1 picks up 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_DROP, "The 1 drops 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EAT, "The 1 takes a bite of its 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EAT_LAST, "The 1 shoves the last bit of the 1 into its mouth.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EAT_GROUND_ITEM, "The 1 takes a bite of the 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EAT_LAST_GROUND_ITEM, "The 1 eats the last bit of the 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_DRINK, "The 1 takes a sip from its 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_DRINK_LAST, "The 1 takes the last sip from its 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_DRINK_GROUND_ITEM, "The 1 takes a sip from the 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_DRINK_LAST_GROUND_ITEM, "The 1 takes the last sip from the 2 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_OPEN, "The 1 opens 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_CLOSE, "The 1 closes 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_GET_FROM_CONTAINER, "The 1 removes 2 from 3.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_GET_FROM_ROOM_CONTAINER, "The 1 removes 2 from 3 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_PUT_IN_NPC_CONTAINER, "The 1 puts 2 in its 3.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_PUT_IN_GROUND_CONTAINER, "The 1 puts 2 in 3 that is lying on the ground.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EQUIP, "The 1 equips 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_EQUIP_BACKPACK, "The 1 tosses 2 over its shoulders.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_REMOVE, "The 1 removes 2.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_BUY, "The 1 buys 2 from the shopkeeper.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_PRICE_ITEM, "The shopkeeper converses with the 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_CARRYING_GOLD, "The 1 checks its pockets for gold.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_LOOK, "The 1 checks its surroundings.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_SHOW_ITEM, "The 1 waves its 2 around in the air. A treasure, indeed!");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_ATTACKS_PLAYER, "The 1 attacks you with its 2. You take 3 damage.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_KILLS_PLAYER, "The 1 attacks you with its 2. You take 3 damage.\n\nYou have died.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_SEARCH_WITH_GOLD, "You search the 1 and remove its equipment. You find 2 gold.");
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_SEARCH_NO_GOLD, "You search the 1 and remove its equipment.");
-
-            // TODO: can anything be sold for 1 gold piece?
-            MessageDictionary.Add(MESSAGE_ENUM.NPC_SELL_ITEM, "The 1 sells 2 to the shopkeeper.");
-
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD, "But you're dead!");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_INPUT, "I don't understand what you've typed.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_WRONG_DIRECTION, "You can't go in that direction.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_GO_WHERE, "Where would you like to go?");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_ITEM, "I can't find that item.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_HANDS_ARE_FULL, "Your hands are full.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_CARRYING_ITEM, "You aren't carrying that item.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_CLOSED, "The 1 is closed.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_ALREADY_OPEN, "The 1 is already open.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_ALREADY_CLOSED, "The 1 is already closed.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_WHAT, "1 what?");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_CONTAINER_NOT_CLOSABLE , "The 1 isn't closable.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ITEM_NOT_EQUIPPABLE , "You can't equip that.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED, "You can't equip another item of that type.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_A_SHOP, "You don't see a shop around here.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_BAD_SHOP, "This store won't buy that type of item.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_ENOUGH_GOLD, "You can't afford the 1.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_STANDING, "You are already standing.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_SITTING, "You are already sitting.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_ALREADY_KNEELING, "You are already kneeling.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_SITTING, "You can't move while sitting.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_KNEELING, "You can't move while kneeling.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NOT_A_WEAPON, "You can't attack with 1!");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, "The 1 greedily eyes 2 that is lying on the ground, but its hands are full.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, "The 1 searches the area for something useful.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, "For some reason, the 1 tries to attack you with 2. It doesn't work very well.");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_NOT_DEAD, "But the 1 isn't dead yet!");
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NPC_ALREADY_DEAD, "The 1 is already dead.");
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //
-            MessageDictionary.Add(MESSAGE_ENUM.ERROR_NEED_TO_IMPLEMENT, "You should consider implementing this.");
-            //
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            await LoadMessagesFromXML();
         }
 
-        private static Paragraph ProcessMessageAsParagraph(string strMessage, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
+        private static async Task LoadMessagesFromXML()
+        {
+            foreach (MESSAGE_ENUM message in Enum.GetValues(typeof(MESSAGE_ENUM)))
+            {
+                MessageDictionary.Add(message, new List<string>());
+            }
+
+            var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\messages");
+            var file = await folder.GetFileAsync("messages.xml");
+            var stream = await file.OpenStreamForReadAsync();
+
+            XDocument messagesDocument = XDocument.Load(stream);
+            await stream.FlushAsync();
+
+            var messageNodes = from messages in messagesDocument
+                                    .Elements("messages")
+                                    .Elements("message")
+                                select messages;
+            foreach (var messageNode in messageNodes)
+            {
+                MESSAGE_ENUM message = (MESSAGE_ENUM)(Enum.Parse(typeof(MESSAGE_ENUM), messageNode.Element("id").Value));
+                List<string> messageList = MessageDictionary[message];
+
+                var stringNodes = from strings in messageNode
+                                        .Elements("strings")
+                                        .Elements("string")
+                                    select strings;
+
+                foreach (var stringNode in stringNodes)
+                {
+                    // XML parsing treats \n as literal text
+                    messageList.Add(stringNode.Value.Replace("\\n", "\n"));
+                }
+            }
+        }
+        private static Paragraph Process(string strMessage, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
         {
             strMessage += "\n";
             Paragraph p = new Paragraph();
 
-            // TODO: any number of parameters?
-            //int n = 1;
-            //string strN = "/" + n.ToString();
-            //while(strMessage.IndexOf(strN) != -1)
-            //{
-            //    // found this one
-            //}
-
+            // TODO: somewhat arbitrary number of parameters (up to 9?)
             int currentParameterIndex = strMessage.IndexOfAny("123".ToCharArray());
 
             if (currentParameterIndex == -1) { return strMessage.ToParagraph(); }
@@ -241,17 +190,10 @@ namespace cs_store_app_TextGame
 
                 switch (strMessage[currentParameterIndex])
                 {
-                    case '1':
-                        p.Merge(p1.Clone());
-                        break;
-                    case '2':
-                        p.Merge(p2.Clone());
-                        break;
-                    case '3':
-                        p.Merge(p3.Clone());
-                        break;
-                    default:
-                        break;
+                    case '1': p.Merge(p1.Clone()); break;
+                    case '2': p.Merge(p2.Clone()); break;
+                    case '3': p.Merge(p3.Clone()); break;
+                    default: break;
                 }
 
                 strMessage = strMessage.Substring(currentParameterIndex + 1);
@@ -260,89 +202,13 @@ namespace cs_store_app_TextGame
 
             p.Inlines.Add(strMessage.ToRun());
 
-            //int firstParameterIndex = strMessage.IndexOf("/1");
-            //int secondParameterIndex = strMessage.IndexOf("/2");
-            //int thirdParameterIndex = strMessage.IndexOf("/3");
-
-            //if (firstParameterIndex == -1) { return strMessage.ToParagraph(); }
-
-            //if (firstParameterIndex > 0) { p.Inlines.Add(strMessage.Substring(0, firstParameterIndex).ToRun()); }
-            //p.Merge(p1);
-
-            //if (secondParameterIndex != -1)
-            //{
-            //    p.Inlines.Add(strMessage.Substring(firstParameterIndex + 2, secondParameterIndex - firstParameterIndex - 2).ToRun());
-            //    p.Merge(p2);
-            //}
-            //else
-            //{
-            //    p.Inlines.Add(strMessage.Substring(firstParameterIndex + 2).ToRun());
-            //    return p;
-            //}
-
-            //if (thirdParameterIndex != -1)
-            //{
-            //    p.Inlines.Add(strMessage.Substring(secondParameterIndex + 2, thirdParameterIndex - secondParameterIndex - 2).ToRun());
-            //    p.Merge(p3);
-            //    p.Inlines.Add(strMessage.Substring(thirdParameterIndex + 2).ToRun());
-            //}
-            //else
-            //{
-            //    p.Inlines.Add(strMessage.Substring(secondParameterIndex + 2).ToRun());
-            //}
-
             return p;
         }
-
-        private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)
-        {
-            string strReturn = strMessage;
-            strReturn = strReturn.Replace("1", strParameter1);
-            strReturn = strReturn.Replace("2", strParameter2);
-            strReturn = strReturn.Replace("3", strParameter3);
-
-            // /an - get first consonant after next space
-            int nIndex = strReturn.IndexOf("/an");
-            while (nIndex != -1)
-            {
-                int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
-                strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "an" : "a") + strReturn.Substring(nIndex + "/an".Length);
-                nIndex = strReturn.IndexOf("/an");
-            }
-
-            // /An - capitalized version of the above
-            nIndex = strReturn.IndexOf("/An");
-            while (nIndex != -1)
-            {
-                int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
-                strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "An" : "A") + strReturn.Substring(nIndex + "/An".Length);
-                nIndex = strReturn.IndexOf("/An");
-            }
-
-            // numbers
-            // HUGE assumption - assume preceding token has been replaced with a number
-            nIndex = strReturn.IndexOf("/s");
-            while (nIndex != -1)
-            {
-                int nLastNumberChar = strReturn.LastIndexOf(' ', nIndex) - 1;
-                int nFirstNumberChar = strReturn.LastIndexOf(' ', nLastNumberChar) + 1;
-
-                string strNumber = strReturn.Substring(nFirstNumberChar, nLastNumberChar - nFirstNumberChar + 1);
-                strReturn = strReturn.Substring(0, nIndex) + (strNumber == "1" ? "" : "s") + strReturn.Substring(nIndex + "/s".Length);
-                nIndex = strReturn.IndexOf("/s");
-            }
-
-            return strReturn;
-        }
-        public static string GetMessage(MESSAGE_ENUM message, string strParameter1 = "", string strParameter2 = "", string strParameter3 = "")
-        {
-            return ProcessMessage(MessageDictionary[message], strParameter1, strParameter2, strParameter3) + "\n";
-        }
-
-        public static Paragraph GetMessageAsParagraph(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
+        public static Paragraph Get(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
         {
             if (message == MESSAGE_ENUM.NO_MESSAGE) { return null; }
-            return ProcessMessageAsParagraph(MessageDictionary[message], p1, p2, p3);
+            if (message == MESSAGE_ENUM.PLAYER_SHOW_HEALTH) { int i = 0; }
+            return Process(MessageDictionary[message].Random(), p1, p2, p3);
         }
     }
 }

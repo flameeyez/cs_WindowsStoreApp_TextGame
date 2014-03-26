@@ -29,11 +29,11 @@ namespace cs_store_app_TextGame
                 if (strReturn.Length > 0)
                 {
                     strReturn = strReturn.Substring(0, strReturn.Length - 2);
-                    strReturn = "Obvious exits: " + strReturn + "\n";
+                    strReturn = "Obvious exits: " + strReturn;
                 }
                 else
                 {
-                    strReturn = "Obvious exits: none" + "\n";
+                    strReturn = "Obvious exits: none";
                 }
 
                 return strReturn;

@@ -14,10 +14,12 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         // DEBUG
-        public static int DebugNPCCount = 5;
-        public static int DebugItemPasses = 2;
+        public static int DebugNPCCount = 10;
+        public static int DebugItemPasses = 5;
 
         public static int RunningInlineCount = 0;
+        public static int RunningInlineThreshold = 500;
+        public static int RunningInlineCutCount = 300;
         public static int ItemCount = 0;
         public static int EntityCount = 0;
         // END DEBUG
@@ -50,7 +52,7 @@ namespace cs_store_app_TextGame
         }
         public static Run ToRun(this string s)
         {
-            return new Run { Foreground = new SolidColorBrush(Colors.Orange), Text = s };
+            return new Run { Foreground = new SolidColorBrush(Colors.White), Text = s };
         }
         public static Run ToRun(this string s, Color c)
         {
@@ -130,7 +132,12 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-
+        public static string Random(this List<string> list)
+        {
+            Random r = new Random(DateTime.Now.Millisecond);
+            int index = r.Next(list.Count);
+            return list[index];
+        }
 
         public static string ExitIntegerToStringAbbreviated(int nDirection)
         {

@@ -40,7 +40,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return (IsDead ? "dead " : "") + _name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
+                return (IsDead ? "dead " : "") + _name; //  + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
             set
             {
@@ -51,7 +51,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return _name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
+                return _name; // +" (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
             }
         }
         public virtual Run NameAsRun
@@ -195,6 +195,7 @@ namespace cs_store_app_TextGame
 
                 // TODO: implement these paragraphs for EntityNPC
                 Paragraph p1 = HandsParagraph.Clone();
+                p1.Inlines.Add("\n".ToRun());
                 Paragraph p2 = InventoryParagraph.Clone();
                 p1.Merge(p2);
                 return p1;

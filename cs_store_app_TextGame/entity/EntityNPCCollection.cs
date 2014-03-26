@@ -71,7 +71,7 @@ namespace cs_store_app_TextGame
                     strReturn += Entities[0].Name;
                 }
 
-                strReturn += ".\n";
+                strReturn += ".";
 
                 return strReturn;
             }

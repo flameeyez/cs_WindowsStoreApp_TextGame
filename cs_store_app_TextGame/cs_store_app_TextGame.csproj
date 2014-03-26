@@ -156,6 +156,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="xml\messages\messages.xml" />
     <Content Include="xml\npc\npc-templates.xml" />
     <Content Include="xml\templates\item-armor-feet-templates.xml">
       <SubType>Designer</SubType>
