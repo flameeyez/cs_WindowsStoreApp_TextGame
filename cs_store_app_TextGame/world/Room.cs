@@ -166,5 +166,10 @@ namespace cs_store_app_TextGame
         {
             return NPCs.Update();
         }
+
+        public EntityNPC GetRandomHostile(EntityNPC source, bool bMustBeAlive = false)
+        {
+            return NPCs.GetRandomHostile(source, bMustBeAlive);
+        }
     }
 }

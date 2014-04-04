@@ -14,8 +14,8 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         // DEBUG
-        public static int DebugNPCCount = 10;
-        public static int DebugItemPasses = 5;
+        public static int DebugNPCCount = 100;
+        public static int DebugItemPasses = 1;
 
         public static int RunningInlineCount = 0;
         public static int RunningInlineThreshold = 500;
@@ -132,10 +132,9 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public static string Random(this List<string> list)
+        public static T Random<T>(this List<T> list)
         {
-            Random r = new Random(DateTime.Now.Millisecond);
-            int index = r.Next(list.Count);
+            int index = Statics.r.Next(list.Count);
             return list[index];
         }
 

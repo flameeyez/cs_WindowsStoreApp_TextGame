@@ -24,6 +24,7 @@ namespace cs_store_app_TextGame
         public DateTime LastActionTime = DateTime.Now;
         public int ActionPulse { get; set; }
         public List<string> Keywords = new List<string>();
+        public ENTITY_TYPE Type { get; set; }
         public override Paragraph HandsParagraph
         {
             get
@@ -64,7 +65,7 @@ namespace cs_store_app_TextGame
                     }
                     else
                     {
-                        p.Inlines.Add(" and a".ToRun());
+                        p.Inlines.Add(" and ".ToRun());
                     }
 
                     p.Merge(LeftHand.NameWithIndefiniteArticle);
@@ -211,42 +212,34 @@ namespace cs_store_app_TextGame
         }
         public static List<EntityNPCBehavior> Behavior = new List<EntityNPCBehavior>();
 
+        public override string Name
+        {
+            get
+            {
+                return base.Name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ") (" + Type.ToString() + ")";
+            }
+            set
+            {
+                base.Name = value;
+            }
+        }
+        public override string NameBase
+        {
+            get
+            {
+                return base.NameBase + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ")";
+            }
+        }
+
         #endregion
         #region Constructors
 
         public EntityNPC() : base() { }
-        public EntityNPC Clone()
-        {
-            EntityNPC npc = new EntityNPC();
-            npc.ActionPulse = 10000 + Statics.r.Next(5000);
-            npc.NID = Statics.EntityCount++;
-            npc.ID = ID;
-            npc.Name = _name;
-            npc.Gold = Gold;
-            npc.MaximumHealth = MaximumHealth;
-            npc.CurrentHealth = CurrentHealth;
-            if (RightHand != null) { npc.RightHand = RightHand.DeepClone(); }
-            if (LeftHand != null) { npc.LeftHand = LeftHand.DeepClone(); }
-            if (ArmorChest != null) { npc.ArmorChest = ArmorChest.DeepClone(); }
-            if (ArmorHead != null) { npc.ArmorHead = ArmorHead.DeepClone(); }
-            if (ArmorFeet != null) { npc.ArmorFeet = ArmorFeet.DeepClone(); }
-            if (Backpack != null) { npc.Backpack = Backpack.DeepClone(); }
-            if (Ring1 != null) { npc.Ring1 = Ring1.DeepClone(); }
-            if (Ring2 != null) { npc.Ring2 = Ring2.DeepClone(); }
-            if (Amulet != null) { npc.Amulet = Amulet.DeepClone(); }
-
-            foreach (string keyword in Keywords)
-            {
-                npc.Keywords.Add(keyword);
-            }
-
-            return npc;
-        }
-
         public EntityNPC(XElement npcNode)
         {
             ID = int.Parse(npcNode.Element("id").Value);
             Name = npcNode.Element("name").Value;
+            Type = (ENTITY_TYPE)Enum.Parse(typeof(ENTITY_TYPE), npcNode.Element("type").Value);
             MaximumHealth = int.Parse(npcNode.Element("maximum-health").Value);
             CurrentHealth = MaximumHealth;
 
@@ -431,9 +424,9 @@ namespace cs_store_app_TextGame
 
         private Handler DoAction()
         {
-            if (IsDead) { return Handler.Default(MESSAGE_ENUM.NO_MESSAGE); }
+            if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE); }
 
-            Handler handler = Handler.UNHANDLED;
+            Handler handler = Handler.UNHANDLED();
             TranslatedInput input = null;
 
             Random r = new Random(DateTime.Now.Millisecond);
@@ -449,35 +442,34 @@ namespace cs_store_app_TextGame
                 }
             }
 
-            switch (r.Next(10))
+            // UNHANDLED means that the action couldn't be taken
+            // actions can be HANDLED with no visible action
+            while (handler.ReturnCode == RETURN_CODE.UNHANDLED)
             {
-                case 0:
-                    return DoLook(input);
-                case 1:
-                    return DoGet(input);
-                case 2:
-                    return DoDrop(input);
-                case 3:
-                    return DoShowItem(input);
-                case 4:
-                    return DoMoveConnection(input);
-                case 5:
-                    return DoAttack(input);
-                default:
-                    return DoMoveBasic(input);
+                switch (r.Next(10))
+                {
+                    case 0: handler = DoLook(input); break;
+                    case 1: handler = DoGet(input); break;
+                    case 2: handler = DoDrop(input); break;
+                    case 3: handler = DoShowItem(input); break;
+                    case 4: handler = DoMoveConnection(input); break;
+                    case 5: handler = DoAttack(input); break;
+                    default: handler = DoMoveBasic(input); break;
+                }
             }
+
+            return handler;
         }
         public override Handler DoMoveBasic(TranslatedInput input)
         {
-            Handler handler = Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
+            Handler handler = Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
 
             ExitWithDirection exit = CurrentRoom.Exits.RandomWithDirection();
 
             // npc is leaving player's room
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, exit.Direction.ToParagraph());
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, exit.Direction.ToParagraph());
             }
 
             CurrentRoom.NPCs.Remove(this);
@@ -487,18 +479,17 @@ namespace cs_store_app_TextGame
             // npc has moved to player's room
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
             }
 
             return handler;
         }
         public override Handler DoMoveConnection(TranslatedInput input)
         {
-            if (Posture == ENTITY_POSTURE.SITTING) { return Handler.UNHANDLED; }
-            if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.UNHANDLED; }
+            if (Posture == ENTITY_POSTURE.SITTING) { return Handler.UNHANDLED(); }
+            if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.UNHANDLED(); }
 
-            Handler handler = Handler.UNHANDLED;
+            Handler handler = Handler.UNHANDLED();
             Connection connection = CurrentRoom.Connections.Random();
             if (connection == null) { return DoMoveBasic(input); }
 
@@ -508,8 +499,7 @@ namespace cs_store_app_TextGame
             if(CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
                 // npc is leaving player's current room
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_LEAVES, NameAsParagraph, ("through a connection").ToParagraph());
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_LEAVES_CONNECTION, NameAsParagraph, connection.NPCDisplayString.ToParagraph());
             }
             
             // set current room
@@ -519,8 +509,7 @@ namespace cs_store_app_TextGame
             CurrentRoom.NPCs.Add(this);
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_ARRIVES, NameWithIndefiniteArticle(true));
             }
 
             return handler;
@@ -530,16 +519,14 @@ namespace cs_store_app_TextGame
             if (RightHand == null && LeftHand == null) { return DoGet(input); }
             if (RightHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, RightHand.NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, RightHand.NameAsParagraph);
             }
             else if (LeftHand != null && CurrentRoom.Equals(Game.Player.CurrentRoom)) 
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, LeftHand.NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.NPC_SHOW_ITEM, NameAsParagraph, LeftHand.NameAsParagraph);
             }
 
-            return Handler.UNHANDLED;
+            return Handler.UNHANDLED();
         }
         public override Handler DoGet(TranslatedInput input)
         {
@@ -550,14 +537,12 @@ namespace cs_store_app_TextGame
             Item item = CurrentRoom.Items.GetRandomItem();
             if (item == null && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_NO_ITEMS_IN_ROOM, NameAsParagraph);
             }
 
             if (HandsAreFull && CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, NameAsParagraph, item.NameWithIndefiniteArticle);
+                return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_HANDS_ARE_FULL, NameAsParagraph, item.NameWithIndefiniteArticle);
             }
 
             // item picked up; remove from room
@@ -566,11 +551,10 @@ namespace cs_store_app_TextGame
             CurrentRoom.Items.Remove(item);
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_GET, NameAsParagraph, item.NameWithIndefiniteArticle);
+                return Handler.HANDLED(MESSAGE_ENUM.NPC_GET, NameAsParagraph, item.NameWithIndefiniteArticle);
             }
 
-            return Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
+            return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
         }
         public override Handler DoDrop(TranslatedInput input)
         {
@@ -582,7 +566,7 @@ namespace cs_store_app_TextGame
             // if we make it here, the npc has SOMETHING to drop
             // randomly decide which hand to try first
             Random r = new Random(DateTime.Now.Millisecond);
-            Handler handler = Handler.UNHANDLED;
+            Handler handler = null;
             switch(r.Next(2))
             {
                 case 0:
@@ -601,26 +585,24 @@ namespace cs_store_app_TextGame
         }
         private Handler DoDropRightHand()
         {
-            if (RightHand == null) { return Handler.UNHANDLED; }
+            if (RightHand == null) { return Handler.UNHANDLED(); }
             CurrentRoom.Items.Add(RightHand);
-            Handler handler = Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
+            Handler handler = Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_DROP, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_DROP, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
             }
             RightHand = null;
             return handler;
         }
         private Handler DoDropLeftHand()
         {
-            if (LeftHand == null) { return Handler.UNHANDLED; }
+            if (LeftHand == null) { return Handler.UNHANDLED(); }
             CurrentRoom.Items.Add(LeftHand);
-            Handler handler = Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
+            Handler handler = Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                handler = new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_DROP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle);
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_DROP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle);
             }
             LeftHand = null;
             return handler;
@@ -629,20 +611,58 @@ namespace cs_store_app_TextGame
         {
             if (CurrentRoom.Equals(Game.Player.CurrentRoom))
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_LOOK, NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.NPC_LOOK, NameAsParagraph);
             }
 
-            return Handler.Default(MESSAGE_ENUM.NO_MESSAGE);
+            return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
         }
+
         public override Handler DoAttack(TranslatedInput input)
         {
+            Handler handler = DoAttackPlayer(input);
+            if (handler.ReturnCode == RETURN_CODE.UNHANDLED) { handler = DoAttackNPC(input); }
+            if (handler.ReturnCode == RETURN_CODE.UNHANDLED) { return DoMoveBasic(input); }
+            return handler;
+        }
+        public Handler DoAttackNPC(TranslatedInput input)
+        {
+            // TODO: allow for retrieval of dead hostiles?
+            // if so, need different action
+            EntityNPC hostile = CurrentRoom.GetRandomHostile(this, true);
+            if (hostile == null) { return Handler.UNHANDLED(); }
+
+            if (hostile.IsDead && CurrentRoom.Equals(Game.Player.CurrentRoom)) { return Handler.HANDLED(MESSAGE_ENUM.NPC_ATTACKS_DEAD_NPC, this.NameAsParagraph, hostile.NameAsParagraph); }
+
+            // if RightHand is holding a non-weapon
+            // TODO: LeftHand?
+            ItemWeapon weapon = null;
+            if (RightHand != null && RightHand.Type == ITEM_TYPE.WEAPON) { weapon = RightHand as ItemWeapon; }
+            else if (LeftHand != null && LeftHand.Type == ITEM_TYPE.WEAPON) { weapon = LeftHand as ItemWeapon; }
+
+            if (weapon == null && RightHand != null)
+            {
+                return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_ATTACKS_NPC_BAD_WEAPON, NameAsParagraph, hostile.NameAsParagraph, RightHand.NameWithIndefiniteArticle);
+            }
+
+            Paragraph pWeapon = weapon == null ? "fist".ToParagraph() : weapon.NameAsParagraph;
+
+            // calculate some damage
+            MESSAGE_ENUM message = MESSAGE_ENUM.NPC_ATTACKS_NPC;
+            int damage = AttackPower - hostile.DefensePower; // 2;
+            hostile.CurrentHealth -= damage;
+            if (hostile.CurrentHealth <= 0) { message = MESSAGE_ENUM.NPC_KILLS_NPC; }
+
+            if (!CurrentRoom.Equals(Game.Player.CurrentRoom)) { return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE); }
+            return Handler.HANDLED(message, NameAsParagraph, hostile.NameBaseAsParagraph, pWeapon, damage.ToString().ToParagraph());
+        }
+        public Handler DoAttackPlayer(TranslatedInput input)
+        {
             EntityPlayer p = Game.Player;
-            if (!CurrentRoom.Equals(p.CurrentRoom)) { return Handler.UNHANDLED; }
+            if (!CurrentRoom.Equals(p.CurrentRoom)) { return Handler.UNHANDLED(); }
+
             if (p.IsDead) 
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.NPC_ATTACKS_DEAD_PLAYER, NameAsParagraph);
             }
 
             // if RightHand is holding a non-weapon
@@ -653,8 +673,7 @@ namespace cs_store_app_TextGame
 
             if(weapon == null && RightHand != null)
             {
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.ERROR_NPC_NOT_A_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
+                return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_ATTACKS_PLAYER_BAD_WEAPON, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
             }
 
             Paragraph pWeapon = weapon == null ? "fist".ToParagraph() : weapon.NameAsParagraph;
@@ -666,20 +685,63 @@ namespace cs_store_app_TextGame
             if (p.CurrentHealth <= 0) { message = MESSAGE_ENUM.NPC_KILLS_PLAYER; }
 
             // TODO: remove "" for Messages.GetMessage on cleanup
-            return new Handler(RETURN_CODE.HANDLED, 
-                message, NameAsParagraph, pWeapon, damage.ToString().ToParagraph());
+            return Handler.HANDLED(message, NameAsParagraph, pWeapon, damage.ToString().ToParagraph());
         }
         public override Handler DoEquip(TranslatedInput input)
         {
-            return Handler.UNHANDLED;
+            // try to equip right hand
+            Handler handler = DoEquip(RightHand);
+            // if that fails, try to equip left hand
+            if (handler.ReturnCode == RETURN_CODE.UNHANDLED) { handler = DoEquip(LeftHand); }
+            return handler;
+        }
+        public Handler DoEquip(Item item)
+        {
+            switch(item.Type)
+            {
+                case ITEM_TYPE.ACCESSORY_AMULET:
+                    if (Amulet != null) { return Handler.UNHANDLED(); }
+                    Amulet = item as ItemAccessoryAmulet;
+                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                case ITEM_TYPE.ACCESSORY_RING:
+                    if (Ring1 == null) 
+                    {
+                        Ring1 = item as ItemAccessoryRing;
+                        return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    }
+                    else if (Ring2 == null) 
+                    {
+                        Ring2 = item as ItemAccessoryRing;
+                        return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    }
+                    return Handler.UNHANDLED();
+                case ITEM_TYPE.ARMOR_CHEST:
+                    if (ArmorChest != null) { return Handler.UNHANDLED(); }
+                    ArmorChest = item as ItemArmorChest;
+                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                case ITEM_TYPE.ARMOR_FEET:
+                    if (ArmorFeet != null) { return Handler.UNHANDLED(); }
+                    ArmorFeet = item as ItemArmorFeet;
+                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                case ITEM_TYPE.ARMOR_HEAD:
+                    if (ArmorHead != null) { return Handler.UNHANDLED(); }
+                    ArmorHead = item as ItemArmorHead;
+                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                case ITEM_TYPE.CONTAINER:
+                    if (Backpack != null) { return Handler.UNHANDLED(); }
+                    Backpack = item as ItemContainer;
+                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                default:
+                    return Handler.UNHANDLED();
+            }
         }
         public override Handler DoRemove(TranslatedInput input)
         {
-            return Handler.UNHANDLED;
+            return Handler.UNHANDLED();
         }
         public override Handler DoRemove(ITEM_SLOT item)
         {
-            return Handler.UNHANDLED;
+            return Handler.UNHANDLED();
         }
 
         #endregion
@@ -699,8 +761,7 @@ namespace cs_store_app_TextGame
             if(IsDead && Searched)
             {
                 CurrentRoom.NPCs.Remove(this);
-                return new Handler(RETURN_CODE.HANDLED, 
-                    MESSAGE_ENUM.DEBUG_REMOVE, NameAsParagraph);
+                return Handler.HANDLED(MESSAGE_ENUM.DEBUG_REMOVE, NameAsParagraph);
             }
 
             DateTime now = DateTime.Now;

@@ -1,0 +1,124 @@
+        //private void AppendText(string str, bool bScroll = true)
+        //{
+        //    if (str.Length > 0)
+        //    {
+        //        Paragraph p = new Paragraph();
+        //        Run r = new Run();
+        //        r.Text = str;
+                
+        //        p.Inlines.Add(r);
+        //        Statics.RunningInlineCount++;
+
+        //        this.txtOutput.Blocks.Add(p);
+        //        //CheckParagraphCount();
+        //    }
+        //}
+
+// ItemContainer
+        public string ItemsString
+        {
+            get
+            {
+                if(Items.Count == 0)
+                {
+                    return "The " + Name + " is empty.";
+                }
+
+                string strItemsString = "In the " + Name + ", you see ";
+                strItemsString += Items.BaseDisplayString + ".\n";
+                return strItemsString;
+            }
+        }
+
+// EntityPlayer
+        public string CurrentRoomDisplayString
+        {
+            get
+            {
+                return CurrentRegionString + CurrentRoom.FullDisplayString;
+            }
+        }
+
+// World
+        public static string DebugDisplayString
+        {
+            get
+            {
+                string strReturn = "";
+
+                foreach (Region region in Regions)
+                {
+                    strReturn += "Region " + region.ID.ToString() + ": " + region.Name + "\n";
+                    foreach(Subregion subregion in region.Subregions)
+                    {
+                        strReturn += "Subregion " + subregion.ID.ToString() + ": " + subregion.Name + "\n";
+                        foreach (Room room in subregion.Rooms)
+                        {
+                            strReturn += room.FullDisplayString + "\n";
+                        }
+                    }
+                }
+
+                return strReturn;
+            }
+        }
+
+// Room
+        public string FullDisplayString
+        {
+            get
+            {
+                return Description + "\n" + Items.RoomDisplayString + NPCs.RoomDisplayString + Exits.RoomDisplayString;
+            }
+        }
+
+// EntityPlayer
+        public string CurrentRegionString
+        {
+            get
+            {
+                return "[" + CurrentRegion.Name + " - " + CurrentSubregion.Name + "]\n";
+            }
+        }
+
+// Messages
+        private static string ProcessMessage(string strMessage, string strParameter1, string strParameter2, string strParameter3)
+        {
+            string strReturn = strMessage;
+            strReturn = strReturn.Replace("1", strParameter1);
+            strReturn = strReturn.Replace("2", strParameter2);
+            strReturn = strReturn.Replace("3", strParameter3);
+
+            // /an - get first consonant after next space
+            int nIndex = strReturn.IndexOf("/an");
+            while (nIndex != -1)
+            {
+                int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
+                strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "an" : "a") + strReturn.Substring(nIndex + "/an".Length);
+                nIndex = strReturn.IndexOf("/an");
+            }
+
+            // /An - capitalized version of the above
+            nIndex = strReturn.IndexOf("/An");
+            while (nIndex != -1)
+            {
+                int nNextCharIndex = strReturn.IndexOf(' ', nIndex) + 1;
+                strReturn = strReturn.Substring(0, nIndex) + (strReturn[nNextCharIndex].IsVowel() ? "An" : "A") + strReturn.Substring(nIndex + "/An".Length);
+                nIndex = strReturn.IndexOf("/An");
+            }
+
+            // numbers
+            // HUGE assumption - assume preceding token has been replaced with a number
+            nIndex = strReturn.IndexOf("/s");
+            while (nIndex != -1)
+            {
+                int nLastNumberChar = strReturn.LastIndexOf(' ', nIndex) - 1;
+                int nFirstNumberChar = strReturn.LastIndexOf(' ', nLastNumberChar) + 1;
+
+                string strNumber = strReturn.Substring(nFirstNumberChar, nLastNumberChar - nFirstNumberChar + 1);
+                strReturn = strReturn.Substring(0, nIndex) + (strNumber == "1" ? "" : "s") + strReturn.Substring(nIndex + "/s".Length);
+                nIndex = strReturn.IndexOf("/s");
+            }
+
+            return strReturn;
+        }

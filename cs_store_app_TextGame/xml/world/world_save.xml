@@ -80,6 +80,7 @@
                   <room>0</room>
                   <action-verb>go</action-verb>
                   <action-noun>store</action-noun>
+                  <npc-display>into the weapons store</npc-display>
                 </connection>
               </connections>
             </room>
@@ -110,6 +111,7 @@
                   <room>0</room>
                   <action-verb>go</action-verb>
                   <action-noun>gates</action-noun>
+                  <npc-display>through the town gates</npc-display>
                 </connection>
               </connections>
             </room>
@@ -253,6 +255,7 @@
                   <room>0</room>
                   <action-verb>go</action-verb>
                   <action-noun>shop</action-noun>
+                  <npc-display>into the pawn shop</npc-display>
                 </connection>
               </connections>
             </room>
@@ -346,6 +349,7 @@
                   <room>3</room>
                   <action-verb>go</action-verb>
                   <action-noun>gates</action-noun>
+                  <npc-display>through the town gates</npc-display>
                 </connection>
               </connections>
             </room>

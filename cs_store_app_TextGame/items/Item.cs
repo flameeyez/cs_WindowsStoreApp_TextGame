@@ -67,7 +67,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return _name;// +" (" + NID.ToString() + ")";// +" {" + UID.ToString() + "}";
+                return _name + " (" + NID.ToString() + ")";// +" {" + UID.ToString() + "}";
             }
             set
             {

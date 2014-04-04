@@ -187,5 +187,33 @@ namespace cs_store_app_TextGame
 
             return handlers;
         }
+        public EntityNPC GetRandomHostile(EntityNPC source, bool bMustBeAlive = false)
+        {
+            List<EntityNPC> hostiles = GetListOfHostiles(source, bMustBeAlive);
+            if (hostiles.Count == 0) { return null; }
+            return hostiles.Random();
+        }
+
+        private List<EntityNPC> GetListOfHostiles(EntityNPC source, bool bMustBeAlive = false)
+        {
+            List<EntityNPC> hostiles = new List<EntityNPC>();
+
+            foreach(EntityNPC npc in Entities)
+            {
+                // ignore entities of same type
+                if (npc.Type.Equals(source.Type)) { continue; }
+
+                int relationship = EntityRelationshipTable.GetRelationship(source.Type, npc.Type);
+                if(relationship < 0)
+                {
+                    if (!bMustBeAlive || npc.CurrentHealth > 0)
+                    {
+                        hostiles.Add(npc);
+                    }
+                }
+            }
+
+            return hostiles;
+        }
     }
 }

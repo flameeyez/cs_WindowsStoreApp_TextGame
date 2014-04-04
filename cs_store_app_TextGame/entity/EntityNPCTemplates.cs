@@ -10,7 +10,7 @@ namespace cs_store_app_TextGame
 {
     public static class EntityNPCTemplates
     {
-        public static List<EntityNPC> NPCs = new List<EntityNPC>();
+        public static List<EntityNPCTemplate> NPCTemplates = new List<EntityNPCTemplate>();
 
         public async static Task Load()
         {
@@ -33,7 +33,7 @@ namespace cs_store_app_TextGame
                                select npcTemplates;
                 foreach (var npcNode in npcNodes)
                 {
-                    NPCs.Add(new EntityNPC(npcNode));
+                    NPCTemplates.Add(new EntityNPCTemplate(npcNode));
                 }
             }
             catch (Exception e)

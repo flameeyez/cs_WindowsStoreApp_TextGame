@@ -3,6 +3,7 @@
   <npc-template>
     <id>0</id>
     <name>goblin</name>
+    <type>GOBLIN</type>
     <keywords>
       <keyword>goblin</keyword>
     </keywords>
@@ -21,6 +22,7 @@
   <npc-template>
     <id>1</id>
     <name>orc</name>
+    <type>ORC</type>
     <keywords>
       <keyword>orc</keyword>
     </keywords>
@@ -50,6 +52,7 @@
   <npc-template>
     <id>2</id>
     <name>troll</name>
+    <type>TROLL</type>
     <keywords>
       <keyword>troll</keyword>
     </keywords>
@@ -61,6 +64,35 @@
       <attack>50</attack>
       <move>90</move>
       <look>100</look>
+    </behavior>
+  </npc-template>
+  <npc-template>
+    <id>3</id>
+    <name>villager</name>
+    <type>VILLAGER</type>
+    <keywords>
+      <keyword>villager</keyword>
+    </keywords>
+    <maximum-health>100</maximum-health>
+    <inventory>
+      <right-hand>
+        <weapon>0</weapon>
+      </right-hand>
+      <left-hand>
+        <armor-shield>0</armor-shield>
+      </left-hand>
+      <armor-head>0</armor-head>
+      <armor-feet>0</armor-feet>
+      <armor-chest>0</armor-chest>
+      <ring1>0</ring1>
+      <ring2>1</ring2>
+      <amulet>0</amulet>
+      <backpack>0</backpack>
+      <gold>50</gold>
+    </inventory>
+    <behavior>
+      <move>50</move>
+      <look>50</look>
     </behavior>
   </npc-template>
 </npc-templates>

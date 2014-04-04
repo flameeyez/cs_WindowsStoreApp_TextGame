@@ -106,9 +106,11 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Debug.cs" />
+    <Compile Include="EntityRelationshipTable.cs" />
     <Compile Include="entity\EntityAttributes.cs" />
     <Compile Include="entity\EntityNPCCollection.cs" />
     <Compile Include="entity\EntityNPC.cs" />
+    <Compile Include="entity\EntityNPCTemplate.cs" />
     <Compile Include="entity\EntityNPCTemplates.cs" />
     <Compile Include="entity\EntityPlayer.cs" />
     <Compile Include="ExitWithDirection.cs" />
@@ -156,7 +158,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="xml\messages\messages.xml" />
+    <Content Include="xml\entity_relationships\entity_relationships.xml" />
+    <Content Include="xml\messages\messages.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xml\npc\npc-templates.xml" />
     <Content Include="xml\templates\item-armor-feet-templates.xml">
       <SubType>Designer</SubType>

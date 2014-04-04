@@ -84,10 +84,14 @@ namespace cs_store_app_TextGame
         NPC_CARRYING_GOLD,
         NPC_ARRIVES,
         NPC_LEAVES,
+        NPC_LEAVES_CONNECTION,
         NPC_LOOK,
         NPC_SHOW_ITEM,
         NPC_ATTACKS_PLAYER,
         NPC_KILLS_PLAYER,
+        NPC_ATTACKS_NPC,
+        NPC_KILLS_NPC,
+        NPC_ATTACKS_DEAD_NPC,
         NPC_ATTACKS_DEAD_PLAYER,
         NPC_SEARCH_WITH_GOLD,
         NPC_SEARCH_NO_GOLD,
@@ -117,13 +121,15 @@ namespace cs_store_app_TextGame
         ERROR_ALREADY_KNEELING,
         ERROR_SITTING,
         ERROR_KNEELING,
-        ERROR_NOT_A_WEAPON,
         ERROR_NPC_HANDS_ARE_FULL,
         ERROR_NPC_NO_ITEMS_IN_ROOM,
-        ERROR_NPC_NOT_A_WEAPON,
         ERROR_NPC_NOT_DEAD,
         ERROR_NPC_ALREADY_DEAD,
         ERROR_NEED_TO_IMPLEMENT,
+
+        ERROR_NPC_ATTACKS_NPC_BAD_WEAPON,
+        ERROR_NPC_ATTACKS_PLAYER_BAD_WEAPON,
+        ERROR_PLAYER_ATTACKS_BAD_WEAPON,
 
 
         // DEBUG
@@ -175,13 +181,13 @@ namespace cs_store_app_TextGame
                 }
             }
         }
-        private static Paragraph Process(string strMessage, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
+        private static Paragraph Process(string strMessage, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
         {
             strMessage += "\n";
             Paragraph p = new Paragraph();
 
             // TODO: somewhat arbitrary number of parameters (up to 9?)
-            int currentParameterIndex = strMessage.IndexOfAny("123".ToCharArray());
+            int currentParameterIndex = strMessage.IndexOfAny("1234".ToCharArray());
 
             if (currentParameterIndex == -1) { return strMessage.ToParagraph(); }
             while (currentParameterIndex != -1)
@@ -193,22 +199,22 @@ namespace cs_store_app_TextGame
                     case '1': p.Merge(p1.Clone()); break;
                     case '2': p.Merge(p2.Clone()); break;
                     case '3': p.Merge(p3.Clone()); break;
+                    case '4': p.Merge(p4.Clone()); break;
                     default: break;
                 }
 
                 strMessage = strMessage.Substring(currentParameterIndex + 1);
-                currentParameterIndex = strMessage.IndexOfAny("123".ToCharArray());
+                currentParameterIndex = strMessage.IndexOfAny("1234".ToCharArray());
             }
 
             p.Inlines.Add(strMessage.ToRun());
 
             return p;
         }
-        public static Paragraph Get(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null)
+        public static Paragraph Get(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
         {
             if (message == MESSAGE_ENUM.NO_MESSAGE) { return null; }
-            if (message == MESSAGE_ENUM.PLAYER_SHOW_HEALTH) { int i = 0; }
-            return Process(MessageDictionary[message].Random(), p1, p2, p3);
+            return Process(MessageDictionary[message].Random(), p1, p2, p3, p4);
         }
     }
 }

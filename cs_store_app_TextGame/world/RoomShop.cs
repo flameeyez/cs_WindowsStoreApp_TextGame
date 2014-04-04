@@ -115,20 +115,19 @@ namespace cs_store_app_TextGame
         #region Handlers
         public Handler DoPriceItem(Item item, string strKeyword)
         {
-            if (item == null) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM); }
-            if (!item.IsKeyword(strKeyword)) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM); }
-            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.Default(MESSAGE_ENUM.ERROR_BAD_SHOP); }
+            if (item == null) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_ITEM); }
+            if (!item.IsKeyword(strKeyword)) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_ITEM); }
+            if (!ShopItemTypes.HasFlag(item.Type)) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_SHOP); }
 
             // shop will buy this item type
             int nPrice = (int)(item.Value * BuysAt);
 
-            return new Handler(RETURN_CODE.HANDLED, 
-                MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.NameAsParagraph, nPrice.ToString().ToParagraph());
+            return Handler.HANDLED(MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.NameAsParagraph, nPrice.ToString().ToParagraph());
         }
         public Handler DoBuyFromEntity(Entity entity, string strKeyword)
         {
             bool bValidItem = false;
-            Handler handler = Handler.UNHANDLED;
+            Handler handler = Handler.UNHANDLED();
 
             if (entity.RightHand != null && entity.RightHand.IsKeyword(strKeyword))
             {
@@ -139,9 +138,8 @@ namespace cs_store_app_TextGame
                 {
                     // shop will buy this item type
                     int nPrice = (int)(entity.RightHand.Value * BuysAt);
-                    
-                    handler = new Handler(RETURN_CODE.HANDLED, 
-                        MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.RightHand.NameAsParagraph, nPrice.ToString().ToParagraph());
+
+                    handler = Handler.HANDLED(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.RightHand.NameAsParagraph, nPrice.ToString().ToParagraph());
 
                     entity.Gold += nPrice;
                     entity.RightHand = null;
@@ -157,9 +155,8 @@ namespace cs_store_app_TextGame
                 {
                     // shop will buy this item type
                     int nPrice = (int)(entity.LeftHand.Value * BuysAt);
-                    
-                    handler = new Handler(RETURN_CODE.HANDLED,
-                        MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.LeftHand.NameAsParagraph, nPrice.ToString().ToParagraph());
+
+                    handler = Handler.HANDLED(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.LeftHand.NameAsParagraph, nPrice.ToString().ToParagraph());
 
                     entity.Gold += nPrice;
                     entity.LeftHand = null;
@@ -171,12 +168,12 @@ namespace cs_store_app_TextGame
                 if (bValidItem)
                 {
                     // item found, but shop wouldn't buy
-                    return Handler.Default(MESSAGE_ENUM.ERROR_BAD_SHOP);
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_SHOP);
                 }
                 else
                 {
                     // item not found
-                    return Handler.Default(MESSAGE_ENUM.ERROR_BAD_ITEM);
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_ITEM);
                 }
             }
 

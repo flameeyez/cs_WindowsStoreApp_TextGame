@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<entities>
+  <entity>
+    <id>GOBLIN</id>
+    <relationships>
+      <relationship>
+        <id>ORC</id>
+        <value>-100</value>
+      </relationship>
+    </relationships>
+  </entity>
+  <entity>
+    <id>ORC</id>
+    <relationships>
+      <relationship>
+        <id>GOBLIN</id>
+        <value>-100</value>
+      </relationship>
+      <relationship>
+        <id>TROLL</id>
+        <value>-100</value>
+      </relationship>
+    </relationships>
+  </entity>
+  <entity>
+    <id>TROLL</id>
+    <relationships>
+      <relationship>
+        <id>ORC</id>
+        <value>-100</value>
+      </relationship>
+    </relationships>
+  </entity>
+  <entity>
+    <id>VILLAGER</id>
+  </entity>
+</entities>
