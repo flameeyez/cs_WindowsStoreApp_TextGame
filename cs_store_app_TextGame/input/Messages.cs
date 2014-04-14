@@ -134,7 +134,8 @@ namespace cs_store_app_TextGame
 
         // DEBUG
         DEBUG_REMOVE,
-        PLAYER_CARRYING_NO_GOLD
+        PLAYER_CARRYING_NO_GOLD,
+        DEBUG_ROOM_CLEANUP
     };
     public static class Messages
     {

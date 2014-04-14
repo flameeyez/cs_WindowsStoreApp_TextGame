@@ -24,7 +24,7 @@ namespace cs_store_app_TextGame
         public DateTime LastActionTime = DateTime.Now;
         public int ActionPulse { get; set; }
         public List<string> Keywords = new List<string>();
-        public ENTITY_TYPE Type { get; set; }
+        public ENTITY_RELATIONSHIP_GROUP RelationshipGroup { get; set; }
         public override Paragraph HandsParagraph
         {
             get
@@ -164,49 +164,82 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                List<string> inventory = new List<string>();
+                List<Run> inventory = new List<Run>();
 
-                if (Backpack != null) { inventory.Add("a" + (Backpack.Name[0].IsVowel() ? "n" : "") + " " + Backpack.Name); }
-                if (ArmorChest != null) { inventory.Add("a" + (ArmorChest.Name[0].IsVowel() ? "n" : "") + " " + ArmorChest.Name); }
-                if (ArmorFeet != null) { inventory.Add("a" + (ArmorFeet.Name[0].IsVowel() ? "n" : "") + " " + ArmorFeet.Name); }
-                if (ArmorHead != null) { inventory.Add("a" + (ArmorHead.Name[0].IsVowel() ? "n" : "") + " " + ArmorHead.Name); }
-                if (Ring1 != null) { inventory.Add("a" + (Ring1.Name[0].IsVowel() ? "n" : "") + " " + Ring1.Name); }
-                if (Ring2 != null) { inventory.Add("a" + (Ring2.Name[0].IsVowel() ? "n" : "") + " " + Ring2.Name); }
-                if (Amulet != null) { inventory.Add("a" + (Amulet.Name[0].IsVowel() ? "n" : "") + " " + Amulet.Name); }
+                if (Backpack != null)
+                {
+                    inventory.Add(Backpack.NameIndefiniteArticle.ToRun());
+                    inventory.Add(Backpack.NameAsRun);
+                }
+                if (ArmorChest != null)
+                {
+                    inventory.Add(ArmorChest.NameIndefiniteArticle.ToRun());
+                    inventory.Add(ArmorChest.NameAsRun);
+                }
+                if (ArmorFeet != null)
+                {
+                    inventory.Add(ArmorFeet.NameIndefiniteArticle.ToRun());
+                    inventory.Add(ArmorFeet.NameAsRun);
+                }
+                if (ArmorHead != null)
+                {
+                    inventory.Add(ArmorHead.NameIndefiniteArticle.ToRun());
+                    inventory.Add(ArmorHead.NameAsRun);
+                }
+                if (Ring1 != null)
+                {
+                    inventory.Add(Ring1.NameIndefiniteArticle.ToRun());
+                    inventory.Add(Ring1.NameAsRun);
+                }
+                if (Ring2 != null)
+                {
+                    inventory.Add(Ring2.NameIndefiniteArticle.ToRun());
+                    inventory.Add(Ring2.NameAsRun);
+                }
+                if (Amulet != null)
+                {
+                    inventory.Add(Amulet.NameIndefiniteArticle.ToRun());
+                    inventory.Add(Amulet.NameAsRun);
+                }
 
                 Paragraph p = new Paragraph();
                 p.Inlines.Add("The ".ToRun());
                 p.Merge(NameAsParagraph);
                 p.Inlines.Add(" is wearing ".ToRun());
 
-                switch (inventory.Count)
+                switch (inventory.Count / 2)
                 {
                     case 0:
-                        p.Inlines.Clear();
                         p.Inlines.Add("The ".ToRun());
                         p.Merge(NameAsParagraph);
                         p.Inlines.Add(" isn't wearing anything special.".ToRun());
                         return p;
                     case 1:
-                        p.Inlines.Add(inventory[0].ToRun());
+                        p.Inlines.Add(inventory[0]);
+                        p.Inlines.Add(inventory[1]);
                         break;
                     case 2:
-                        p.Inlines.Add(inventory[0].ToRun());
-                        p.Inlines.Add(" and ".ToRun());
-                        p.Inlines.Add(inventory[1].ToRun());
+                        p.Inlines.Add(inventory[0]);
+                        p.Inlines.Add(inventory[1]);
+                        p.Inlines.Add((" and ").ToRun());
+                        p.Inlines.Add(inventory[2]);
+                        p.Inlines.Add(inventory[3]);
                         break;
                     default:
-                        for (int i = 0; i < inventory.Count - 1; i++)
+                        for (int i = 0; i < inventory.Count - 2; i += 2)
                         {
-                            p.Inlines.Add(inventory[i].ToRun());
-                            p.Inlines.Add(", ".ToRun());
+                            p.Inlines.Add(inventory[i]);
+                            p.Inlines.Add(inventory[i + 1]);
+                            p.Inlines.Add((", ").ToRun());
                         }
-                        p.Inlines.Add("and ".ToRun());
-                        p.Inlines.Add(inventory[inventory.Count - 1].ToRun());
+
+                        p.Inlines.Add(("and ").ToRun());
+                        p.Inlines.Add(inventory[inventory.Count - 2]);
+                        p.Inlines.Add(inventory[inventory.Count - 1]);
                         break;
                 }
 
-                p.Inlines.Add(".".ToRun());
+                p.Inlines.Add((".").ToRun());
                 return p;
             }
         }
@@ -216,7 +249,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return base.Name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ") (" + Type.ToString() + ")";
+                return base.Name + " (" + NID.ToString() + ") (" + CurrentHealth.ToString() + ":" + MaximumHealth.ToString() + ") (" + RelationshipGroup.ToString() + ")";
             }
             set
             {
@@ -239,7 +272,7 @@ namespace cs_store_app_TextGame
         {
             ID = int.Parse(npcNode.Element("id").Value);
             Name = npcNode.Element("name").Value;
-            Type = (ENTITY_TYPE)Enum.Parse(typeof(ENTITY_TYPE), npcNode.Element("type").Value);
+            RelationshipGroup = (ENTITY_RELATIONSHIP_GROUP)Enum.Parse(typeof(ENTITY_RELATIONSHIP_GROUP), npcNode.Element("type").Value);
             MaximumHealth = int.Parse(npcNode.Element("maximum-health").Value);
             CurrentHealth = MaximumHealth;
 
@@ -424,6 +457,10 @@ namespace cs_store_app_TextGame
 
         private Handler DoAction()
         {
+            // DEBUG
+            return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
+            // END DEBUG
+
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE); }
 
             Handler handler = Handler.UNHANDLED();
@@ -442,6 +479,21 @@ namespace cs_store_app_TextGame
                 }
             }
 
+            //while (handler.ReturnCode == RETURN_CODE.UNHANDLED)
+            //{
+            //    switch(r.Next(2))
+            //    {
+            //        case 0:
+            //            handler = DoGet(input);
+            //            break;
+            //        case 1:
+            //            handler = DoEquip(input);
+            //            break;
+            //    }
+            //}
+
+            //return handler;
+
             // UNHANDLED means that the action couldn't be taken
             // actions can be HANDLED with no visible action
             while (handler.ReturnCode == RETURN_CODE.UNHANDLED)
@@ -454,6 +506,7 @@ namespace cs_store_app_TextGame
                     case 3: handler = DoShowItem(input); break;
                     case 4: handler = DoMoveConnection(input); break;
                     case 5: handler = DoAttack(input); break;
+                    case 6: handler = DoEquip(input); break;
                     default: handler = DoMoveBasic(input); break;
                 }
             }
@@ -689,51 +742,103 @@ namespace cs_store_app_TextGame
         }
         public override Handler DoEquip(TranslatedInput input)
         {
-            // try to equip right hand
-            Handler handler = DoEquip(RightHand);
-            // if that fails, try to equip left hand
-            if (handler.ReturnCode == RETURN_CODE.UNHANDLED) { handler = DoEquip(LeftHand); }
+            Handler handler = DoEquipRightHand();
+            if (handler.ReturnCode == RETURN_CODE.UNHANDLED) { handler = DoEquipLeftHand(); }
             return handler;
         }
-        public Handler DoEquip(Item item)
+        public Handler DoEquipRightHand()
         {
-            switch(item.Type)
+            if (RightHand == null) { return Handler.UNHANDLED(); }
+
+            switch(RightHand.Type)
             {
                 case ITEM_TYPE.ACCESSORY_AMULET:
                     if (Amulet != null) { return Handler.UNHANDLED(); }
-                    Amulet = item as ItemAccessoryAmulet;
-                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    Amulet = RightHand as ItemAccessoryAmulet;
+                    break;
                 case ITEM_TYPE.ACCESSORY_RING:
-                    if (Ring1 == null) 
-                    {
-                        Ring1 = item as ItemAccessoryRing;
-                        return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
-                    }
-                    else if (Ring2 == null) 
-                    {
-                        Ring2 = item as ItemAccessoryRing;
-                        return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
-                    }
-                    return Handler.UNHANDLED();
+                    if (Ring1 == null) { Ring1 = RightHand as ItemAccessoryRing; }
+                    else if (Ring2 == null) { Ring2 = RightHand as ItemAccessoryRing; }
+                    else { return Handler.UNHANDLED(); }
+                    break;
                 case ITEM_TYPE.ARMOR_CHEST:
                     if (ArmorChest != null) { return Handler.UNHANDLED(); }
-                    ArmorChest = item as ItemArmorChest;
-                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    ArmorChest = RightHand as ItemArmorChest;
+                    break;
                 case ITEM_TYPE.ARMOR_FEET:
                     if (ArmorFeet != null) { return Handler.UNHANDLED(); }
-                    ArmorFeet = item as ItemArmorFeet;
-                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    ArmorFeet = RightHand as ItemArmorFeet;
+                    break;
                 case ITEM_TYPE.ARMOR_HEAD:
                     if (ArmorHead != null) { return Handler.UNHANDLED(); }
-                    ArmorHead = item as ItemArmorHead;
-                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    ArmorHead = RightHand as ItemArmorHead;
+                    break;
                 case ITEM_TYPE.CONTAINER:
                     if (Backpack != null) { return Handler.UNHANDLED(); }
-                    Backpack = item as ItemContainer;
-                    return Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, item.NameWithIndefiniteArticle);
+                    Backpack = RightHand as ItemContainer;
+                    break;
                 default:
                     return Handler.UNHANDLED();
             }
+
+            Handler handler = Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
+
+            if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            {
+                handler = Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, NameAsParagraph, RightHand.NameWithIndefiniteArticle);
+            }
+
+            RightHand = null;
+            return handler;
+        }
+        public Handler DoEquipLeftHand()
+        {
+            if (LeftHand == null) { return Handler.UNHANDLED(); }
+
+            switch (LeftHand.Type)
+            {
+                case ITEM_TYPE.ACCESSORY_AMULET:
+                    if (Amulet != null) { return Handler.UNHANDLED(); }
+                    Amulet = LeftHand as ItemAccessoryAmulet;
+                    break;
+                case ITEM_TYPE.ACCESSORY_RING:
+                    if (Ring1 == null) { Ring1 = LeftHand as ItemAccessoryRing; }
+                    else if (Ring2 == null) { Ring2 = LeftHand as ItemAccessoryRing; }
+                    else { return Handler.UNHANDLED(); }
+                    break;
+                case ITEM_TYPE.ARMOR_CHEST:
+                    if (ArmorChest != null) { return Handler.UNHANDLED(); }
+                    ArmorChest = LeftHand as ItemArmorChest;
+                    break;
+                case ITEM_TYPE.ARMOR_FEET:
+                    if (ArmorFeet != null) { return Handler.UNHANDLED(); }
+                    ArmorFeet = LeftHand as ItemArmorFeet;
+                    break;
+                case ITEM_TYPE.ARMOR_HEAD:
+                    if (ArmorHead != null) { return Handler.UNHANDLED(); }
+                    ArmorHead = LeftHand as ItemArmorHead;
+                    break;
+                case ITEM_TYPE.CONTAINER:
+                    if (Backpack != null) { return Handler.UNHANDLED(); }
+                    Backpack = LeftHand as ItemContainer;
+                    break;
+                default:
+                    return Handler.UNHANDLED();
+            }
+
+            Handler handler = CurrentRoom.Equals(Game.Player.CurrentRoom) ? 
+                Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle) : 
+                Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
+
+            //Handler handler = Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
+
+            //if (CurrentRoom.Equals(Game.Player.CurrentRoom))
+            //{
+            //    handler = Handler.HANDLED(MESSAGE_ENUM.NPC_EQUIP, NameAsParagraph, LeftHand.NameWithIndefiniteArticle);
+            //}
+
+            LeftHand = null;
+            return handler;
         }
         public override Handler DoRemove(TranslatedInput input)
         {

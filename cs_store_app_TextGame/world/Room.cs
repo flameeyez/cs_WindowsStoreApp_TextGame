@@ -31,6 +31,9 @@ namespace cs_store_app_TextGame
         public ItemCollection Items = new ItemCollection();
         public ConnectionCollection Connections = new ConnectionCollection();
         public EntityNPCCollection NPCs = new EntityNPCCollection();
+
+        public DateTime EmptyRoomTimer = DateTime.Now;
+
         #endregion
 
         #region Constructors
@@ -164,12 +167,40 @@ namespace cs_store_app_TextGame
 
         public List<Handler> Update()
         {
-            return NPCs.Update();
+            List<Handler> handlers = new List<Handler>();
+
+            if (!this.Equals(Game.Player.CurrentRoom))
+            {
+                DateTime now = DateTime.Now;
+                TimeSpan delta = now - EmptyRoomTimer;
+                if (delta.TotalMilliseconds > Statics.EmptyRoomCleanupThreshold)
+                {
+                    EmptyRoomTimer = now;
+                    Cleanup();
+                    // handlers.Add(new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.DEBUG_ROOM_CLEANUP, ID.ToString().ToParagraph()));
+                }
+            }
+                        
+            handlers.AddRange(NPCs.Update());
+            return handlers;
         }
 
         public EntityNPC GetRandomHostile(EntityNPC source, bool bMustBeAlive = false)
         {
             return NPCs.GetRandomHostile(source, bMustBeAlive);
+        }
+
+        public void Cleanup()
+        {
+            // TODO: stagger? is cleanup on all rooms OK?
+            // TODO: dynamic time threshold based on item, npc count?
+            Items.Cleanup();
+            NPCs.Cleanup();
+        }
+
+        public void ResetEmptyRoomTimer()
+        {
+            EmptyRoomTimer = DateTime.Now;
         }
     }
 }

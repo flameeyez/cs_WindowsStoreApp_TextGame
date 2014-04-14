@@ -485,13 +485,13 @@
 	<message>
 		<id>NPC_ATTACKS_PLAYER</id>
 		<strings>
-			<string>The 1 attacks you with its 2. You take 3 damage.</string>
+			<string>The 1 attacks you with its 2.\nYou take 3 damage.</string>
 		</strings>
 	</message>
 	<message>
 		<id>NPC_KILLS_PLAYER</id>
 		<strings>
-			<string>The 1 attacks you with its 2. You take 3 damage.\n\nYou have died.</string>
+			<string>The 1 attacks you with its 2.\nYou take 3 damage.\nYou have died.</string>
 		</strings>
 	</message>
 	<message>
@@ -515,14 +515,14 @@
 	<message>
 		<id>ERROR_NPC_ATTACKS_NPC_BAD_WEAPON</id>
 		<strings>
-			<string>For some reason, the 1 tries to attack the 2 with 3. It doesn't work very well.</string>
-			<string>The 1 swings 3 at the 2. It's not very effective.</string>
+			<string>For some reason, the 1 tries to attack the 2 with 3.\nIt doesn't work very well.</string>
+			<string>The 1 swings 3 at the 2.\nIt's not very effective.</string>
 		</strings>
 	</message>
 	<message>
 		<id>NPC_SEARCH_WITH_GOLD</id>
 		<strings>
-			<string>You search the 1 and remove its equipment. You find 2 gold.</string>
+			<string>You search the 1 and remove its equipment.\nYou find 2 gold.</string>
 		</strings>
 	</message>
 	<message>
@@ -707,8 +707,8 @@
 	<message>
 		<id>ERROR_NPC_ATTACKS_PLAYER_BAD_WEAPON</id>
 		<strings>
-			<string>For some reason, the 1 tries to attack you with 2. It doesn't work very well.</string>
-			<string>The 1 swings 2 at you. It's not very effective.</string>
+			<string>For some reason, the 1 tries to attack you with 2.\nIt doesn't work very well.</string>
+			<string>The 1 swings 2 at you.\nIt's not very effective.</string>
 		</strings>
 	</message>
 	<message>
@@ -737,4 +737,10 @@
 			<string>DEBUG: Removing 1.</string>
 		</strings>
 	</message>
+  <message>
+    <id>DEBUG_ROOM_CLEANUP</id>
+    <strings>
+      <string>DEBUG: Cleaning up! 1</string>
+    </strings>
+  </message>
 </messages>

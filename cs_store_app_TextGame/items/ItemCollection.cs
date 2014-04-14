@@ -338,5 +338,18 @@ namespace cs_store_app_TextGame
             return p;
         }
         #endregion
+
+        public void Clear()
+        {
+            Items.Clear();
+        }
+
+        public void Cleanup()
+        {
+            if(Items.Count > 5)
+            {
+                Items.Clear();
+            }
+        }
     }
 }

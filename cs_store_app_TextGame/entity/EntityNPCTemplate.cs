@@ -19,7 +19,7 @@ namespace cs_store_app_TextGame
         public int CurrentMagic { get; set; }
         public int Gold { get; set; }
         public int DefensePower { get; set; }
-        public ENTITY_TYPE Type { get; set; }
+        public ENTITY_RELATIONSHIP_GROUP RelationshipGroup { get; set; }
         public List<string> Keywords = new List<string>();
         
         // TODO: implement behavior
@@ -41,7 +41,7 @@ namespace cs_store_app_TextGame
         {
             ID = int.Parse(npcNode.Element("id").Value);
             Name = npcNode.Element("name").Value;
-            Type = (ENTITY_TYPE)Enum.Parse(typeof(ENTITY_TYPE), npcNode.Element("type").Value);
+            RelationshipGroup = (ENTITY_RELATIONSHIP_GROUP)Enum.Parse(typeof(ENTITY_RELATIONSHIP_GROUP), npcNode.Element("type").Value);
             MaximumHealth = int.Parse(npcNode.Element("maximum-health").Value);
             CurrentHealth = MaximumHealth;
 
@@ -224,10 +224,11 @@ namespace cs_store_app_TextGame
         public EntityNPC Clone()
         {
             EntityNPC npc = new EntityNPC();
+            // TODO: move ActionPulse to .xml
             npc.ActionPulse = 8000 + Statics.r.Next(15000);
             npc.NID = Statics.EntityCount++;
             npc.ID = ID;
-            npc.Type = Type;
+            npc.RelationshipGroup = RelationshipGroup;
             npc.Name = Name;
             npc.Gold = Gold;
             npc.MaximumHealth = MaximumHealth;

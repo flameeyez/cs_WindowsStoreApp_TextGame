@@ -170,7 +170,7 @@ namespace cs_store_app_TextGame
                 return p;
             }
         }
-        // TODO: optimize to minimize run count
+
         public override Paragraph InventoryParagraph
         {
             get
@@ -1007,7 +1007,8 @@ namespace cs_store_app_TextGame
                 NPCName = input.Words[2]; 
             }
 
-            EntityNPC npc = CurrentRoom.NPCs.Find(NPCName, ordinal);
+            EntityNPC npc = CurrentRoom.NPCs.FindLiving(NPCName, ordinal);
+            if (npc == null) { npc = CurrentRoom.NPCs.Find(NPCName, ordinal); }
             if (npc == null) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             if (npc.IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_ALREADY_DEAD, npc.NameBaseAsParagraph); }
 
@@ -1035,9 +1036,26 @@ namespace cs_store_app_TextGame
         public override Handler DoSearch(TranslatedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Search".ToParagraph()); }
-            if (input.Words.Length > 2) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
+            
+            int nOrdinal = 0;
+            string strNPC = "";
 
-            EntityNPC npc = CurrentRoom.NPCs.Find(input.Words[1]);
+            switch(input.Words.Length)
+            {
+                case 2:
+                    strNPC = input.Words[1];
+                    break;
+                case 3:
+                    if (!Statics.OrdinalStringToInt.ContainsKey(input.Words[1])) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
+                    nOrdinal = Statics.OrdinalStringToInt[input.Words[1]];
+                    strNPC = input.Words[2];
+                    break;
+                default:
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT);
+            }
+
+            EntityNPC npc = CurrentRoom.NPCs.FindDead(strNPC, nOrdinal);
+            if (npc == null) { npc = CurrentRoom.NPCs.Find(strNPC, nOrdinal); }
             if (npc == null) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             if (!npc.IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_NPC_NOT_DEAD, npc.NameAsParagraph); }
 
@@ -1057,5 +1075,19 @@ namespace cs_store_app_TextGame
             }
         }
         #endregion
+
+        public override void SetCurrentRoom(Connection connection)
+        {
+            // player is leaving old current room; reset timer
+            if (CurrentRoom != null) { CurrentRoom.ResetEmptyRoomTimer(); }
+            base.SetCurrentRoom(connection);
+        }
+
+        public override void SetCurrentRoom(int nRegion, int nSubregion, int nRoom)
+        {
+            // player is leaving old current room; reset timer
+            if (CurrentRoom != null) { CurrentRoom.ResetEmptyRoomTimer(); }
+            base.SetCurrentRoom(nRegion, nSubregion, nRoom);
+        }
     }
 }

@@ -106,7 +106,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Debug.cs" />
-    <Compile Include="EntityRelationshipTable.cs" />
+    <Compile Include="entity\EntityNPCAnimal.cs" />
+    <Compile Include="entity\EntityNPCHumanoid.cs" />
+    <Compile Include="entity\EntityRelationshipTable.cs" />
     <Compile Include="entity\EntityAttributes.cs" />
     <Compile Include="entity\EntityNPCCollection.cs" />
     <Compile Include="entity\EntityNPC.cs" />

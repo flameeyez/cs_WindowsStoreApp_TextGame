@@ -39,9 +39,6 @@ namespace cs_store_app_TextGame
                             strReturn += ", ";
                         } 
                     }
-                    //for (int i = 0; i < NPCs.Count; i++)
-                    //{
-                    //}
                 }
                 else if (Entities.Count == 2)
                 {
@@ -149,24 +146,6 @@ namespace cs_store_app_TextGame
             }
         }
 
-        public EntityNPC Find(string strWord, int ordinal = 0)
-        {
-            int nOccurrences = -1;
-
-            for (int i = Entities.Count() - 1; i >= 0; i--)
-            {
-                if (Entities[i].IsKeyword(strWord))
-                {
-                    nOccurrences++;
-                    if (nOccurrences == ordinal)
-                    {
-                        return Entities[i];
-                    }
-                }
-            }
-
-            return null;
-        }
         public void Add(EntityNPC npc)
         {
             Entities.Add(npc);
@@ -201,9 +180,9 @@ namespace cs_store_app_TextGame
             foreach(EntityNPC npc in Entities)
             {
                 // ignore entities of same type
-                if (npc.Type.Equals(source.Type)) { continue; }
+                if (npc.RelationshipGroup.Equals(source.RelationshipGroup)) { continue; }
 
-                int relationship = EntityRelationshipTable.GetRelationship(source.Type, npc.Type);
+                int relationship = EntityRelationshipTable.GetRelationship(source.RelationshipGroup, npc.RelationshipGroup);
                 if(relationship < 0)
                 {
                     if (!bMustBeAlive || npc.CurrentHealth > 0)
@@ -214,6 +193,77 @@ namespace cs_store_app_TextGame
             }
 
             return hostiles;
+        }
+
+        public void Cleanup()
+        {
+            for(int i = Entities.Count - 1; i >= 0; i--)
+            {
+                if (Entities[i].IsDead) { Entities.RemoveAt(i); }
+            }
+
+            if(Entities.Count > 5)
+            {
+                Entities.Clear();
+            }
+        }
+
+        public EntityNPC Find(string strWord, int ordinal = 0)
+        {
+            EntityNPC closestMatch = null;
+
+            int nOccurrences = -1;
+
+            for (int i = Entities.Count() - 1; i >= 0; i--)
+            {
+                if (Entities[i].IsKeyword(strWord))
+                {
+                    nOccurrences++;
+                    if (nOccurrences == ordinal)
+                    {
+                        return Entities[i];
+                    }
+                }
+            }
+
+            return closestMatch;
+        }
+        public EntityNPC FindDead(string strWord, int ordinal = 0)
+        {
+            int nOccurrences = -1;
+
+            for (int i = Entities.Count() - 1; i >= 0; i--)
+            {
+                if (!Entities[i].IsKeyword(strWord)) { continue; }
+                if (!Entities[i].IsDead) { continue; }
+
+                nOccurrences++;
+                if (nOccurrences == ordinal)
+                {
+                    return Entities[i];
+                }
+            }
+
+            return null;
+        }
+
+        public EntityNPC FindLiving(string strWord, int ordinal = 0)
+        {
+            int nOccurrences = -1;
+
+            for (int i = Entities.Count() - 1; i >= 0; i--)
+            {
+                if (!Entities[i].IsKeyword(strWord)) { continue; }
+                if (Entities[i].IsDead) { continue; }
+
+                nOccurrences++;
+                if (nOccurrences == ordinal)
+                {
+                    return Entities[i];
+                }
+            }
+
+            return null;
         }
     }
 }

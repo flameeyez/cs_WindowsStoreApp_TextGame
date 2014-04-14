@@ -14,8 +14,8 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         // DEBUG
-        public static int DebugNPCCount = 100;
-        public static int DebugItemPasses = 1;
+        public static int DebugNPCCount = 500;
+        public static int DebugItemPasses = 10;
 
         public static int RunningInlineCount = 0;
         public static int RunningInlineThreshold = 500;
@@ -23,6 +23,8 @@ namespace cs_store_app_TextGame
         public static int ItemCount = 0;
         public static int EntityCount = 0;
         // END DEBUG
+
+        public static int EmptyRoomCleanupThreshold = 30000;
 
         public static Random r = new Random(DateTime.Now.Millisecond);
         public static Dictionary<string, int> OrdinalStringToInt = new Dictionary<string, int>();

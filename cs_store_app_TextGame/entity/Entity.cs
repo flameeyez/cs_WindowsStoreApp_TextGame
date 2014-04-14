@@ -28,6 +28,12 @@ namespace cs_store_app_TextGame
         KNEELING
     }
 
+    public enum ENTITY_TYPE
+    {
+        HUMANOID,
+        ANIMAL        
+    }
+
     public abstract class Entity
     {
         #region Attributes
@@ -244,7 +250,7 @@ namespace cs_store_app_TextGame
         }
         #endregion
         #region Methods
-        public void SetCurrentRoom(int nRegion, int nSubregion, int nRoom)
+        public virtual void SetCurrentRoom(int nRegion, int nSubregion, int nRoom)
         {
             CurrentRegionIndex = nRegion;
             CurrentRoomIndex = nRoom;
@@ -253,7 +259,7 @@ namespace cs_store_app_TextGame
             _currentSubregion = CurrentRegion.Subregions[nSubregion];
             _currentRoom = CurrentSubregion.Rooms[nRoom];
         }
-        public void SetCurrentRoom(Connection connection)
+        public virtual void SetCurrentRoom(Connection connection)
         {
             SetCurrentRoom(connection.DestinationRegion, connection.DestinationSubregion, connection.DestinationRoom);
         }

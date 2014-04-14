@@ -57,7 +57,7 @@ namespace cs_store_app_TextGame
             await Messages.Load();
             await EntityRelationshipTable.Load();
 
-            AppendParagraph(EntityRelationshipTable.DisplayString().ToParagraph());
+            // AppendParagraph(EntityRelationshipTable.DisplayString().ToParagraph());
 
             // world update timer
             t = new Timer(Update, null, 1000, 50);
@@ -292,7 +292,6 @@ namespace cs_store_app_TextGame
                 int region = 0;
                 int subregion = 0;
                 int room = r.Next(9);
-                //EntityNPC npc = EntityNPCTemplates.NPCs[r.Next(EntityNPCTemplates.NPCs.Count)].Clone();
                 EntityNPC npc = EntityNPCTemplates.NPCTemplates.Random().Clone();
                 npc.SetCurrentRoom(region, subregion, room);
                 World.Regions[region].Subregions[subregion].Rooms[room].NPCs.Add(npc);
