@@ -223,32 +223,7 @@ namespace cs_store_app_TextGame
 
         public EntityNPC Clone()
         {
-            EntityNPC npc = new EntityNPC();
-            // TODO: move ActionPulse to .xml
-            npc.ActionPulse = 8000 + Statics.r.Next(15000);
-            npc.NID = Statics.EntityCount++;
-            npc.ID = ID;
-            npc.RelationshipGroup = RelationshipGroup;
-            npc.Name = Name;
-            npc.Gold = Gold;
-            npc.MaximumHealth = MaximumHealth;
-            npc.CurrentHealth = CurrentHealth;
-            if (RightHand != null) { npc.RightHand = RightHand.DeepClone(); }
-            if (LeftHand != null) { npc.LeftHand = LeftHand.DeepClone(); }
-            if (ArmorChest != null) { npc.ArmorChest = ArmorChest.DeepClone(); }
-            if (ArmorHead != null) { npc.ArmorHead = ArmorHead.DeepClone(); }
-            if (ArmorFeet != null) { npc.ArmorFeet = ArmorFeet.DeepClone(); }
-            if (Backpack != null) { npc.Backpack = Backpack.DeepClone(); }
-            if (Ring1 != null) { npc.Ring1 = Ring1.DeepClone(); }
-            if (Ring2 != null) { npc.Ring2 = Ring2.DeepClone(); }
-            if (Amulet != null) { npc.Amulet = Amulet.DeepClone(); }
-
-            foreach (string keyword in Keywords)
-            {
-                npc.Keywords.Add(keyword);
-            }
-
-            return npc;
+            return new EntityNPC(this);
         }
     }
 }

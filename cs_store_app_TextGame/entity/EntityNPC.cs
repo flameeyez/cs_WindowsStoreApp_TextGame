@@ -268,187 +268,30 @@ namespace cs_store_app_TextGame
         #region Constructors
 
         public EntityNPC() : base() { }
-        public EntityNPC(XElement npcNode)
+        public EntityNPC(EntityNPCTemplate template) : base() 
         {
-            ID = int.Parse(npcNode.Element("id").Value);
-            Name = npcNode.Element("name").Value;
-            RelationshipGroup = (ENTITY_RELATIONSHIP_GROUP)Enum.Parse(typeof(ENTITY_RELATIONSHIP_GROUP), npcNode.Element("type").Value);
-            MaximumHealth = int.Parse(npcNode.Element("maximum-health").Value);
-            CurrentHealth = MaximumHealth;
+            // TODO: move ActionPulse to .xml
+            ActionPulse = 8000 + Statics.r.Next(15000);
+            NID = Statics.EntityCount++;
+            ID = template.ID;
+            RelationshipGroup = template.RelationshipGroup;
+            Name = template.Name;
+            Gold = template.Gold;
+            MaximumHealth = template.MaximumHealth;
+            CurrentHealth = template.CurrentHealth;
+            if (template.RightHand != null) { RightHand = template.RightHand.DeepClone(); }
+            if (template.LeftHand != null) { LeftHand = template.LeftHand.DeepClone(); }
+            if (template.ArmorChest != null) { ArmorChest = template.ArmorChest.DeepClone(); }
+            if (template.ArmorHead != null) { ArmorHead = template.ArmorHead.DeepClone(); }
+            if (template.ArmorFeet != null) { ArmorFeet = template.ArmorFeet.DeepClone(); }
+            if (template.Backpack != null) { Backpack = template.Backpack.DeepClone(); }
+            if (template.Ring1 != null) { Ring1 = template.Ring1.DeepClone(); }
+            if (template.Ring2 != null) { Ring2 = template.Ring2.DeepClone(); }
+            if (template.Amulet != null) { Amulet = template.Amulet.DeepClone(); }
 
-            var keywordNodes = from keywords in npcNode
-                                .Elements("keywords")
-                                  .Elements("keyword")
-                               select keywords;
-            foreach (var keywordNode in keywordNodes)
+            foreach (string keyword in template.Keywords)
             {
-                Keywords.Add(keywordNode.Value);
-            }
-
-            // behavior
-            var behaviorNode = npcNode.Element("behavior");
-            if(behaviorNode != null)
-            {
-                foreach(var node in behaviorNode.Elements())
-                {
-                    ACTION_ENUM action = TranslatedInput.StringToAction[node.Name.LocalName];
-                    int percentage = int.Parse(node.Value);
-                    Behavior.Add(new EntityNPCBehavior(action, percentage));
-                }
-            }
-
-            // inventory
-            var inventoryNode = npcNode.Element("inventory");
-
-            // right hand
-            var rightHandNode = inventoryNode.Element("right-hand");
-            if (rightHandNode != null)
-            {
-                var itemTypeNode = rightHandNode.Elements().First();
-                int nIndex = int.Parse(itemTypeNode.Value);
-                switch (itemTypeNode.Name.LocalName)
-                {
-                    case "weapon":
-                        RightHand = ItemTemplates.ItemsWeapon[nIndex].DeepClone();
-                        break;
-                    case "armor-shield":
-                        RightHand = ItemTemplates.ItemsArmorShield[nIndex].DeepClone();
-                        break;
-                    case "armor-head":
-                        RightHand = ItemTemplates.ItemsArmorHead[nIndex].DeepClone();
-                        break;
-                    case "armor-feet":
-                        RightHand = ItemTemplates.ItemsArmorFeet[nIndex].DeepClone();
-                        break;
-                    case "armor-chest":
-                        RightHand = ItemTemplates.ItemsArmorChest[nIndex].DeepClone();
-                        break;
-                    case "accessory-ring":
-                        RightHand = ItemTemplates.ItemsAccessoryRing[nIndex].DeepClone();
-                        break;
-                    case "accessory-amulet":
-                        RightHand = ItemTemplates.ItemsAccessoryAmulet[nIndex].DeepClone();
-                        break;
-                    case "drink":
-                        RightHand = ItemTemplates.ItemsDrink[nIndex].DeepClone();
-                        break;
-                    case "food":
-                        RightHand = ItemTemplates.ItemsFood[nIndex].DeepClone();
-                        break;
-                    case "container":
-                        RightHand = ItemTemplates.ItemsContainer[nIndex].DeepClone();
-                        break;
-                    case "junk":
-                        RightHand = ItemTemplates.ItemsJunk[nIndex].DeepClone();
-                        break;
-                }
-            }
-
-            // left hand
-            var leftHandNode = inventoryNode.Element("left-hand");
-            if (leftHandNode != null)
-            {
-                var itemTypeNode = leftHandNode.Elements().First();
-                int nIndex = int.Parse(itemTypeNode.Value);
-                switch (itemTypeNode.Name.LocalName)
-                {
-                    case "weapon":
-                        LeftHand = ItemTemplates.ItemsWeapon[nIndex].DeepClone();
-                        break;
-                    case "armor-shield":
-                        LeftHand = ItemTemplates.ItemsArmorShield[nIndex].DeepClone();
-                        break;
-                    case "armor-head":
-                        LeftHand = ItemTemplates.ItemsArmorHead[nIndex].DeepClone();
-                        break;
-                    case "armor-feet":
-                        LeftHand = ItemTemplates.ItemsArmorFeet[nIndex].DeepClone();
-                        break;
-                    case "armor-chest":
-                        LeftHand = ItemTemplates.ItemsArmorChest[nIndex].DeepClone();
-                        break;
-                    case "accessory-ring":
-                        LeftHand = ItemTemplates.ItemsAccessoryRing[nIndex].DeepClone();
-                        break;
-                    case "accessory-amulet":
-                        LeftHand = ItemTemplates.ItemsAccessoryAmulet[nIndex].DeepClone();
-                        break;
-                    case "drink":
-                        LeftHand = ItemTemplates.ItemsDrink[nIndex].DeepClone();
-                        break;
-                    case "food":
-                        LeftHand = ItemTemplates.ItemsFood[nIndex].DeepClone();
-                        break;
-                    case "container":
-                        LeftHand = ItemTemplates.ItemsContainer[nIndex].DeepClone();
-                        break;
-                    case "junk":
-                        LeftHand = ItemTemplates.ItemsJunk[nIndex].DeepClone();
-                        break;
-                }
-            }
-
-            // armor chest
-            var armorChestNode = inventoryNode.Element("armor-chest");
-            if (armorChestNode != null)
-            {
-                int nIndex = int.Parse(armorChestNode.Value);
-                ArmorChest = ItemTemplates.ItemsArmorChest[nIndex].DeepClone();
-            }
-
-            // armor head
-            var armorHeadNode = inventoryNode.Element("armor-head");
-            if (armorHeadNode != null)
-            {
-                int nIndex = int.Parse(armorHeadNode.Value);
-                ArmorHead = ItemTemplates.ItemsArmorHead[nIndex].DeepClone();
-            }
-
-            // armor feet
-            var armorFeetNode = inventoryNode.Element("armor-feet");
-            if (armorFeetNode != null)
-            {
-                int nIndex = int.Parse(armorFeetNode.Value);
-                ArmorFeet = ItemTemplates.ItemsArmorFeet[nIndex].DeepClone();
-            }
-
-            // backpack
-            var backpackNode = inventoryNode.Element("backpack");
-            if (backpackNode != null)
-            {
-                int nIndex = int.Parse(backpackNode.Value);
-                Backpack = ItemTemplates.ItemsContainer[nIndex].DeepClone();
-            }
-
-            // ring 1
-            var ring1Node = inventoryNode.Element("ring1");
-            if (ring1Node != null)
-            {
-                int nIndex = int.Parse(ring1Node.Value);
-                Ring1 = ItemTemplates.ItemsAccessoryRing[nIndex].DeepClone();
-            }
-
-            // ring 2
-            var ring2Node = inventoryNode.Element("ring2");
-            if (ring2Node != null)
-            {
-                int nIndex = int.Parse(ring2Node.Value);
-                Ring2 = ItemTemplates.ItemsAccessoryRing[nIndex].DeepClone();
-            }
-
-            // amulet
-            var amuletNode = inventoryNode.Element("amulet");
-            if (amuletNode != null)
-            {
-                int nIndex = int.Parse(amuletNode.Value);
-                Amulet = ItemTemplates.ItemsAccessoryAmulet[nIndex].DeepClone();
-            }
-
-            // gold
-            var goldNode = inventoryNode.Element("gold");
-            if (goldNode != null)
-            {
-                Gold = int.Parse(goldNode.Value);
+                Keywords.Add(keyword);
             }
         }
 
@@ -458,7 +301,7 @@ namespace cs_store_app_TextGame
         private Handler DoAction()
         {
             // DEBUG
-            return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
+            // return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE);
             // END DEBUG
 
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.NO_MESSAGE); }
@@ -469,15 +312,15 @@ namespace cs_store_app_TextGame
             Random r = new Random(DateTime.Now.Millisecond);
             int percentage = r.Next(100);
 
-            foreach(EntityNPCBehavior behavior in Behavior)
-            {
-                if(percentage < behavior.PercentageChance)
-                {
-                    // TODO: method for converting ACTION_ENUM directly to Do method
-                    // dictionary<action_enum, delegate>? possible?
-                    //handler = 
-                }
-            }
+            //foreach(EntityNPCBehavior behavior in Behavior)
+            //{
+            //    if(percentage < behavior.PercentageChance)
+            //    {
+            //        // TODO: method for converting ACTION_ENUM directly to Do method
+            //        // dictionary<action_enum, delegate>? possible?
+            //        //handler = 
+            //    }
+            //}
 
             //while (handler.ReturnCode == RETURN_CODE.UNHANDLED)
             //{

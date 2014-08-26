@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Compression;
 using Windows.Storage.Pickers;
@@ -298,5 +299,26 @@ namespace cs_store_app_TextGame
             }
         }
         #endregion
+
+        Point initialpoint;
+
+        private void Page_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            initialpoint = e.Position;
+        }
+
+        private void Page_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (e.IsInertial)
+            {
+                Point currentpoint = e.Position;
+                if (currentpoint.X - initialpoint.X >= 500)//500 is the threshold value, where you want to trigger the swipe right event
+                {
+                    AppendDebugText("swipe right");
+                    e.Complete();
+                }
+            }
+        }
+
     }
 }

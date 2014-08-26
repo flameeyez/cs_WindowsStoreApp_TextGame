@@ -106,6 +106,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Debug.cs" />
+    <Compile Include="entity\EntityBase.cs" />
+    <Compile Include="entity\EntityHumanoid.cs" />
+    <Compile Include="entity\entity_body\EntityBody.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPart.cs" />
     <Compile Include="entity\EntityNPCAnimal.cs" />
     <Compile Include="entity\EntityNPCHumanoid.cs" />
     <Compile Include="entity\EntityRelationshipTable.cs" />
@@ -115,6 +119,7 @@
     <Compile Include="entity\EntityNPCTemplate.cs" />
     <Compile Include="entity\EntityNPCTemplates.cs" />
     <Compile Include="entity\EntityPlayer.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPartHead.cs" />
     <Compile Include="ExitWithDirection.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="input\Handler.cs" />
@@ -133,6 +138,7 @@
     <Compile Include="input\TranslatedInput.cs" />
     <Compile Include="entity\EntityNPCBehavior.cs" />
     <Compile Include="RichTextManager.cs" />
+    <Compile Include="static\Status.cs" />
     <Compile Include="world\Connection.cs" />
     <Compile Include="world\ConnectionCollection.cs" />
     <Compile Include="world\Exit.cs" />

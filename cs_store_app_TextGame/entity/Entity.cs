@@ -36,6 +36,9 @@ namespace cs_store_app_TextGame
 
     public abstract class Entity
     {
+        // TODO: add body
+
+
         #region Attributes
         public int ID { get; set; }
         public int NID { get; set; }
