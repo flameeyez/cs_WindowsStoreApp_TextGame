@@ -165,27 +165,25 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public List<Handler> Update()
+        public void Update()
         {
-            List<Handler> handlers = new List<Handler>();
-
-            if (!this.Equals(Game.Player.CurrentRoom))
+            if (!this.Equals(Game.Player.Coordinates.CurrentRoom))
             {
                 DateTime now = DateTime.Now;
                 TimeSpan delta = now - EmptyRoomTimer;
                 if (delta.TotalMilliseconds > Statics.EmptyRoomCleanupThreshold)
                 {
                     EmptyRoomTimer = now;
-                    Cleanup();
-                    // handlers.Add(new Handler(RETURN_CODE.HANDLED, MESSAGE_ENUM.DEBUG_ROOM_CLEANUP, ID.ToString().ToParagraph()));
+                    //Cleanup();
+                    
+                    // DEBUG
+                    //Messages.Display(MESSAGE_ENUM.DEBUG_ROOM_CLEANUP, ID.ToString().ToParagraph());
+                    // END DEBUG
                 }
             }
-                        
-            handlers.AddRange(NPCs.Update());
-            return handlers;
         }
 
-        public EntityNPC GetRandomHostile(EntityNPC source, bool bMustBeAlive = false)
+        public EntityNPCBase GetRandomHostile(EntityNPCBase source, bool bMustBeAlive = false)
         {
             return NPCs.GetRandomHostile(source, bMustBeAlive);
         }

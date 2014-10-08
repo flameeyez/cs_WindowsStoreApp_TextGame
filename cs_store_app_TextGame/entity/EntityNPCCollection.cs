@@ -10,7 +10,8 @@ namespace cs_store_app_TextGame
 {
     public class EntityNPCCollection
     {
-        public List<EntityNPC> Entities = new List<EntityNPC>();
+        public List<EntityNPCBase> Entities = new List<EntityNPCBase>();
+        
         public string RoomDisplayString
         {
             get
@@ -37,7 +38,7 @@ namespace cs_store_app_TextGame
                         else if (i > 0)
                         {
                             strReturn += ", ";
-                        } 
+                        }
                     }
                 }
                 else if (Entities.Count == 2)
@@ -145,47 +146,42 @@ namespace cs_store_app_TextGame
                 return p;
             }
         }
-
-        public void Add(EntityNPC npc)
+        
+        public void Add(EntityNPCBase npc)
         {
             Entities.Add(npc);
         }
-        public void Remove(EntityNPC npc)
+        public void Remove(EntityNPCBase npc)
         {
             Entities.Remove(npc);
         }
-        public List<Handler> Update()
+        public void Update()
         {
-            List<Handler> handlers = new List<Handler>();
-
-            for (int i = Entities.Count - 1; i >= 0; i--)
+            foreach(EntityNPCBase npc in Entities)
             {
-                Handler handler = Entities[i].Update();
-                if (handler != null) { handlers.Add(handler); }
+                npc.Update();
             }
-
-            return handlers;
         }
-        public EntityNPC GetRandomHostile(EntityNPC source, bool bMustBeAlive = false)
+        
+        public EntityNPCBase GetRandomHostile(EntityNPCBase source, bool bMustBeAlive = false)
         {
-            List<EntityNPC> hostiles = GetListOfHostiles(source, bMustBeAlive);
+            List<EntityNPCBase> hostiles = GetListOfHostiles(source, bMustBeAlive);
             if (hostiles.Count == 0) { return null; }
             return hostiles.Random();
         }
-
-        private List<EntityNPC> GetListOfHostiles(EntityNPC source, bool bMustBeAlive = false)
+        private List<EntityNPCBase> GetListOfHostiles(EntityNPCBase source, bool bMustBeAlive = false)
         {
-            List<EntityNPC> hostiles = new List<EntityNPC>();
+            List<EntityNPCBase> hostiles = new List<EntityNPCBase>();
 
-            foreach(EntityNPC npc in Entities)
+            foreach (EntityNPCBase npc in Entities)
             {
                 // ignore entities of same type
-                if (npc.RelationshipGroup.Equals(source.RelationshipGroup)) { continue; }
+                if (npc.Faction.Equals(source.Faction)) { continue; }
 
-                int relationship = EntityRelationshipTable.GetRelationship(source.RelationshipGroup, npc.RelationshipGroup);
-                if(relationship < 0)
+                int relationship = EntityRelationshipTable.GetRelationship(source.Faction, npc.Faction);
+                if (relationship < 0)
                 {
-                    if (!bMustBeAlive || npc.CurrentHealth > 0)
+                    if (!bMustBeAlive || !npc.IsDead)
                     {
                         hostiles.Add(npc);
                     }
@@ -194,24 +190,18 @@ namespace cs_store_app_TextGame
 
             return hostiles;
         }
-
+        
         public void Cleanup()
         {
-            for(int i = Entities.Count - 1; i >= 0; i--)
+            for (int i = Entities.Count - 1; i >= 0; i--)
             {
                 if (Entities[i].IsDead) { Entities.RemoveAt(i); }
             }
-
-            if(Entities.Count > 5)
-            {
-                Entities.Clear();
-            }
         }
 
-        public EntityNPC Find(string strWord, int ordinal = 0)
+        public EntityNPCBase Find(string strWord, int ordinal = 0)
         {
-            EntityNPC closestMatch = null;
-
+            // TODO: closest match?
             int nOccurrences = -1;
 
             for (int i = Entities.Count() - 1; i >= 0; i--)
@@ -226,9 +216,9 @@ namespace cs_store_app_TextGame
                 }
             }
 
-            return closestMatch;
+            return null;
         }
-        public EntityNPC FindDead(string strWord, int ordinal = 0)
+        public EntityNPCBase FindDead(string strWord, int ordinal = 0)
         {
             int nOccurrences = -1;
 
@@ -246,8 +236,7 @@ namespace cs_store_app_TextGame
 
             return null;
         }
-
-        public EntityNPC FindLiving(string strWord, int ordinal = 0)
+        public EntityNPCBase FindLiving(string strWord, int ordinal = 0)
         {
             int nOccurrences = -1;
 
@@ -265,5 +254,257 @@ namespace cs_store_app_TextGame
 
             return null;
         }
+
+        #region OLD
+        //public List<EntityNPC> EntitiesOLD = new List<EntityNPC>();
+        //public string RoomDisplayStringOLD
+        //{
+        //    get
+        //    {
+        //        if (Entities.Count == 0) { return ""; }
+
+        //        string strReturn = "You also see ";
+
+        //        if (Entities.Count > 2)
+        //        {
+        //            for (int i = Entities.Count() - 1; i >= 0; i--)
+        //            {
+        //                strReturn += "a";
+        //                if ((Entities[i].Name[0]).IsVowel())
+        //                {
+        //                    strReturn += "n";
+        //                }
+        //                strReturn += " ";
+        //                strReturn += Entities[i].Name;
+        //                if (i == 1)
+        //                {
+        //                    strReturn += ", and ";
+        //                }
+        //                else if (i > 0)
+        //                {
+        //                    strReturn += ", ";
+        //                } 
+        //            }
+        //        }
+        //        else if (Entities.Count == 2)
+        //        {
+        //            strReturn += "a";
+        //            if ((Entities[1].Name[0]).IsVowel())
+        //            {
+        //                strReturn += "n";
+        //            }
+        //            strReturn += " ";
+        //            strReturn += Entities[1].Name;
+        //            strReturn += " and a";
+        //            if ((Entities[0].Name[0]).IsVowel())
+        //            {
+        //                strReturn += "n";
+        //            }
+        //            strReturn += " ";
+        //            strReturn += Entities[0].Name;
+        //        }
+        //        else if (Entities.Count == 1)
+        //        {
+        //            strReturn += "a";
+        //            if ((Entities[0].Name[0]).IsVowel())
+        //            {
+        //                strReturn += "n";
+        //            }
+        //            strReturn += " ";
+        //            strReturn += Entities[0].Name;
+        //        }
+
+        //        strReturn += ".";
+
+        //        return strReturn;
+        //    }
+        //}
+        //public Paragraph RoomDisplayParagraphOLD
+        //{
+        //    get
+        //    {
+        //        if (Entities.Count == 0) { return null; }
+
+        //        Paragraph p = new Paragraph();
+        //        p.Inlines.Add(("You also see ").ToRun());
+
+        //        if (Entities.Count > 2)
+        //        {
+        //            string strA = "";
+        //            for (int i = Entities.Count() - 1; i >= 0; i--)
+        //            {
+        //                strA += "a";
+        //                if ((Entities[i].Name[0]).IsVowel())
+        //                {
+        //                    strA += "n";
+        //                }
+        //                strA += " ";
+
+        //                p.Inlines.Add(strA.ToRun());
+        //                p.Inlines.Add(Entities[i].NameAsRun);
+        //                if (i == 1)
+        //                {
+        //                    strA = ", and ";
+        //                }
+        //                else if (i > 0)
+        //                {
+        //                    strA = ", ";
+        //                }
+        //            }
+        //        }
+        //        else if (Entities.Count == 2)
+        //        {
+        //            string strA = "a";
+        //            if ((Entities[1].Name[0]).IsVowel())
+        //            {
+        //                strA += "n";
+        //            }
+        //            strA += " ";
+
+        //            p.Inlines.Add(strA.ToRun());
+        //            p.Inlines.Add(Entities[1].NameAsRun);
+
+        //            strA = " and a";
+        //            if ((Entities[0].Name[0]).IsVowel())
+        //            {
+        //                strA += "n";
+        //            }
+        //            strA += " ";
+
+        //            p.Inlines.Add(strA.ToRun());
+        //            p.Inlines.Add(Entities[0].NameAsRun);
+        //        }
+        //        else if (Entities.Count == 1)
+        //        {
+        //            string strA = "a";
+        //            if ((Entities[0].Name[0]).IsVowel())
+        //            {
+        //                strA += "n";
+        //            }
+        //            strA += " ";
+        //            p.Inlines.Add(strA.ToRun());
+        //            p.Inlines.Add(Entities[0].NameAsRun);
+        //        }
+
+        //        p.Inlines.Add((".\n").ToRun());
+
+        //        return p;
+        //    }
+        //}
+        //public void AddOLD(EntityNPC npc)
+        //{
+        //    Entities.Add(npc);
+        //}
+        //public void RemoveOLD(EntityNPC npc)
+        //{
+        //    Entities.Remove(npc);
+        //}
+        //public List<Handler> UpdateOLD()
+        //{
+        //    List<Handler> handlers = new List<Handler>();
+
+        //    for (int i = Entities.Count - 1; i >= 0; i--)
+        //    {
+        //        Handler handler = Entities[i].Update();
+        //        if (handler != null) { handlers.Add(handler); }
+        //    }
+
+        //    return handlers;
+        //}
+        //public EntityNPC GetRandomHostileOLD(EntityNPC source, bool bMustBeAlive = false)
+        //{
+        //    List<EntityNPC> hostiles = GetListOfHostiles(source, bMustBeAlive);
+        //    if (hostiles.Count == 0) { return null; }
+        //    return hostiles.Random();
+        //}
+        //private List<EntityNPC> GetListOfHostilesOLD(EntityNPC source, bool bMustBeAlive = false)
+        //{
+        //    List<EntityNPC> hostiles = new List<EntityNPC>();
+
+        //    foreach (EntityNPC npc in Entities)
+        //    {
+        //        // ignore entities of same type
+        //        if (npc.Faction.Equals(source.Faction)) { continue; }
+
+        //        int relationship = EntityRelationshipTable.GetRelationship(source.Faction, npc.Faction);
+        //        if (relationship < 0)
+        //        {
+        //            if (!bMustBeAlive || npc.CurrentHealth > 0)
+        //            {
+        //                hostiles.Add(npc);
+        //            }
+        //        }
+        //    }
+
+        //    return hostiles;
+        //}
+        //public void CleanupOLD()
+        //{
+        //    for (int i = Entities.Count - 1; i >= 0; i--)
+        //    {
+        //        if (Entities[i].IsDead) { Entities.RemoveAt(i); }
+        //    }
+
+        //    if (Entities.Count > 5)
+        //    {
+        //        Entities.Clear();
+        //    }
+        //}
+        //public EntityNPC FindOLD(string strWord, int ordinal = 0)
+        //{
+        //    // TODO: closest match?
+        //    int nOccurrences = -1;
+
+        //    for (int i = Entities.Count() - 1; i >= 0; i--)
+        //    {
+        //        if (Entities[i].IsKeyword(strWord))
+        //        {
+        //            nOccurrences++;
+        //            if (nOccurrences == ordinal)
+        //            {
+        //                return Entities[i];
+        //            }
+        //        }
+        //    }
+
+        //    return null;
+        //}
+        //public EntityNPC FindDeadOLD(string strWord, int ordinal = 0)
+        //{
+        //    int nOccurrences = -1;
+
+        //    for (int i = Entities.Count() - 1; i >= 0; i--)
+        //    {
+        //        if (!Entities[i].IsKeyword(strWord)) { continue; }
+        //        if (!Entities[i].IsDead) { continue; }
+
+        //        nOccurrences++;
+        //        if (nOccurrences == ordinal)
+        //        {
+        //            return Entities[i];
+        //        }
+        //    }
+
+        //    return null;
+        //}
+        //public EntityNPC FindLivingOLD(string strWord, int ordinal = 0)
+        //{
+        //    int nOccurrences = -1;
+
+        //    for (int i = Entities.Count() - 1; i >= 0; i--)
+        //    {
+        //        if (!Entities[i].IsKeyword(strWord)) { continue; }
+        //        if (Entities[i].IsDead) { continue; }
+
+        //        nOccurrences++;
+        //        if (nOccurrences == ordinal)
+        //        {
+        //            return Entities[i];
+        //        }
+        //    }
+
+        //    return null;
+        //}
+        #endregion
     }
 }

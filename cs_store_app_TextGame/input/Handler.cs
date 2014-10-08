@@ -32,7 +32,10 @@ namespace cs_store_app_TextGame
         {
             return new Handler(RETURN_CODE.HANDLED, message, p1, p2, p3, p4);
         }
-
+        public static Handler UNHANDLED(MESSAGE_ENUM message = MESSAGE_ENUM.NO_MESSAGE, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
+        {
+            return new Handler(RETURN_CODE.UNHANDLED, message, p1, p2, p3, p4);
+        }
         #endregion
         #region Equals
         public override bool Equals(object obj)
@@ -48,9 +51,5 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public static Handler UNHANDLED()
-        {
-            return new Handler(RETURN_CODE.UNHANDLED, MESSAGE_ENUM.NO_MESSAGE);
-        }
     }
 }

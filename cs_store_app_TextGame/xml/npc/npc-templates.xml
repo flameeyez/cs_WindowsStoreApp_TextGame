@@ -1,16 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--remember to define empty hand and body slots-->
 <npc-templates>
   <npc-template>
     <id>0</id>
     <name>goblin</name>
-    <type>GOBLIN</type>
+    <type>HUMANOID</type>
+    <faction>GOBLIN</faction>
     <keywords>
       <keyword>goblin</keyword>
     </keywords>
-    <maximum-health>10</maximum-health>
+    <attributes>
+      <strength>10</strength>
+      <intelligence>10</intelligence>
+      <vitality>10</vitality>
+      <maximum-health>10</maximum-health>
+      <maximum-magic>0</maximum-magic>
+    </attributes>
     <inventory>
-      <armor-chest>0</armor-chest>
-      <backpack>0</backpack>
+      <hands>
+        <hand />
+        <hand />
+      </hands>
+      <body>
+        <armor-head />
+        <armor-feet />
+        <armor-chest>0</armor-chest>
+        <finger />
+        <finger />
+        <neck />
+        <backpack>0</backpack>
+      </body>
       <gold>50</gold>
     </inventory>
     <behavior>
@@ -22,25 +41,36 @@
   <npc-template>
     <id>1</id>
     <name>orc</name>
-    <type>ORC</type>
+    <type>HUMANOID</type>
+    <faction>ORC</faction>
     <keywords>
       <keyword>orc</keyword>
     </keywords>
-    <maximum-health>20</maximum-health>
+    <attributes>
+      <strength>20</strength>
+      <intelligence>20</intelligence>
+      <vitality>20</vitality>
+      <maximum-health>20</maximum-health>
+      <maximum-magic>0</maximum-magic>
+    </attributes>
     <inventory>
-      <right-hand>
-        <weapon>0</weapon>
-      </right-hand>
-      <left-hand>
-        <armor-shield>0</armor-shield>
-      </left-hand>
-      <armor-head>0</armor-head>
-      <armor-feet>0</armor-feet>
-      <armor-chest>0</armor-chest>
-      <ring1>0</ring1>
-      <ring2>1</ring2>
-      <amulet>0</amulet>
-      <backpack>0</backpack>
+      <hands>
+        <hand>
+          <weapon>0</weapon>
+        </hand>
+        <hand>
+          <armor-shield>0</armor-shield>
+        </hand>
+      </hands>
+      <body>
+        <armor-head>0</armor-head>
+        <armor-feet>0</armor-feet>
+        <armor-chest>0</armor-chest>
+        <finger>0</finger>
+        <finger>1</finger>
+        <neck>0</neck>
+        <backpack>0</backpack>
+      </body>
       <gold>50</gold>
     </inventory>
     <behavior>
@@ -52,47 +82,38 @@
   <npc-template>
     <id>2</id>
     <name>troll</name>
-    <type>TROLL</type>
+    <type>HUMANOID</type>
+    <faction>TROLL</faction>
     <keywords>
       <keyword>troll</keyword>
     </keywords>
-    <maximum-health>15</maximum-health>
+    <attributes>
+      <strength>15</strength>
+      <intelligence>15</intelligence>
+      <vitality>15</vitality>
+      <maximum-health>15</maximum-health>
+      <maximum-magic>0</maximum-magic>
+    </attributes>
     <inventory>
+      <hands>
+        <hand />
+        <hand />
+      </hands>
+      <body>
+        <armor-head />
+        <armor-feet />
+        <armor-chest />
+        <finger />
+        <finger />
+        <neck />
+        <backpack />
+      </body>
       <gold>25</gold>
     </inventory>
     <behavior>
       <attack>50</attack>
       <move>90</move>
       <look>100</look>
-    </behavior>
-  </npc-template>
-  <npc-template>
-    <id>3</id>
-    <name>villager</name>
-    <type>VILLAGER</type>
-    <keywords>
-      <keyword>villager</keyword>
-    </keywords>
-    <maximum-health>100</maximum-health>
-    <inventory>
-      <right-hand>
-        <weapon>0</weapon>
-      </right-hand>
-      <left-hand>
-        <armor-shield>0</armor-shield>
-      </left-hand>
-      <armor-head>0</armor-head>
-      <armor-feet>0</armor-feet>
-      <armor-chest>0</armor-chest>
-      <ring1>0</ring1>
-      <ring2>1</ring2>
-      <amulet>0</amulet>
-      <backpack>0</backpack>
-      <gold>50</gold>
-    </inventory>
-    <behavior>
-      <move>50</move>
-      <look>50</look>
     </behavior>
   </npc-template>
 </npc-templates>

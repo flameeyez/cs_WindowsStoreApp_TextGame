@@ -14,35 +14,30 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         // DEBUG
-        public static int DebugNPCCount = 500;
+        public static int DebugNPCCount = 0;
         public static int DebugItemPasses = 10;
 
         public static int RunningInlineCount = 0;
-        public static int RunningInlineThreshold = 500;
-        public static int RunningInlineCutCount = 300;
-        public static int ItemCount = 0;
-        public static int EntityCount = 0;
+        public static int RunningInlineThreshold = 300;
+        public static int RunningInlineCutCount = 200;
+        public static int NID = 0;
         // END DEBUG
 
         public static int EmptyRoomCleanupThreshold = 30000;
 
         public static Random r = new Random(DateTime.Now.Millisecond);
-        public static Dictionary<string, int> OrdinalStringToInt = new Dictionary<string, int>();
+
+        // any displayed text is routed through this queue; UI thread checks this queue during each update
+        public static Queue<Paragraph> AppendQueue = new Queue<Paragraph>();
 
         #region Static Constructor
         static Statics()
         {
-            OrdinalStringToInt.Add("first", 0);
-            OrdinalStringToInt.Add("second", 1);
-            OrdinalStringToInt.Add("third", 2);
-            OrdinalStringToInt.Add("fourth", 3);
-            OrdinalStringToInt.Add("fifth", 4);
-            OrdinalStringToInt.Add("sixth", 5);
-            OrdinalStringToInt.Add("seventh", 6);
-            OrdinalStringToInt.Add("eighth", 7);
-            OrdinalStringToInt.Add("ninth", 8);
-            OrdinalStringToInt.Add("tenth", 9);
-        }
+            LoadOrdinalStringToInt();
+            LoadItemTypeToEquipMessage();
+            LoadEquipResultToMessage();
+            LoadItemTypeToRemoveMessage();
+       }
         #endregion
 
         #region String Operations
@@ -217,7 +212,7 @@ namespace cs_store_app_TextGame
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
-        public static T DeepClone<T>(this T a)
+        public static T DeepClone<T>(this T a, int nid = -1)
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -226,11 +221,10 @@ namespace cs_store_app_TextGame
                 stream.Position = 0;
                 T returnObject = (T)serializer.ReadObject(stream);
 
-                Item item = returnObject as Item;
-                if (item != null)
+                GameObject g = returnObject as GameObject;
+                if(g != null)
                 {
-                    //item.UID = Guid.NewGuid();
-                    item.NID = Statics.ItemCount++;
+                    g.NID = nid == -1 ? Statics.NID++ : nid;
                 }
 
                 return returnObject;
@@ -249,5 +243,50 @@ namespace cs_store_app_TextGame
             else if (delta > -3) { return Colors.LightGreen; }
             else { return Colors.Gray; }
         }
+
+        #region Lookup Dictionaries
+        public static Dictionary<ITEM_TYPE, MESSAGE_ENUM> ItemTypeToEquipMessage = new Dictionary<ITEM_TYPE,MESSAGE_ENUM>();
+        public static Dictionary<ITEM_TYPE, MESSAGE_ENUM> ItemTypeToRemoveMessage = new Dictionary<ITEM_TYPE, MESSAGE_ENUM>();
+        public static Dictionary<string, int> OrdinalStringToInt = new Dictionary<string, int>();
+        public static Dictionary<EQUIP_RESULT, MESSAGE_ENUM> EquipResultToMessage = new Dictionary<EQUIP_RESULT, MESSAGE_ENUM>();
+
+        public static void LoadEquipResultToMessage()
+        {
+            EquipResultToMessage.Add(EQUIP_RESULT.NOT_EQUIPPABLE, MESSAGE_ENUM.ERROR_ITEM_NOT_EQUIPPABLE);
+            EquipResultToMessage.Add(EQUIP_RESULT.ITEM_ALREADY_EQUIPPED, MESSAGE_ENUM.ERROR_ALREADY_EQUIPPED);
+            EquipResultToMessage.Add(EQUIP_RESULT.BODY_PART_MISSING, MESSAGE_ENUM.ERROR_BODY_PART_MISSING);
+        }
+        public static void LoadItemTypeToEquipMessage()
+        {
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_CHEST, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_CHEST);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_FEET, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_FEET);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_FINGER);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_HEAD);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_NECK);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK);
+        }
+        public static void LoadItemTypeToRemoveMessage()
+        {
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_CHEST, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_CHEST);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_FEET, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_FEET);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_FINGER);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_HEAD);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_NECK);
+        }
+        public static void LoadOrdinalStringToInt()
+        {
+            OrdinalStringToInt.Add("first", 0);
+            OrdinalStringToInt.Add("second", 1);
+            OrdinalStringToInt.Add("third", 2);
+            OrdinalStringToInt.Add("fourth", 3);
+            OrdinalStringToInt.Add("fifth", 4);
+            OrdinalStringToInt.Add("sixth", 5);
+            OrdinalStringToInt.Add("seventh", 6);
+            OrdinalStringToInt.Add("eighth", 7);
+            OrdinalStringToInt.Add("ninth", 8);
+            OrdinalStringToInt.Add("tenth", 9);
+        }
+        #endregion
     }
 }

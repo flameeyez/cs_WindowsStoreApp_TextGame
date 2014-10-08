@@ -1,0 +1,305 @@
+test plan
+
+ideal input
+edge-case input
+
+empty hands
+item in right hand
+item in left hand
+full hands
+
+
+player
+---------------------------------------------
+--
+-- DoAttack
+--
+---------------------------------------------
+(valid weapon or fist assumed unless otherwise noted)
+e - attack
+- attack <room_npc_alive>
+e - attack <room_npc_dead>
+e - attack <bad_token>
+- attack <valid_ordinal> <room_npc_alive>
+  - q: does 'second' mean 'second total' or 'second living'?
+- attack <valid_ordinal> <room_npc_dead>
+e - attack <invalid_ordinal> <room_npc>
+e - attack <ordinal> <bad_token>
+- attack <room_npc> (right hand holding weapon, left hand empty)
+- attack <room_npc> (right hand holding weapon, left hand holding weapon)
+- attack <room_npc> (right hand holding weapon, left hand holding non-weapon)
+- attack <room_npc> (right hand empty, left hand empty)
+- attack <room_npc> (right hand empty, left hand holding weapon)
+- attack <room_npc> (right hand empty, left hand holding non-weapon)
+- attack <room_npc> (right hand holding non-weapon, left hand empty)
+- attack <room_npc> (right hand holding non-weapon, left hand holding weapon)
+e - attack <room_npc> (right hand holding non-weapon, left hand holding non-weapon)
+
+---------------------------------------------
+--
+-- DoMoveBasic
+--
+---------------------------------------------
+(for each direction)
+(test a valid and an invalid case)
+- northwest
+- nw
+- go northwest
+- go nw
+- move northwest
+- move nw
+
+---------------------------------------------
+--
+-- DoMoveConnection
+--
+---------------------------------------------
+(assume standing unless otherwise noted)
+e - go
+e - move
+e - go <bad_token>
+e - move <bad_token>
+- go <valid connection>
+- move <valid connection>
+e - go (dead)
+e - go (sitting)
+e - go (kneeling)
+
+---------------------------------------------
+--
+-- DoEat
+--
+---------------------------------------------
+(no ordinal support)
+e - eat
+e - eat <bad_token> (can't find item anywhere)
+- eat <right_hand_item> (is food; multiple bites left)
+- eat <right_hand_item> (is food; one bite left)
+e - eat <right_hand_item> (is not food)
+- eat <left_hand_item> (is food; multiple bites left)
+- eat <left_hand_item> (is food; one bite left)
+e - eat <left_hand_item> (is not food)
+- eat <room_item> (is food; multiple bites left)
+- eat <room_item> (is food; one bite left)
+e - eat <room_item> (is not food)
+
+---------------------------------------------
+--
+-- DoDrink
+--
+---------------------------------------------
+(no ordinal support)
+e - drink
+e - drink <bad_token> (can't find item anywhere)
+- drink <right_hand_item> (is drink; multiple drinks left)
+- drink <right_hand_item> (is drink; one drink left)
+e - drink <right_hand_item> (is not drink)
+- drink <left_hand_item> (is drink; multiple drinks left)
+- drink <left_hand_item> (is drink; one drink left)
+e - drink <left_hand_item> (is not drink)
+- drink <room_item> (is drink; multiple drinks left)
+- drink <room_item> (is drink; one drink left)
+- drink <room_item> (is not drink)
+
+---------------------------------------------
+--
+-- DoOpen
+--
+---------------------------------------------
+(no ordinal support)
+(no 'my' support)
+e - open
+- open <valid_container_slot> (is closed)
+e - open <valid_container_slot> (is open)
+- open <room_container> (is closed)
+e - open <room_container> (is open)
+- open <container_in_right_hand> (is closed)
+e - open <container_in_right_hand> (is open)
+- open <container_in_left_hand> (is closed)
+e - open <container_in_left_hand> (is open)
+e - open <bad_token>
+
+---------------------------------------------
+--
+-- DoClose
+--
+---------------------------------------------
+e - close
+e - close <valid_container_slot> (is closed)
+- close <valid_container_slot> (is open)
+e - close <room_container> (is closed)
+- close <room_container> (is open)
+e - close <container_in_right_hand> (is closed)
+- close <container_in_right_hand> (is open)
+e - close <container_in_left_hand> (is closed)
+- close <container_in_left_hand> (is open)
+e - close <bad_token>
+
+---------------------------------------------
+--
+-- DoPut
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoEquip
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoRemove
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoShowInventory
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoGet
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoDrop
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoBuy
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoGold
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoPrice
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoSell
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoStand
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoKneel
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoSit
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoShowHealth
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoSearch
+--
+---------------------------------------------
+
+
+
+---------------------------------------------
+--
+-- DoLook
+--
+---------------------------------------------
+-- one word
+- look
+
+-- two words
+- look <room_item>
+- look <hand_item>
+- look <body_item>
+- look <container_item>
+- look hands
+- look <room_npc>
+e - look <bad_token>
+
+-- three words
+- look at <room_item>
+- look at <hand_item>
+- look at <body_item>
+- look at <container_item>
+e - look at <bad_token>
+- look in <room_item> (is container)
+e - look in <room_item> (is not container)
+- look in <hand_item> (is container)
+e - look in <hand_item> (is not container)
+e - look in <body_item>
+- look in <container_item>
+e - look in <bad_token>
+
+-- four words
+- look at my <hand_item>
+- look at my <body_item>
+- look at my <container_item>
+e - look at my <room_item>
+e - look at my <bad_token>
+- look in my <hand_item> (is container)
+e - look in my <hand_item> (is not container)
+e - look in my <body_item>
+- look in my <container_item>
+e - look in my <room_item> (is container)
+e - look in my <room_item> (is not container)
+e - look in my <bad_token>
+- look <valid_ordinal> <room_item>
+e - look <invalid_ordinal> <room_item>
+- look <valid_ordinal> <room_npc>
+e - look <invalid_ordinal> <room_npc>

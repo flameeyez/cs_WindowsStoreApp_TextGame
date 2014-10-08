@@ -8,22 +8,22 @@ using System.Xml.Linq;
 
 namespace cs_store_app_TextGame
 {
-    [DataContract(Name = "EntityBodyPartHead", Namespace = "cs_store_app_TextGame")]
-    public class EntityBodyPartHead : EntityBodyPart 
+    [DataContract(Name = "EntityBodyPartChest", Namespace = "cs_store_app_TextGame")]
+    public class EntityBodyPartChest : EntityBodyPart
     {
-        public EntityBodyPartHead() { }
-        public EntityBodyPartHead(XElement bodyPartElement)
+        public EntityBodyPartChest() { }
+        public EntityBodyPartChest(XElement bodyPartElement)
         {
             int nItemTemplateIndex = -1;
             if (!int.TryParse(bodyPartElement.Value, out nItemTemplateIndex)) { return; }
 
-            Item = ItemTemplates.ItemsArmorHead[nItemTemplateIndex].DeepClone(0);
+            Item = ItemTemplates.ItemsArmorChest[nItemTemplateIndex].DeepClone(0);
         }
-        public override ITEM_TYPE Type 
+        public override ITEM_TYPE Type
         {
             get
             {
-                return ITEM_TYPE.ARMOR_HEAD; 
+                return ITEM_TYPE.ARMOR_CHEST;
             }
         }
     }

@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Documents;
 namespace cs_store_app_TextGame
 {
     [DataContract(Name = "ItemContainer", Namespace = "cs_store_app_TextGame")]
-    public class ItemContainer : Item
+    public abstract class ItemContainer : Item
     {
         #region Attributes
         [DataMember]
@@ -19,7 +19,6 @@ namespace cs_store_app_TextGame
         public bool Closable { get; set; }
         [DataMember]
         public int MaximumWeight { get; set; }
-        public override ITEM_TYPE Type { get { return ITEM_TYPE.CONTAINER; } }
         [DataMember]
         public ItemCollection Items = new ItemCollection();
         #endregion

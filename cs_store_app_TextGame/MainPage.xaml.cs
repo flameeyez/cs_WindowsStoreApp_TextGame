@@ -36,7 +36,9 @@ namespace cs_store_app_TextGame
         // - FindItem(string, bool bMultiWord = false)
         //   - if true, match string to full item name
         // TODO: create encapsulating class for these variables?
-        Timer t;
+        Timer WorldUpdateTimer;
+        Timer CheckAppendQueueTimer;
+
         Queue<string> InputQueue = new Queue<string>();
         List<string> PreviousInput = new List<string>();
         int nPreviousInputIndex = 0;
@@ -48,20 +50,26 @@ namespace cs_store_app_TextGame
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            // DEBUG
             //MessageDialog m = new MessageDialog("Test!");
             //await m.ShowAsync();
+            // END DEBUG
 
             await ItemTemplates.Load();
             await World.Load();
+            // TODO: use compressed world once finalized
             //await World.LoadCompressed();
             await EntityNPCTemplates.Load();
             await Messages.Load();
             await EntityRelationshipTable.Load();
 
+            // DEBUG
             // AppendParagraph(EntityRelationshipTable.DisplayString().ToParagraph());
+            // END DEBUG
 
             // world update timer
-            t = new Timer(Update, null, 1000, 50);
+            WorldUpdateTimer = new Timer(Update, null, 1000, 50);
+            CheckAppendQueueTimer = new Timer(CheckAppendQueue, null, 0, 100);
 
             // DEBUG
             AddDebug();
@@ -70,9 +78,27 @@ namespace cs_store_app_TextGame
             // initialize player
             Game.Initialize();
             TranslatedInput input = null;
-            AppendParagraph(Game.Player.DoLook(input).ParagraphToAppend);
-
+            Handler handler = Game.Player.DoLook(input);
+            Statics.AppendQueue.Enqueue(handler.ParagraphToAppend);
+            // Messages.Display(handler.MessageCode, handler.ParagraphToAppend);
+            
+            //AppendParagraph(Game.Player.DoLook(input).ParagraphToAppend);
             txtInput.Focus(FocusState.Programmatic);
+        }
+        private async void CheckAppendQueue(object state)
+        {
+            while(Statics.AppendQueue.Count > 0)
+            {
+                await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    lock(Statics.AppendQueue)
+                    {
+                        AppendParagraph(Statics.AppendQueue.Dequeue());
+                        CheckParagraphCount();
+                        ScrollToBottom();
+                    }
+                });
+            }
         }
         #endregion
         #region UI
@@ -122,11 +148,12 @@ namespace cs_store_app_TextGame
                     break;
             }
         }
-        private void AppendParagraph(Paragraph p, bool bScroll = true)
+        private void AppendParagraph(Paragraph p)
         {
             if (p == null) { return; }
         
-            // one point of compression
+            // single point of compression
+            // no need to compress anywhere else
             p.Compress();
             
             // DEBUG
@@ -187,7 +214,7 @@ namespace cs_store_app_TextGame
         }
         private void ScrollToBottom()
         {
-            if (txtOutputScroll.ExtentHeight > txtOutputScroll.ViewportHeight)
+            if (txtOutputScroll.ExtentHeight > 0)
             {
                 txtOutputScroll.ChangeView(null, txtOutputScroll.ExtentHeight, null, true);
             }
@@ -195,30 +222,29 @@ namespace cs_store_app_TextGame
         #endregion
         #region Input Handling
         public void HandleInput(string input)
-        {   
+        {
+            AddToPreviousInput(input);
+            AppendParagraph(("> " + input + "\n").ToParagraph());
+            Handler handler = Game.Player.ProcessInput(new TranslatedInput(input));
+            Statics.AppendQueue.Enqueue(handler.ParagraphToAppend);
+        }
+        public void AddToPreviousInput(string input)
+        {
             PreviousInput.Add(input);
             nPreviousInputIndex = PreviousInput.Count;
-
-            AppendParagraph(("> " + input + "\n").ToParagraph(), false);
-
-            ProcessInput(new TranslatedInput(input));
-        }
-        public void ProcessInput(TranslatedInput input)
-        {
-            if (input.Words.Length == 0) { return; }
-            
-            Handler handler = Game.Player.ProcessInput(input);
-            // TODO: HANDLED vs UNHANDLED?
-            AppendParagraph(handler.ParagraphToAppend);
         }
         #endregion
         #region Update
         // TODO: figure out if state should be used
+        // TODO: move all logic to Game
         public async void Update(object state)
         {
-            DateTime updateStart = DateTime.Now;
+            DateTime updateStart, updateEnd;
+            TimeSpan updateDelta;
             DateTime updateWorldStart, updateWorldEnd;
             TimeSpan updateWorldDelta;
+
+            updateStart = DateTime.Now;
 
             // interaction with UI thread
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -231,25 +257,17 @@ namespace cs_store_app_TextGame
                     HandleInput(input);
                 }
 
-                List<Handler> handlers = null;
-
                 // update world
                 updateWorldStart = DateTime.Now;
-                handlers = World.Update();
+                World.Update();
                 updateWorldEnd = DateTime.Now;
                 updateWorldDelta = updateWorldEnd - updateWorldStart;
 
-                foreach (Handler handler in handlers)
-                {
-                    AppendParagraph(handler.ParagraphToAppend);
-                }
-
+                CheckParagraphCount();
                 ScrollToBottom();
 
-                CheckParagraphCount();
-
-                DateTime updateEnd = DateTime.Now;
-                TimeSpan updateDelta = updateEnd - updateStart;
+                updateEnd = DateTime.Now;
+                updateDelta = updateEnd - updateStart;
 
                 #region Debug
                 if (updateDelta.TotalMilliseconds > 15)
@@ -276,16 +294,27 @@ namespace cs_store_app_TextGame
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsFood[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsJunk[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsWeapon[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainer[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainer[1].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainerBackpack[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsContainerPouch[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorChest[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorFeet[0].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorHead[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryAmulet[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryRing[0].DeepClone());
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsAccessoryRing[1].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorNeck[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorFinger[0].DeepClone());
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorFinger[1].DeepClone());
                 World.Regions[0].Subregions[0].Rooms[r.Next(9)].Items.Add(ItemTemplates.ItemsArmorShield[0].DeepClone());
             }
+
+            //EntityBodyPartChest bodyPartChest = new EntityBodyPartChest();
+            
+            //ItemArmorChest chest = new ItemArmorChest();
+            //chest.Name = "Chest Name";
+            //chest.Description = "Chest Description";
+            //chest.ArmorFactor = 5;
+            //ItemArmorChest chestClone = chest.DeepClone();
+
+            //bodyPartChest.Item = chestClone;
+            //EntityBodyPartChest bodyPartChestClone = bodyPartChest.DeepClone();
 
             // DEBUG NPCS
             for (int i = 0; i < Statics.DebugNPCCount; i++)
@@ -293,8 +322,8 @@ namespace cs_store_app_TextGame
                 int region = 0;
                 int subregion = 0;
                 int room = r.Next(9);
-                EntityNPC npc = EntityNPCTemplates.NPCTemplates.Random().Clone();
-                npc.SetCurrentRoom(region, subregion, room);
+                EntityNPCBase npc = EntityNPCTemplates.NPCTemplates.Random().DeepClone();
+                npc.Coordinates.Set(region, subregion, room);
                 World.Regions[region].Subregions[subregion].Rooms[room].NPCs.Add(npc);
             }
         }
@@ -306,7 +335,6 @@ namespace cs_store_app_TextGame
         {
             initialpoint = e.Position;
         }
-
         private void Page_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (e.IsInertial)
@@ -320,5 +348,14 @@ namespace cs_store_app_TextGame
             }
         }
 
+        private void txtOutput_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            RichTextBlock r = sender as RichTextBlock;
+            TextPointer t = r.GetPositionFromPoint(e.GetPosition(r));
+            TextElement element = t.Parent as TextElement;
+
+            Run run = element as Run;
+            txtCurrentRun.Text = run.Text;
+        }
     }
 }

@@ -1,0 +1,15 @@
+<item-templates>
+  <item-template>
+    <id>0</id>
+    <name>leather pouch</name>
+    <description>This small pouch doesn't hold much, but at least it holds something.</description>
+    <keywords>
+      <keyword>pouch</keyword>
+    </keywords>
+    <weight>1.0</weight>
+    <value>10</value>
+    <maximum-weight>5</maximum-weight>
+    <closed>false</closed>
+    <closable>true</closable>
+  </item-template>
+</item-templates>

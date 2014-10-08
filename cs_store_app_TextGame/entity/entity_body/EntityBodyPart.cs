@@ -1,34 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace cs_store_app_TextGame
 {
+    public enum BODY_PART_CONDITION
+    {
+        MISSING = 0,
+        DISABLED = 1,
+        INJURED = 2,
+        NORMAL = 3
+    }
+
+    [DataContract(Name = "EntityBodyPart", Namespace = "cs_store_app_TextGame")]
+    [KnownType(typeof(EntityBodyPartChest))]
+    [KnownType(typeof(EntityBodyPartFeet))]
+    [KnownType(typeof(EntityBodyPartFinger))]
+    [KnownType(typeof(EntityBodyPartHead))]
+    [KnownType(typeof(EntityBodyPartNeck))]
     public abstract class EntityBodyPart
     {
-        public enum BODY_PART_CONDITION
-        {
-            MISSING = 0,
-            DISABLED = 1,
-            INJURED = 2,
-            NORMAL = 3
-        }
-
+        [DataMember]
         public BODY_PART_CONDITION Condition { get; set; }
-        public Item Item { get; set; }
+        [DataMember]
+        public ItemArmor Item { get; set; }
         public abstract ITEM_TYPE Type { get; }
-        public Entity Owner { get; set; }
+        [DataMember]
+        public EntityBase Owner { get; set; }
 
-        public Status.EQUIP_STATUS DoEquip(Item itemToEquip)
+        // Body.DoEquip takes the best (highest value) result from BodyParts.DoEquip
+        public EQUIP_RESULT DoEquip(ItemArmor itemToEquip)
         {
-            if (Condition == BODY_PART_CONDITION.MISSING) { return Status.EQUIP_STATUS.BODY_PART_MISSING; }
-            if (itemToEquip.Type != this.Type) { return Status.EQUIP_STATUS.NOT_EQUIPPABLE; }
-            if (this.Item != null) { return Status.EQUIP_STATUS.ITEM_ALREADY_EQUIPPED; }
+            if (Condition == BODY_PART_CONDITION.MISSING) { return EQUIP_RESULT.BODY_PART_MISSING; }
+            if (itemToEquip.Type != this.Type) { return EQUIP_RESULT.NOT_EQUIPPABLE; }
+            if (this.Item != null) { return EQUIP_RESULT.ITEM_ALREADY_EQUIPPED; }
 
             this.Item = itemToEquip;
-            return Status.EQUIP_STATUS.EQUIPPED;
+            return EQUIP_RESULT.EQUIPPED;
+        }
+
+        public EntityBodyPart()
+        {
+            Condition = BODY_PART_CONDITION.NORMAL;
         }
     }
 }

@@ -160,14 +160,14 @@
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_EQUIP_ACCESSORY_RING</id>
+		<id>PLAYER_EQUIP_ARMOR_FINGER</id>
 		<strings>
 			<string>You equip the 1.</string>
 			<string>You slide the 1 onto your finger.</string>
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_EQUIP_ACCESSORY_AMULET</id>
+		<id>PLAYER_EQUIP_ARMOR_NECK</id>
 		<strings>
 			<string>You place the 1 around your neck.</string>
 			<string>You wear the 1 around your neck.</string>
@@ -207,7 +207,7 @@
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_REMOVE_ACCESSORY_RING</id>
+		<id>PLAYER_REMOVE_ARMOR_FINGER</id>
 		<strings>
 			<string>You remove the 1.</string>
 			<string>You remove the 1 from your finger.</string>
@@ -215,7 +215,7 @@
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_REMOVE_ACCESSORY_AMULET</id>
+		<id>PLAYER_REMOVE_ARMOR_NECK</id>
 		<strings>
 			<string>You remove the 1.</string>
 			<string>You remove the 1 from around your neck.</string>
@@ -610,13 +610,13 @@
 		</strings>
 	</message>
 	<message>
-		<id>ERROR_CONTAINER_NOT_CLOSABLE </id>
+		<id>ERROR_CONTAINER_NOT_CLOSABLE</id>
 		<strings>
 			<string>The 1 isn't closable.</string>
 		</strings>
 	</message>
 	<message>
-		<id>ERROR_ITEM_NOT_EQUIPPABLE </id>
+		<id>ERROR_ITEM_NOT_EQUIPPABLE</id>
 		<strings>
 			<string>You can't equip that.</string>
 		</strings>
@@ -648,6 +648,12 @@
 			<string>The 1 costs more than you can afford.</string>
 		</strings>
 	</message>
+  <message>
+    <id>ERROR_BODY_PART_MISSING</id>
+    <strings>
+      <string>You'll need to heal yourself before you can equip that.</string>
+    </strings>
+  </message>
 	<message>
 		<id>ERROR_ALREADY_STANDING</id>
 		<strings>
@@ -686,8 +692,8 @@
 	<message>
 		<id>ERROR_PLAYER_ATTACKS_BAD_WEAPON</id>
 		<strings>
-			<string>You can't attack with 1!</string>
-			<string>Though determined, you are unable to attack with 1.</string>
+			<string>You can't attack with what you're holding!</string>
+			<string>Though determined, you are unable to attack with what you're holding.</string>
 		</strings>
 	</message>
 	<message>

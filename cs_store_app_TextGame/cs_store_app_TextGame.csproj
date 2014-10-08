@@ -106,39 +106,50 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Debug.cs" />
-    <Compile Include="entity\EntityBase.cs" />
-    <Compile Include="entity\EntityHumanoid.cs" />
+    <Compile Include="entity\entity_container_slots\EntityContainerSlot.cs" />
+    <Compile Include="entity\entity_container_slots\EntityContainerSlotBackpack.cs" />
+    <Compile Include="entity\entity_container_slots\EntityContainerSlotPouch.cs" />
+    <Compile Include="entity\entity_container_slots\EntityContainerSlots.cs" />
+    <Compile Include="entity\entity\EntityBase.cs" />
+    <Compile Include="entity\entity\EntityNPCBase.cs" />
+    <Compile Include="entity\entity_behavior\EntityBehavior.cs" />
+    <Compile Include="entity\entity_behavior\EntityBehaviorAction.cs" />
     <Compile Include="entity\entity_body\EntityBody.cs" />
     <Compile Include="entity\entity_body\EntityBodyPart.cs" />
-    <Compile Include="entity\EntityNPCAnimal.cs" />
-    <Compile Include="entity\EntityNPCHumanoid.cs" />
     <Compile Include="entity\EntityRelationshipTable.cs" />
     <Compile Include="entity\EntityAttributes.cs" />
     <Compile Include="entity\EntityNPCCollection.cs" />
-    <Compile Include="entity\EntityNPC.cs" />
+    <Compile Include="entity\old\EntityNPC.cs" />
     <Compile Include="entity\EntityNPCTemplate.cs" />
     <Compile Include="entity\EntityNPCTemplates.cs" />
-    <Compile Include="entity\EntityPlayer.cs" />
+    <Compile Include="entity\entity\EntityPlayer.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPartChest.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPartFeet.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPartFinger.cs" />
     <Compile Include="entity\entity_body\EntityBodyPartHead.cs" />
+    <Compile Include="entity\entity_body\EntityBodyPartNeck.cs" />
+    <Compile Include="entity\entity_hand\EntityHand.cs" />
+    <Compile Include="entity\entity_hand\EntityHands.cs" />
     <Compile Include="ExitWithDirection.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameObject.cs" />
     <Compile Include="input\Handler.cs" />
-    <Compile Include="items\ItemAccessory.cs" />
-    <Compile Include="items\ItemAccessoryAmulet.cs" />
-    <Compile Include="items\ItemAccessoryRing.cs" />
+    <Compile Include="items\ItemArmorNeck.cs" />
+    <Compile Include="items\ItemArmorFinger.cs" />
     <Compile Include="items\ItemArmor.cs" />
     <Compile Include="items\ItemArmorChest.cs" />
     <Compile Include="items\ItemArmorFeet.cs" />
     <Compile Include="items\ItemArmorHead.cs" />
     <Compile Include="compression\Compression.cs" />
-    <Compile Include="entity\Entity.cs" />
+    <Compile Include="entity\old\Entity.cs" />
     <Compile Include="items\ItemArmorShield.cs" />
+    <Compile Include="items\ItemContainerBackpack.cs" />
+    <Compile Include="items\ItemContainerPouch.cs" />
     <Compile Include="items\ItemWithSource.cs" />
     <Compile Include="input\Messages.cs" />
     <Compile Include="input\TranslatedInput.cs" />
-    <Compile Include="entity\EntityNPCBehavior.cs" />
     <Compile Include="RichTextManager.cs" />
-    <Compile Include="static\Status.cs" />
+    <Compile Include="static\Enums.cs" />
     <Compile Include="world\Connection.cs" />
     <Compile Include="world\ConnectionCollection.cs" />
     <Compile Include="world\Exit.cs" />
@@ -161,6 +172,7 @@
     <Compile Include="world\RoomShop.cs" />
     <Compile Include="world\Subregion.cs" />
     <Compile Include="world\World.cs" />
+    <Compile Include="world\WorldCoordinates.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -175,8 +187,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="xml\templates\item-armor-head-templates.xml" />
-    <Content Include="xml\templates\item-accessory-amulet-templates.xml" />
-    <Content Include="xml\templates\item-accessory-ring-templates.xml" />
+    <Content Include="xml\templates\item-armor-neck-templates.xml" />
+    <Content Include="xml\templates\item-armor-finger-templates.xml" />
+    <Content Include="xml\templates\item-container-pouch-templates.xml" />
     <Content Include="xml\world\world.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -196,7 +209,7 @@
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="xml\templates\item-armor-chest-templates.xml" />
     <Content Include="xml\templates\item-armor-shield-templates.xml" />
-    <Content Include="xml\templates\item-container-templates.xml" />
+    <Content Include="xml\templates\item-container-backpack-templates.xml" />
     <Content Include="xml\templates\item-drink-templates.xml" />
     <Content Include="xml\templates\item-food-templates.xml" />
     <Content Include="xml\templates\item-junk-templates.xml" />

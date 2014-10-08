@@ -14,5 +14,7 @@ namespace cs_store_app_TextGame
         public override ITEM_TYPE Type { get { return ITEM_TYPE.ARMOR_CHEST; } }
 
         public ItemArmorChest(XElement itemNode) : base(itemNode) { }
+
+        public ItemArmorChest() : base() { }
     }
 }

@@ -12,6 +12,9 @@ namespace cs_store_app_TextGame
 {
     public enum MESSAGE_ENUM
     {
+        DEBUG_TODO,
+
+
         NO_MESSAGE,
         BASE_STRING,
 
@@ -30,15 +33,15 @@ namespace cs_store_app_TextGame
         PLAYER_EQUIP_ARMOR_CHEST,
         PLAYER_EQUIP_ARMOR_HEAD,
         PLAYER_EQUIP_ARMOR_FEET,
-        PLAYER_EQUIP_ACCESSORY_RING,
-        PLAYER_EQUIP_ACCESSORY_AMULET,
+        PLAYER_EQUIP_ARMOR_FINGER,
+        PLAYER_EQUIP_ARMOR_NECK,
         PLAYER_EQUIP_BACKPACK,
         PLAYER_REMOVE,
         PLAYER_REMOVE_ARMOR_CHEST,
         PLAYER_REMOVE_ARMOR_HEAD,
         PLAYER_REMOVE_ARMOR_FEET,
-        PLAYER_REMOVE_ACCESSORY_RING,
-        PLAYER_REMOVE_ACCESSORY_AMULET,
+        PLAYER_REMOVE_ARMOR_FINGER,
+        PLAYER_REMOVE_ARMOR_NECK,
         PLAYER_REMOVE_BACKPACK,
         PLAYER_EAT_LAST,
         PLAYER_DRINK_LAST,
@@ -131,6 +134,7 @@ namespace cs_store_app_TextGame
         ERROR_NPC_ATTACKS_PLAYER_BAD_WEAPON,
         ERROR_PLAYER_ATTACKS_BAD_WEAPON,
 
+        ERROR_BODY_PART_MISSING,
 
         // DEBUG
         DEBUG_REMOVE,
@@ -181,6 +185,10 @@ namespace cs_store_app_TextGame
                     messageList.Add(stringNode.Value.Replace("\\n", "\n"));
                 }
             }
+
+            // DEBUG
+            MessageDictionary[MESSAGE_ENUM.DEBUG_TODO].Add("DEBUG: On the TODO list!");
+            // END DEBUG
         }
         private static Paragraph Process(string strMessage, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
         {
@@ -216,6 +224,11 @@ namespace cs_store_app_TextGame
         {
             if (message == MESSAGE_ENUM.NO_MESSAGE) { return null; }
             return Process(MessageDictionary[message].Random(), p1, p2, p3, p4);
+        }
+
+        public static void Display(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
+        {
+            Statics.AppendQueue.Enqueue(Messages.Get(message, p1, p2, p3, p4));
         }
     }
 }

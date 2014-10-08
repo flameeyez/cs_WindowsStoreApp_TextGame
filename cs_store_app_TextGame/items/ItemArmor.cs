@@ -9,6 +9,12 @@ using System.Xml.Linq;
 namespace cs_store_app_TextGame
 {
     [DataContract(Name = "ItemArmor", Namespace = "cs_store_app_TextGame")]
+    [KnownType(typeof(ItemArmorChest))]
+    [KnownType(typeof(ItemArmorFeet))]
+    [KnownType(typeof(ItemArmorFinger))]
+    [KnownType(typeof(ItemArmorHead))]
+    [KnownType(typeof(ItemArmorNeck))]
+    [KnownType(typeof(ItemArmorShield))]
     public abstract class ItemArmor : Item 
     {
         [DataMember]
@@ -18,5 +24,7 @@ namespace cs_store_app_TextGame
         {
             ArmorFactor = int.Parse(itemNode.Element("armor-factor").Value);
         }
+
+        public ItemArmor() : base() { }
     }
 }

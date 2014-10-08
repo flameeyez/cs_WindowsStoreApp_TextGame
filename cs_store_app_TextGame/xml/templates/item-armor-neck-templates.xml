@@ -8,5 +8,6 @@
 		</keywords>
 		<weight>0.2</weight>
 		<value>50</value>
+    <armor-factor>0</armor-factor>
 	</item-template>	
 </item-templates>

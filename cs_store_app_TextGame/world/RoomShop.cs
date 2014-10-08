@@ -55,14 +55,17 @@ namespace cs_store_app_TextGame
                     case "junk":
                         SoldItems.Add(ItemTemplates.ItemsJunk[value]);
                         break;
-                    case "container":
-                        SoldItems.Add(ItemTemplates.ItemsContainer[value]);
+                    case "container-backpack":
+                        SoldItems.Add(ItemTemplates.ItemsContainerBackpack[value]);
                         break;
-                    case "accessory-ring":
-                        SoldItems.Add(ItemTemplates.ItemsAccessoryRing[value]);
+                    case "container-pouch":
+                        SoldItems.Add(ItemTemplates.ItemsContainerPouch[value]);
                         break;
-                    case "accessory-amulet":
-                        SoldItems.Add(ItemTemplates.ItemsAccessoryAmulet[value]);
+                    case "armor-finger":
+                        SoldItems.Add(ItemTemplates.ItemsArmorFinger[value]);
+                        break;
+                    case "armor-neck":
+                        SoldItems.Add(ItemTemplates.ItemsArmorNeck[value]);
                         break;
                     case "food":
                         SoldItems.Add(ItemTemplates.ItemsFood[value]);
@@ -91,6 +94,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
+                // TODO: move these strings to Messages class?
                 if (SoldItems.Count == 0) { return "This shop doesn't sell any items."; }
                 
                 string strItemsString = "This shop sells the following items:\n";
@@ -124,60 +128,33 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_PRICE_ITEM, item.NameAsParagraph, nPrice.ToString().ToParagraph());
         }
-        public Handler DoBuyFromEntity(Entity entity, string strKeyword)
+        public Handler DoBuyFromEntity(EntityBase entity, string strKeyword)
         {
-            bool bValidItem = false;
-            Handler handler = Handler.UNHANDLED();
-
-            if (entity.RightHand != null && entity.RightHand.IsKeyword(strKeyword))
-            {
-                // valid item; attempt to sell
-                bValidItem = true;
-
-                if (ShopItemTypes.HasFlag(entity.RightHand.Type))
-                {
-                    // shop will buy this item type
-                    int nPrice = (int)(entity.RightHand.Value * BuysAt);
-
-                    handler = Handler.HANDLED(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.RightHand.NameAsParagraph, nPrice.ToString().ToParagraph());
-
-                    entity.Gold += nPrice;
-                    entity.RightHand = null;
-                }
+            EntityHand hand = entity.Hands.GetHandWithItem(strKeyword);
+            if (hand == null)
+            { 
+                // no hand is holding the requested item
+                return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_ITEM);
             }
-
-            if (handler.ReturnCode == RETURN_CODE.UNHANDLED && entity.LeftHand != null && entity.LeftHand.IsKeyword(strKeyword))
+            else
             {
-                // valid item; attempt to sell
-                bValidItem = true;
-
-                if (ShopItemTypes.HasFlag(entity.LeftHand.Type))
+                // hand is holding the requested item
+                if(ShopItemTypes.HasFlag(hand.Item.Type))
                 {
-                    // shop will buy this item type
-                    int nPrice = (int)(entity.LeftHand.Value * BuysAt);
+                    // shop WILL buy this item type
+                    int nPrice = (int)(hand.Item.Value * BuysAt);
 
-                    handler = Handler.HANDLED(MESSAGE_ENUM.PLAYER_SELL_ITEM, entity.LeftHand.NameAsParagraph, nPrice.ToString().ToParagraph());
-
+                    Paragraph itemNameAsParagraph = hand.Item.NameAsParagraph;
                     entity.Gold += nPrice;
-                    entity.LeftHand = null;
-                }
-            }
-
-            if (handler.ReturnCode == RETURN_CODE.UNHANDLED)
-            {
-                if (bValidItem)
-                {
-                    // item found, but shop wouldn't buy
-                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_SHOP);
+                    hand.Item = null;
+                    return Handler.HANDLED(MESSAGE_ENUM.PLAYER_SELL_ITEM, itemNameAsParagraph, nPrice.ToString().ToParagraph());
                 }
                 else
                 {
-                    // item not found
-                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_ITEM);
+                    // shop WILL NOT buy this item type
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_SHOP);
                 }
             }
-
-            return handler;
         }
         #endregion
     }

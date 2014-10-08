@@ -28,7 +28,7 @@
 
         <Border BorderThickness="5" BorderBrush="White" Margin="10,10,10,10" Grid.Row="0" Grid.Column="1">
             <ScrollViewer x:Name="txtOutputScroll">
-                <RichTextBlock Name="txtOutput" Margin="10,10,10,10" FontSize="24" DataContext="" />
+                <RichTextBlock Name="txtOutput" Margin="10,10,10,10" FontSize="24" DataContext="" Tapped="txtOutput_Tapped" IsTextSelectionEnabled="False" />
             </ScrollViewer>
         </Border>
 
@@ -40,7 +40,8 @@
                     <RowDefinition Height="1*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <TextBox Grid.Row="0" Name="txtDebugBlockCount"></TextBox>
+                <TextBox Grid.Row="0" Name="txtDebugBlockCount" Margin="0,0,0,162" />
+                <TextBox Grid.Row="0" Name="txtCurrentRun" Margin="0,300,0,0" />
                 <!-- directional buttons -->
                 <Grid Grid.Row="2" Margin="50,10,50,20">
                     <Grid.RowDefinitions>

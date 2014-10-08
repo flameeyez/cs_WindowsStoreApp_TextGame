@@ -8,6 +8,7 @@
 		</keywords>
 		<weight>0.1</weight>
 		<value>25</value>
+    <armor-factor>0</armor-factor>
 	</item-template>	
   <item-template>
 		<id>1</id>
@@ -18,5 +19,6 @@
 		</keywords>
 		<weight>0.1</weight>
 		<value>100</value>
+    <armor-factor>0</armor-factor>
 	</item-template>
 </item-templates>

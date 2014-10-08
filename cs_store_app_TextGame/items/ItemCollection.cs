@@ -79,16 +79,9 @@ namespace cs_store_app_TextGame
         public List<Item> GetItemsOfType(ITEM_TYPE itemType)
         {
             List<Item> returnList = new List<Item>();
-            //for (int i = Items.Count() - 1; i >= 0; i--)
-            //{
-            //    if(Items[i].Type == itemType)
-            //    {
-            //        returnList.Add(Items[i]);
-            //    }
-            //}
             foreach(Item item in Items)
             {
-                if(item.Type == itemType)
+                if((item.Type & itemType) == item.Type)
                 {
                     returnList.Add(item);
                 }
@@ -119,73 +112,7 @@ namespace cs_store_app_TextGame
         #endregion
 
         #region Display
-        public string BaseDisplayString
-        {
-            get
-            {
-                if (Items.Count == 0) { return ""; }
-
-                string strReturn = "";
-                if (Items.Count > 2)
-                {
-                    for (int i = Items.Count() - 1; i >= 0; i--)
-                    {
-                        strReturn += "a";
-                        if ((Items[i].Name[0]).IsVowel())
-                        {
-                            strReturn += "n";
-                        }
-                        strReturn += " ";
-                        strReturn += Items[i].Name;
-                        if (i == 1)
-                        {
-                            strReturn += ", and ";
-                        }
-                        else if (i > 0)
-                        {
-                            strReturn += ", ";
-                        }
-                    }
-                }
-                else if (Items.Count == 2)
-                {
-                    strReturn += "a";
-                    if ((Items[1].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += Items[1].Name;
-                    strReturn += " and a";
-                    if ((Items[0].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += Items[0].Name;
-                }
-                else if (Items.Count == 1)
-                {
-                    strReturn += "a";
-                    if ((Items[0].Name[0]).IsVowel())
-                    {
-                        strReturn += "n";
-                    }
-                    strReturn += " ";
-                    strReturn += Items[0].Name;
-                }
-
-                return strReturn;
-            }
-        }
-        public string RoomDisplayString
-        {
-            get
-            {
-                if (Items.Count == 0) { return ""; }
-                return "You also see " + BaseDisplayString + ".\n";
-            }
-        }
+        // You also see...
         public Paragraph RoomDisplayParagraph
         {
             get
@@ -258,6 +185,7 @@ namespace cs_store_app_TextGame
                 return p;
             }
         }
+        // In the <container>, you see...
         public Paragraph ContainerDisplayParagraph(Paragraph NameAsParagraph)
         {
             Paragraph p = new Paragraph();
@@ -344,9 +272,9 @@ namespace cs_store_app_TextGame
             Items.Clear();
         }
 
-        public void Cleanup()
+        public void Cleanup(int nThreshold = 5)
         {
-            if(Items.Count > 5)
+            if(Items.Count > nThreshold)
             {
                 Items.Clear();
             }

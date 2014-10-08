@@ -33,17 +33,12 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public List<Handler> Update()
+        public void Update()
         {
-            List<Handler> handlers = new List<Handler>();
-
             foreach(Subregion subregion in Subregions)
             {
-                List<Handler> subregionHandlers = subregion.Update();
-                if (subregionHandlers.Count > 0) { handlers.AddRange(subregionHandlers); }
+                subregion.Update();
             }
-
-            return handlers;
         }
     }
 }

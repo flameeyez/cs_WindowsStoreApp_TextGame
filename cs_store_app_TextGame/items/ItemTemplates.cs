@@ -14,17 +14,19 @@ namespace cs_store_app_TextGame
         public static List<ItemWeapon> ItemsWeapon = new List<ItemWeapon>();
         public static List<ItemFood> ItemsFood = new List<ItemFood>();
         public static List<ItemDrink> ItemsDrink = new List<ItemDrink>();
-        public static List<ItemContainer> ItemsContainer = new List<ItemContainer>();
+        public static List<ItemContainerBackpack> ItemsContainerBackpack = new List<ItemContainerBackpack>();
+        public static List<ItemContainerPouch> ItemsContainerPouch = new List<ItemContainerPouch>();
         public static List<ItemArmorChest> ItemsArmorChest = new List<ItemArmorChest>();
         public static List<ItemArmorFeet> ItemsArmorFeet = new List<ItemArmorFeet>();
         public static List<ItemArmorHead> ItemsArmorHead = new List<ItemArmorHead>();
-        public static List<ItemAccessoryAmulet> ItemsAccessoryAmulet = new List<ItemAccessoryAmulet>();
-        public static List<ItemAccessoryRing> ItemsAccessoryRing = new List<ItemAccessoryRing>();
+        public static List<ItemArmorNeck> ItemsArmorNeck = new List<ItemArmorNeck>();
+        public static List<ItemArmorFinger> ItemsArmorFinger = new List<ItemArmorFinger>();
         public static List<ItemArmorShield> ItemsArmorShield = new List<ItemArmorShield>();
 
         public async static Task Load()
         {
-            await LoadItemsContainer();
+            await LoadItemsContainerBackpack();
+            await LoadItemsContainerPouch();
             await LoadItemsDrink();
             await LoadItemsFood();
             await LoadItemsJunk();
@@ -32,8 +34,8 @@ namespace cs_store_app_TextGame
             await LoadItemsArmorChest();
             await LoadItemsArmorFeet();
             await LoadItemsArmorHead();
-            await LoadItemsAccessoryAmulet();
-            await LoadItemsAccessoryRing();
+            await LoadItemsArmorNeck();
+            await LoadItemsArmorFinger();
             await LoadItemsArmorShield();
         }
         private async static Task LoadItemsDrink()
@@ -136,12 +138,12 @@ namespace cs_store_app_TextGame
                 throw e;
             }
         }
-        private async static Task LoadItemsContainer()
+        private async static Task LoadItemsContainerBackpack()
         {
             try
             {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
-                var file = await folder.GetFileAsync("item-container-templates.xml");
+                var file = await folder.GetFileAsync("item-container-backpack-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
 
                 XDocument itemsContainerDocument = XDocument.Load(stream);
@@ -153,7 +155,32 @@ namespace cs_store_app_TextGame
                                 select itemTemplates;
                 foreach (var itemNode in itemNodes)
                 {
-                    ItemsContainer.Add(new ItemContainer(itemNode));
+                    ItemsContainerBackpack.Add(new ItemContainerBackpack(itemNode));
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        private async static Task LoadItemsContainerPouch()
+        {
+            try
+            {
+                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
+                var file = await folder.GetFileAsync("item-container-pouch-templates.xml");
+                var stream = await file.OpenStreamForReadAsync();
+
+                XDocument itemsContainerDocument = XDocument.Load(stream);
+                await stream.FlushAsync();
+
+                var itemNodes = from itemTemplates in itemsContainerDocument
+                                      .Elements("item-templates")
+                                        .Elements("item-template")
+                                select itemTemplates;
+                foreach (var itemNode in itemNodes)
+                {
+                    ItemsContainerPouch.Add(new ItemContainerPouch(itemNode));
                 }
             }
             catch (Exception e)
@@ -236,24 +263,24 @@ namespace cs_store_app_TextGame
                 throw e;
             }
         }
-        private async static Task LoadItemsAccessoryAmulet()
+        private async static Task LoadItemsArmorNeck()
         {
             try
             {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
-                var file = await folder.GetFileAsync("item-accessory-amulet-templates.xml");
+                var file = await folder.GetFileAsync("item-armor-neck-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
 
-                XDocument itemsAccessoryAmuletDocument = XDocument.Load(stream);
+                XDocument itemsArmorNeckDocument = XDocument.Load(stream);
                 await stream.FlushAsync();
 
-                var itemNodes = from itemTemplates in itemsAccessoryAmuletDocument
+                var itemNodes = from itemTemplates in itemsArmorNeckDocument
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
                 foreach (var itemNode in itemNodes)
                 {
-                    ItemsAccessoryAmulet.Add(new ItemAccessoryAmulet(itemNode));
+                    ItemsArmorNeck.Add(new ItemArmorNeck(itemNode));
                 }
             }
             catch (Exception e)
@@ -261,24 +288,24 @@ namespace cs_store_app_TextGame
                 throw e;
             }
         }
-        private async static Task LoadItemsAccessoryRing()
+        private async static Task LoadItemsArmorFinger()
         {
             try
             {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
-                var file = await folder.GetFileAsync("item-accessory-ring-templates.xml");
+                var file = await folder.GetFileAsync("item-armor-finger-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
 
-                XDocument itemsAccessoryRingDocument = XDocument.Load(stream);
+                XDocument itemsArmorFingerDocument = XDocument.Load(stream);
                 await stream.FlushAsync();
 
-                var itemNodes = from itemTemplates in itemsAccessoryRingDocument
+                var itemNodes = from itemTemplates in itemsArmorFingerDocument
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
                 foreach (var itemNode in itemNodes)
                 {
-                    ItemsAccessoryRing.Add(new ItemAccessoryRing(itemNode));
+                    ItemsArmorFinger.Add(new ItemArmorFinger(itemNode));
                 }
             }
             catch (Exception e)

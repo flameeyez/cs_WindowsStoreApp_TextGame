@@ -38,17 +38,12 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public List<Handler> Update()
+        public void Update()
         {
-            List<Handler> handlers = new List<Handler>();
-
             foreach(Room room in Rooms)
             {
-                List<Handler> roomHandlers = room.Update();
-                if (roomHandlers.Count > 0) { handlers.AddRange(roomHandlers); }
+                room.Update();
             }
-
-            return handlers;
         }
     }
 }
