@@ -72,7 +72,7 @@ namespace cs_store_app_TextGame
 
         // TODO: how to determine which message to display?
         // is returning an item ok? return status instead?
-        public Handler DoRemove(string strKeyword, EntityHand hand)
+        public REMOVE_RESULT DoRemove(string strKeyword, EntityHand hand)
         {
             foreach(EntityBodyPart part in BodyParts)
             {
@@ -83,11 +83,10 @@ namespace cs_store_app_TextGame
                 hand.Item = part.Item;
                 part.Item = null;
 
-                MESSAGE_ENUM message = Statics.ItemTypeToRemoveMessage[hand.Item.Type];
-                return Handler.HANDLED(message, hand.Item.NameAsParagraph);
+                return REMOVE_RESULT.REMOVED;
             }
 
-            return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT);
+            return REMOVE_RESULT.NOT_REMOVED;
         }
 
         public Item GetItem(string strKeyword, bool bRemove)

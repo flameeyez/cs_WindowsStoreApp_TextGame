@@ -213,6 +213,7 @@ namespace cs_store_app_TextGame
         {
             foreach (EntityHand hand in Hands)
             {
+                if (hand.Item == null) { continue; }
                 if (hand.Item.IsKeyword(strKeyword) && (type == ITEM_TYPE.ANY || type == hand.Item.Type))
                 {
                     return hand;

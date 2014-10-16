@@ -37,6 +37,8 @@ namespace cs_store_app_TextGame
 
         [DataMember]
         public int ID { get; set; }
+        [DataMember]
+        public int Level { get; set; }
         
         [DataMember]
         public WorldCoordinates Coordinates = new WorldCoordinates();
@@ -174,6 +176,7 @@ namespace cs_store_app_TextGame
         public EntityBase(XElement entityBaseElement) : this()
         {
             ID = int.Parse(entityBaseElement.Element("id").Value);
+            Level = int.Parse(entityBaseElement.Element("level").Value);
 
             // attributes
             XElement attributesElement = entityBaseElement.Element("attributes");

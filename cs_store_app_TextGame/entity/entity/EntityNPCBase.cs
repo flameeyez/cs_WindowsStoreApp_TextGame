@@ -40,7 +40,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = Name };
+                return new Run { Foreground = new SolidColorBrush(Statics.LevelDeltaToColor(Level)), Text = Name };
             }
         }
         public virtual Paragraph NameAsParagraph
@@ -57,7 +57,7 @@ namespace cs_store_app_TextGame
             get
             {
                 Paragraph p = new Paragraph();
-                p.Inlines.Add(new Run { Foreground = new SolidColorBrush(Colors.Yellow), Text = NameBase });
+                p.Inlines.Add(new Run { Foreground = new SolidColorBrush(Statics.LevelDeltaToColor(Level)), Text = NameBase });
                 return p;
             }
         }

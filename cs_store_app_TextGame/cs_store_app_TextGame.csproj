@@ -178,6 +178,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="notes\notes.txt" />
     <Content Include="xml\entity_relationships\entity_relationships.xml" />
     <Content Include="xml\messages\messages.xml">
       <SubType>Designer</SubType>

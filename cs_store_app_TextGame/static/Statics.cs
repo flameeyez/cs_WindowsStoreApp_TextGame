@@ -14,7 +14,7 @@ namespace cs_store_app_TextGame
     public static class Statics
     {
         // DEBUG
-        public static int DebugNPCCount = 0;
+        public static int DebugNPCCount = 10;
         public static int DebugItemPasses = 10;
 
         public static int RunningInlineCount = 0;
@@ -22,6 +22,9 @@ namespace cs_store_app_TextGame
         public static int RunningInlineCutCount = 200;
         public static int NID = 0;
         // END DEBUG
+
+        //public static Color NPCBrushColor = Colors.Yellow;
+        public static Color ItemBrushColor = Colors.LightGreen;
 
         public static int EmptyRoomCleanupThreshold = 30000;
 
@@ -51,7 +54,7 @@ namespace cs_store_app_TextGame
         {
             return new Run { Foreground = new SolidColorBrush(Colors.White), Text = s };
         }
-        public static Run ToRun(this string s, Color c)
+        public static Run ToRun(this string s, Color c, int nTag = -1)
         {
             return new Run { Foreground = new SolidColorBrush(c), Text = s };
         }
@@ -232,16 +235,35 @@ namespace cs_store_app_TextGame
         }
 
         // TODO: implement entity levels, experience (npcs gain experience?)
-        public static Color LevelToColor(int level)
+        public static Color LevelDeltaToColor(int level)
         {
-            int delta = 10 - r.Next(20); // level - Game.Player.Level;
+            int delta = level - Game.Player.Level;
             if (delta > 5) { return Colors.Purple; }
-            else if (delta > 3) { return Colors.Red; }
-            else if (delta > 1) { return Colors.Orange; }
+            else if (delta > 2) { return Colors.Red; }
+            else if (delta > 0) { return Colors.Orange; }
             else if (delta == 0) { return Colors.Yellow; }
-            else if (delta > -2) { return Colors.Blue; }
-            else if (delta > -3) { return Colors.LightGreen; }
+            else if (delta > -3) { return Colors.Blue; }
+            else if (delta > -5) { return Colors.LightGreen; }
             else { return Colors.Gray; }
+        }
+        public static int LevelDeltaToExperience(int level)
+        {
+            if(level >= Game.Player.Level)
+            {
+                // 100 + 50 for each level above player
+                return 100 + (level - Game.Player.Level) * 50;
+            }
+            else
+            {
+                // (level - 1) - 80
+                // (level - 2) - 60
+                // (level - 3) - 40
+                // (level - 4) - 20
+                // (level - 5 [and lower]) - 0
+                int experience = 100 - (Game.Player.Level - level) * 20;
+                if (experience < 0) { experience = 0; }
+                return experience;
+            }
         }
 
         #region Lookup Dictionaries
@@ -263,8 +285,8 @@ namespace cs_store_app_TextGame
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_FINGER);
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_HEAD);
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_NECK);
-            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK);
-            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_EQUIP_BACKPACK);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_BACKPACK);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_POUCH);
         }
         public static void LoadItemTypeToRemoveMessage()
         {
@@ -273,6 +295,8 @@ namespace cs_store_app_TextGame
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_FINGER);
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_HEAD);
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_NECK);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_BACKPACK);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_POUCH);
         }
         public static void LoadOrdinalStringToInt()
         {

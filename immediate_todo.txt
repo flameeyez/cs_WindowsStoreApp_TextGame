@@ -1,9 +1,0 @@
-fix EntityNPCTemplate, EntityNPCTemplates
-
-when finding an item in a collection (hands, body), should we return a List of matches instead of simply the first one?
-
-fix container issues; figure out how to add to an entity (body? other?)
-backpack as a slot item (BodyPart)
-- makes sense with equip/remove
-- doesn't make sense with 'put item in backpack'
-  - has to go through the entire body, when it really only needs to hit container objects

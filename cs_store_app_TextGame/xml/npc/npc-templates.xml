@@ -4,6 +4,7 @@
   <npc-template>
     <id>0</id>
     <name>goblin</name>
+    <level>1</level>
     <type>HUMANOID</type>
     <faction>GOBLIN</faction>
     <keywords>
@@ -41,6 +42,7 @@
   <npc-template>
     <id>1</id>
     <name>orc</name>
+    <level>5</level>
     <type>HUMANOID</type>
     <faction>ORC</faction>
     <keywords>
@@ -82,6 +84,7 @@
   <npc-template>
     <id>2</id>
     <name>troll</name>
+    <level>2</level>
     <type>HUMANOID</type>
     <faction>TROLL</faction>
     <keywords>

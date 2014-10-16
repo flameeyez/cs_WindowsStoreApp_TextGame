@@ -134,7 +134,7 @@ namespace cs_store_app_TextGame
                         str += " ";
                         
                         p.Inlines.Add(str.ToRun());
-                        p.Inlines.Add(Items[i].Name.ToRun(Colors.LightGreen));
+                        p.Inlines.Add(Items[i].Name.ToRun(Statics.ItemBrushColor));
 
                         if (i == 1)
                         {
@@ -156,7 +156,7 @@ namespace cs_store_app_TextGame
                     str += " ";
 
                     p.Inlines.Add(str.ToRun());
-                    p.Inlines.Add(Items[1].Name.ToRun(Colors.LightGreen));
+                    p.Inlines.Add(Items[1].Name.ToRun(Statics.ItemBrushColor));
                     
                     str = " and a";
                     if ((Items[0].Name[0]).IsVowel())
@@ -166,7 +166,7 @@ namespace cs_store_app_TextGame
                     str += " ";
                     
                     p.Inlines.Add(str.ToRun());
-                    p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                    p.Inlines.Add(Items[0].Name.ToRun(Statics.ItemBrushColor));
                 }
                 else if (Items.Count == 1)
                 {
@@ -178,7 +178,7 @@ namespace cs_store_app_TextGame
                     str += " ";
 
                     p.Inlines.Add(str.ToRun());
-                    p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                    p.Inlines.Add(Items[0].Name.ToRun(Statics.ItemBrushColor));
                 }
 
                 p.Inlines.Add((".\n").ToRun());
@@ -215,7 +215,7 @@ namespace cs_store_app_TextGame
                     str += " ";
 
                     p.Inlines.Add(str.ToRun());
-                    p.Inlines.Add(Items[i].Name.ToRun(Colors.LightGreen));
+                    p.Inlines.Add(Items[i].Name.ToRun(Statics.ItemBrushColor));
 
                     if (i == 1)
                     {
@@ -237,7 +237,7 @@ namespace cs_store_app_TextGame
                 str += " ";
 
                 p.Inlines.Add(str.ToRun());
-                p.Inlines.Add(Items[1].Name.ToRun(Colors.LightGreen));
+                p.Inlines.Add(Items[1].Name.ToRun(Statics.ItemBrushColor));
 
                 str = " and a";
                 if ((Items[0].Name[0]).IsVowel())
@@ -247,7 +247,7 @@ namespace cs_store_app_TextGame
                 str += " ";
 
                 p.Inlines.Add(str.ToRun());
-                p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                p.Inlines.Add(Items[0].Name.ToRun(Statics.ItemBrushColor));
             }
             else if (Items.Count == 1)
             {
@@ -259,7 +259,7 @@ namespace cs_store_app_TextGame
                 str += " ";
 
                 p.Inlines.Add(str.ToRun());
-                p.Inlines.Add(Items[0].Name.ToRun(Colors.LightGreen));
+                p.Inlines.Add(Items[0].Name.ToRun(Statics.ItemBrushColor));
             }
 
             p.Inlines.Add((".\n").ToRun());

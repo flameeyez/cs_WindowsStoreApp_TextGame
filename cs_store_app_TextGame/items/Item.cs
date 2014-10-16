@@ -94,7 +94,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return Name.ToRun(Colors.LightGreen);
+                return Name.ToRun(Statics.ItemBrushColor, NID);
             }
         }
         public Paragraph NameAsParagraph

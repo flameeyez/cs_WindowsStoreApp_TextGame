@@ -1,0 +1,46 @@
+----------------------------------------------------------------
+--
+-- TODO
+--
+----------------------------------------------------------------
+
+fix plurals in messages
+expand EntityPlayer.GainLevel
+implement behavior
+remove npc corpse after search
+when finding an item in a collection (hands, body), should we return a List of matches instead of simply the first one?
+
+----------------------------------------------------------------
+
+10/15/2014
+----------------------------------------------------------------
+added Level to EntityBase
+added <level> to each entity type in npc-templates.xml
+- goblin - 1
+- troll - 2
+- orc - 5
+changed EntityNPCBase.NameAsRun to use Statics.LevelDeltaToColor
+set Game.Player initial level to 1
+- goblin name is now yellow
+- troll name is now orange
+- orc name is now red
+added Experience property to EntityPlayer
+added Statics.LevelDeltaToExperience
+added EntityPlayer.ProcessExperience(npc)
+- returns Paragraph
+- adds level gain info
+added EntityPlayer.GainLevel
+fixed PLAYER_GET message bug
+fixed DoEquip messages to differentiate between backpacks and pouches
+- messages.xml - renamed PLAYER_EQUIP_BACKPACK to PLAYER_EQUIP_CONTAINER_BACKPACK
+- messages.xml - added PLAYER_EQUIP_CONTAINER_POUCH, with two messages
+fixed DoRemove to check containers
+- messages.xml - renamed PLAYER_REMOVE_BACKPACK to PLAYER_REMOVE_CONTAINER_BACKPACK
+- messages.xml - added PLAYER_REMOVE_CONTAINER_POUCH, with two messages
+- messages.xml - added two messages to ERROR_ALREADY_EQUIPPED
+- messages.xml - added two messages to ERROR_ITEM_NOT_EQUIPPABLE
+- messages.xml - added two messages to ERROR_CONTAINER_NOT_CLOSABLE
+rewrote swipe pad algorithm
+fixed bugs in DoDrink
+- messages.xml - updated PLAYER_DRINK messages to include magic restore
+- messages.xml - added health restore information to PLAYER_EAT_LAST_GROUND_ITEM messages

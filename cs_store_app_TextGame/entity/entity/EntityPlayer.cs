@@ -10,6 +10,7 @@ namespace cs_store_app_TextGame
 {
     public class EntityPlayer : EntityBase
     {
+        public int Experience { get; set; }
         public EntityPlayer() : base() 
         {
             Hands.Add(new EntityHand());
@@ -112,9 +113,16 @@ namespace cs_store_app_TextGame
 
             Item weapon = Hands.GetAnyItem(ITEM_TYPE.WEAPON);
             // TODO: fix this
-            if (weapon == null && Hands.Hands[0].Item != null)
+            if (weapon == null)
             {
-                return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_ATTACKS_BAD_WEAPON, Hands.Hands[0].Item.NameAsParagraph);
+                if (Hands.Hands[0].Item != null)
+                {
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_ATTACKS_BAD_WEAPON, Hands.Hands[0].Item.NameAsParagraph);
+                }
+                else if(Hands.Hands[1].Item != null)
+                {
+                    return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_ATTACKS_BAD_WEAPON, Hands.Hands[1].Item.NameAsParagraph);
+                }
             }
 
             Paragraph pWeapon = weapon == null ? "fist".ToParagraph() : weapon.NameAsParagraph;
@@ -123,9 +131,40 @@ namespace cs_store_app_TextGame
             MESSAGE_ENUM message = MESSAGE_ENUM.PLAYER_ATTACKS_NPC;
             int damage = AttackPower - npc.Body.DefensePower;
             npc.Attributes.CurrentHealth -= damage;
-            if (npc.IsDead) { message = MESSAGE_ENUM.PLAYER_KILLS_NPC; }
+            if (npc.IsDead) 
+            {
+                Paragraph xpPara = Game.Player.ProcessExperience(npc);
+                return Handler.HANDLED(MESSAGE_ENUM.PLAYER_KILLS_NPC, npc.NameBaseAsParagraph, pWeapon, damage.ToString().ToParagraph(), xpPara);
+            }
 
             return Handler.HANDLED(message, npc.NameBaseAsParagraph, pWeapon, damage.ToString().ToParagraph());
+        }
+
+        public Paragraph ProcessExperience(EntityNPCBase npc)
+        {
+            int experience = Statics.LevelDeltaToExperience(npc.Level);
+            Game.Player.Experience += experience;
+
+            Paragraph p = new Paragraph();
+            
+            string strExperience = "You have gained " + experience.ToString() + " experience.";
+            p.Inlines.Add(strExperience.ToRun());
+
+            // TODO: replace hard-coded 1000?
+            if(Game.Player.Experience > Game.Player.Level * 1000)
+            {
+                Game.Player.GainLevel();
+                string strLevelUp = "You have gained a level! You are now level " + Game.Player.Level.ToString();
+                p.Inlines.Add(strLevelUp.ToRun());
+            }
+
+            return p;
+        }
+
+        public void GainLevel()
+        {
+            // TODO: update with attribute gains
+            Level++;
         }
         public override Handler DoMoveBasic(TranslatedInput input)
         {
@@ -384,7 +423,7 @@ namespace cs_store_app_TextGame
                     if (drink.NumberOfDrinks == 1)
                     {
                         message = MESSAGE_ENUM.PLAYER_DRINK_LAST_GROUND_ITEM;
-                        hand.Item = null;
+                        CurrentRoom.Items.Remove(drink);
                     }
                     else
                     {
@@ -491,7 +530,12 @@ namespace cs_store_app_TextGame
             EntityHand hand = Hands.GetEmptyHand();
             if (hand == null) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_HANDS_ARE_FULL); }
 
-            return Body.DoRemove(input.Words[1], hand);
+            REMOVE_RESULT result = Body.DoRemove(input.Words[1], hand);
+            if (result == REMOVE_RESULT.NOT_REMOVED) { result = ContainerSlots.DoRemove(input.Words[1], hand); }
+            if (result == REMOVE_RESULT.NOT_REMOVED) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
+
+            MESSAGE_ENUM message = Statics.ItemTypeToRemoveMessage[hand.Item.Type];
+            return Handler.HANDLED(message, hand.Item.NameAsParagraph);
         }
         //protected override Handler DoRemove(ITEM_SLOT itemSlot)
         //{
@@ -668,7 +712,7 @@ namespace cs_store_app_TextGame
             // otherwise, remove from room
             else { CurrentRoom.Items.Remove(item); }
 
-            return Handler.HANDLED(message, item.NameAsParagraph, container == null ? null : container.NameAsParagraph);
+            return Handler.HANDLED(message, item.NameWithIndefiniteArticle, container == null ? null : container.NameAsParagraph);
         }
         public override Handler DoDrop(TranslatedInput input)
         {

@@ -12,6 +12,7 @@ namespace cs_store_app_TextGame
         public static void Initialize()
         {
             Player = new EntityPlayer();
+            Player.Level = 1;
         }
     }
 }

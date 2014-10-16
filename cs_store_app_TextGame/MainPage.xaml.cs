@@ -339,11 +339,73 @@ namespace cs_store_app_TextGame
         {
             if (e.IsInertial)
             {
+                e.Complete();
+
+                // int threshold = 20;
                 Point currentpoint = e.Position;
-                if (currentpoint.X - initialpoint.X >= 500)//500 is the threshold value, where you want to trigger the swipe right event
+                
+                double deltaX = currentpoint.X - initialpoint.X;
+                double deltaY = currentpoint.Y - initialpoint.Y;
+
+                AppendDebugText("X: " + deltaX.ToString());
+                AppendDebugText("Y: " + deltaY.ToString());
+
+                // threshold percentage
+                double dThreshold = 0.5;
+
+                double absX = Math.Abs(deltaX);
+                double absY = Math.Abs(deltaY);
+                double xyDelta = absX - absY;
+
+                if(xyDelta >= 0)
                 {
-                    AppendDebugText("swipe right");
-                    e.Complete();
+                    // x >= y
+                    double deltaPercentage = xyDelta / absX;
+                    if(deltaPercentage > dThreshold)
+                    {
+                        // only use x
+                        if (deltaX > 0) { InputQueue.Enqueue("e"); }
+                        else if (deltaX < 0) { InputQueue.Enqueue("w"); }
+                    }
+                    else
+                    {
+                        // use x and y
+                        if(deltaX > 0)
+                        {
+                            if (deltaY > 0) { InputQueue.Enqueue("se"); }
+                            else if (deltaY < 0) { InputQueue.Enqueue("ne"); }
+                        }
+                        else if(deltaX < 0)
+                        {
+                            if (deltaY > 0) { InputQueue.Enqueue("sw"); }
+                            else if (deltaY < 0) { InputQueue.Enqueue("nw"); }
+                        }
+                    }
+                }
+                else
+                {
+                    // y > x
+                    double deltaPercentage = -xyDelta / absY;
+                    if(deltaPercentage > dThreshold)
+                    {
+                        // only use y
+                        if (deltaY > 0) { InputQueue.Enqueue("s"); }
+                        else if (deltaY < 0) { InputQueue.Enqueue("n"); }
+                    }
+                    else
+                    {
+                        // use x and y
+                        if (deltaX > 0)
+                        {
+                            if (deltaY > 0) { InputQueue.Enqueue("se"); }
+                            else if (deltaY < 0) { InputQueue.Enqueue("ne"); }
+                        }
+                        else if (deltaX < 0)
+                        {
+                            if (deltaY > 0) { InputQueue.Enqueue("sw"); }
+                            else if (deltaY < 0) { InputQueue.Enqueue("nw"); }
+                        }
+                    }
                 }
             }
         }
@@ -356,6 +418,11 @@ namespace cs_store_app_TextGame
 
             Run run = element as Run;
             txtCurrentRun.Text = run.Text;
+        }
+
+        private void rectSwipe_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            InputQueue.Enqueue("out");
         }
     }
 }

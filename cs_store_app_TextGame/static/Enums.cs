@@ -14,9 +14,9 @@ namespace cs_store_app_TextGame
         EQUIPPED = 3
     }
 
-    public enum HANDLED_RESULT
+    public enum REMOVE_RESULT
     {
-        HANDLED,
-        UNHANDLED
+        REMOVED = 0,
+        NOT_REMOVED = 1
     }
 }

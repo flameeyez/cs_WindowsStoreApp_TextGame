@@ -36,6 +36,22 @@ namespace cs_store_app_TextGame
             return Handler.HANDLED(Statics.EquipResultToMessage[bestResult]);
         }
 
+        public REMOVE_RESULT DoRemove(string strKeyword, EntityHand hand)
+        {
+            foreach (EntityContainerSlot slot in ContainerSlots)
+            {
+                if (slot.Container == null) { continue; }
+                if (!slot.Container.IsKeyword(strKeyword)) { continue; }
+
+                hand.Item = slot.Container;
+                slot.Container = null;
+
+                return REMOVE_RESULT.REMOVED;
+            }
+
+            return REMOVE_RESULT.NOT_REMOVED;
+        }
+
         public ItemContainer GetContainer(string strKeyword)
         {
             foreach(EntityContainerSlot slot in ContainerSlots)

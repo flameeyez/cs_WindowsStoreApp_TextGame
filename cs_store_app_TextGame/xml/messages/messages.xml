@@ -63,15 +63,15 @@
 	<message>
 		<id>PLAYER_DRINK</id>
 		<strings>
-			<string>You take a sip from your 1.\nYou have 2 sip/s left.</string>
-			<string>You take a swig of your 1.\nYou have 2 sip/s left.</string>
+			<string>You take a sip from your 1.\nYou restore 2 magic.\nYou have 3 sip/s left.</string>
+			<string>You take a swig of your 1.\nYou restore 2 magic.\nYou have 3 sip/s left.</string>
 		</strings>
 	</message>
 	<message>
 		<id>PLAYER_DRINK_LAST</id>
 		<strings>
-			<string>You take a sip from the 1.\nThat was the last of it.</string>
-			<string>You take a swig of your 1.\nThat was the last of it.</string>
+			<string>You take a sip from the 1.\nYou restore 2 magic.\nThat was the last of it.</string>
+			<string>You take a swig of your 1.\nYou restore 2 magic.\nThat was the last of it.</string>
 		</strings>
 	</message>
 	<message>
@@ -119,17 +119,17 @@
 	<message>
 		<id>PLAYER_PUT_IN_PLAYER_CONTAINER</id>
 		<strings>
-			<string>You put 1 in your 2.</string>
-			<string>You place 1 in your 2.</string>
-			<string>You store 1 in your 2.</string>
+			<string>You put the 1 in your 2.</string>
+			<string>You place the 1 in your 2.</string>
+			<string>You store the 1 in your 2.</string>
 		</strings>
 	</message>
 	<message>
 		<id>PLAYER_PUT_IN_GROUND_CONTAINER</id>
 		<strings>
-			<string>You put 1 in 2 that is lying on the ground.</string>
-			<string>You place 1 in 2 that is lying on the ground.</string>
-			<string>You store 1 in 2 that is lying on the ground.</string>
+			<string>You put the 1 in 2 that is lying on the ground.</string>
+			<string>You place the 1 in 2 that is lying on the ground.</string>
+			<string>You store the 1 in 2 that is lying on the ground.</string>
 		</strings>
 	</message>
 	<message>
@@ -174,13 +174,20 @@
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_EQUIP_BACKPACK</id>
+		<id>PLAYER_EQUIP_CONTAINER_BACKPACK</id>
 		<strings>
 			<string>You toss the 1 over your shoulders.</string>
 			<string>You sling the 1 over your shoulders.</string>
 		</strings>
 	</message>
-	<message>
+  <message>
+    <id>PLAYER_EQUIP_CONTAINER_POUCH</id>
+    <strings>
+      <string>You attach the 1 around your waist.</string>
+      <string>You fasten the 1 around your waist.</string>
+    </strings>
+  </message>
+  <message>
 		<id>PLAYER_REMOVE</id>
 		<strings>
 			<string>You remove your 1.</string>
@@ -222,13 +229,20 @@
 		</strings>
 	</message>
 	<message>
-		<id>PLAYER_REMOVE_BACKPACK</id>
+		<id>PLAYER_REMOVE_CONTAINER_BACKPACK</id>
 		<strings>
 			<string>You remove the 1.</string>
 			<string>You slide the 1 off of your shoulders.</string>
 		</strings>
 	</message>
-	<message>
+  <message>
+    <id>PLAYER_REMOVE_CONTAINER_POUCH</id>
+    <strings>
+      <string>You remove the 1.</string>
+      <string>You detach the 1 from around your waist.</string>
+    </strings>
+  </message>
+  <message>
 		<id>PLAYER_BUY</id>
 		<strings>
 			<string>You buy 1 from the shopkeeper for 2 gold pieces.</string>
@@ -290,9 +304,9 @@
 	<message>
 		<id>PLAYER_KILLS_NPC</id>
 		<strings>
-			<string>You attack the 1 with your 2 and hit for 3 damage.\nThe 1 dies.</string>
-			<string>You swing at the 1 with your 2 and hit for 3 damage.\nThe 1 dies.</string>
-			<string>You swing a 2 at the 1, hitting for 3 damage.\nThe 1 dies.</string>
+			<string>You attack the 1 with your 2 and hit for 3 damage.\nThe 1 dies.\n4</string>
+			<string>You swing at the 1 with your 2 and hit for 3 damage.\nThe 1 dies.\n4</string>
+			<string>You swing a 2 at the 1, hitting for 3 damage.\nThe 1 dies.\n4</string>
 		</strings>
 	</message>
 	<message>
@@ -613,18 +627,24 @@
 		<id>ERROR_CONTAINER_NOT_CLOSABLE</id>
 		<strings>
 			<string>The 1 isn't closable.</string>
+      <string>You can't close the 1.</string>
+      <string>You are unable to close the 1.</string>
 		</strings>
 	</message>
 	<message>
 		<id>ERROR_ITEM_NOT_EQUIPPABLE</id>
 		<strings>
 			<string>You can't equip that.</string>
+      <string>That can't be equipped.</string>
+      <string>Though your motive is pure, you can't seem to equip that.</string>
 		</strings>
 	</message>
 	<message>
 		<id>ERROR_ALREADY_EQUIPPED</id>
 		<strings>
 			<string>You can't equip another item of that type.</string>
+      <string>You can't equip another one of those.</string>
+      <string>You can't equip any more of those.</string>
 		</strings>
 	</message>
 	<message>
