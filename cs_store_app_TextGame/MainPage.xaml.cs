@@ -182,11 +182,7 @@ namespace cs_store_app_TextGame {
                 sUpdate.Stop();
 
                 #region Debug
-                if (sUpdate.ElapsedMilliseconds > 15) {
-                    AppendDebugText("Update: " + sUpdate.ElapsedMilliseconds.ToString() + "ms");
-                    AppendDebugText("World: " + sWorld.ElapsedMilliseconds.ToString() + "ms");
-                    AppendDebugText("Input: " + sInput.ElapsedMilliseconds.ToString() + "ms");
-                }
+                if (sUpdate.ElapsedMilliseconds > 15) { AppendDebugText("Update: " + sUpdate.ElapsedMilliseconds.ToString() + "ms"); }
                 #endregion
             });
         }
