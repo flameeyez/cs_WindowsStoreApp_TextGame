@@ -255,7 +255,7 @@ namespace cs_store_app_TextGame
             {
                 foreach (XElement behaviorActionElement in behaviorNode.Elements())
                 {
-                    ACTION_ENUM action = TranslatedInput.StringToAction[behaviorActionElement.Name.LocalName];
+                    ACTION_ENUM action = ParsedInput.StringToAction[behaviorActionElement.Name.LocalName];
                     int percentage = int.Parse(behaviorActionElement.Value);
                     Behavior.PossibleActions.Add(new EntityBehaviorAction(action, percentage));
                 }

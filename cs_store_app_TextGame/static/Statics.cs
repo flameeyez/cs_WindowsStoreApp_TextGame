@@ -30,9 +30,6 @@ namespace cs_store_app_TextGame
 
         public static Random r = new Random(DateTime.Now.Millisecond);
 
-        // any displayed text is routed through this queue; UI thread checks this queue during each update
-        public static Queue<Paragraph> AppendQueue = new Queue<Paragraph>();
-
         #region Static Constructor
         static Statics()
         {
@@ -285,8 +282,8 @@ namespace cs_store_app_TextGame
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_FINGER);
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_HEAD);
             ItemTypeToEquipMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_EQUIP_ARMOR_NECK);
-            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_BACKPACK);
-            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_POUCH);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_BACK, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_BACKPACK);
+            ItemTypeToEquipMessage.Add(ITEM_TYPE.CONTAINER_WAIST, MESSAGE_ENUM.PLAYER_EQUIP_CONTAINER_POUCH);
         }
         public static void LoadItemTypeToRemoveMessage()
         {
@@ -295,8 +292,8 @@ namespace cs_store_app_TextGame
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_FINGER, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_FINGER);
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_HEAD, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_HEAD);
             ItemTypeToRemoveMessage.Add(ITEM_TYPE.ARMOR_NECK, MESSAGE_ENUM.PLAYER_REMOVE_ARMOR_NECK);
-            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_BACKPACK, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_BACKPACK);
-            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_POUCH, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_POUCH);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_BACK, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_BACKPACK);
+            ItemTypeToRemoveMessage.Add(ITEM_TYPE.CONTAINER_WAIST, MESSAGE_ENUM.PLAYER_REMOVE_CONTAINER_POUCH);
         }
         public static void LoadOrdinalStringToInt()
         {

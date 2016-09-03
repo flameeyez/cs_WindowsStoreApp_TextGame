@@ -13,15 +13,8 @@ namespace cs_store_app_TextGame
         public int Experience { get; set; }
         public EntityPlayer() : base() 
         {
-            Hands.Add(new EntityHand());
-            Hands.Add(new EntityHand());
-
-            Body.BodyParts.Add(new EntityBodyPartChest());
-            Body.BodyParts.Add(new EntityBodyPartHead());
-            Body.BodyParts.Add(new EntityBodyPartFeet());
-            Body.BodyParts.Add(new EntityBodyPartNeck());
-            Body.BodyParts.Add(new EntityBodyPartFinger());
-            Body.BodyParts.Add(new EntityBodyPartFinger());
+            Body = EntityBody.CreateStandardBodyHumanoid();
+            Hands = EntityHands.CreateStandardHandsHumanoid();
 
             ContainerSlots.ContainerSlots.Add(new EntityContainerSlotBackpack());
             ContainerSlots.ContainerSlots.Add(new EntityContainerSlotPouch());
@@ -92,7 +85,7 @@ namespace cs_store_app_TextGame
         }
         #endregion
         #region Input Handling
-        public override Handler DoAttack(TranslatedInput input)
+        public override Handler DoAttack(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, input.Words[0].ToSentenceCase().ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -166,7 +159,7 @@ namespace cs_store_app_TextGame
             // TODO: update with attribute gains
             Level++;
         }
-        public override Handler DoMoveBasic(TranslatedInput input)
+        public override Handler DoMoveBasic(ParsedInput input)
         {
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_SITTING); }
@@ -189,7 +182,7 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(MESSAGE_ENUM.BASE_STRING, Coordinates.CurrentRoomDisplayParagraph);
         }
-        public override Handler DoMoveConnection(TranslatedInput input)
+        public override Handler DoMoveConnection(ParsedInput input)
         {
             // TODO: since a Connection can have ANY action verb, consider trying to process any fall-through input
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_GO_WHERE); }
@@ -213,7 +206,7 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT);
         }
-        public override Handler DoLook(TranslatedInput input)
+        public override Handler DoLook(ParsedInput input)
         {
             // "look"
             if (input == null || input.Words.Length < 2) { return Handler.HANDLED(MESSAGE_ENUM.BASE_STRING, Coordinates.CurrentRoomDisplayParagraph); }
@@ -313,7 +306,7 @@ namespace cs_store_app_TextGame
             }
             return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT);
         }
-        public override Handler DoLookHands(TranslatedInput input)
+        public override Handler DoLookHands(ParsedInput input)
         {
             if (input != null && input.Words.Length > 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             return Handler.HANDLED(MESSAGE_ENUM.BASE_STRING, Hands.PlayerDisplayParagraph);
@@ -336,7 +329,7 @@ namespace cs_store_app_TextGame
             // TODO: fix this
             throw new NotImplementedException();
         }
-        public override Handler DoEat(TranslatedInput input)
+        public override Handler DoEat(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Eat".ToParagraph()); }
             else if (input.Words.Length > 2) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
@@ -387,7 +380,7 @@ namespace cs_store_app_TextGame
                 }
             }            
         }
-        public override Handler DoDrink(TranslatedInput input)
+        public override Handler DoDrink(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Drink".ToParagraph()); }
             else if (input.Words.Length > 2) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
@@ -438,7 +431,7 @@ namespace cs_store_app_TextGame
                 }
             }
         }
-        public override Handler DoOpen(TranslatedInput input)
+        public override Handler DoOpen(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Open".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -453,7 +446,7 @@ namespace cs_store_app_TextGame
             container.Closed = false;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_OPEN, container.NameAsParagraph);
         }
-        public override Handler DoClose(TranslatedInput input)
+        public override Handler DoClose(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Close".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -472,7 +465,7 @@ namespace cs_store_app_TextGame
             container.Closed = true;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_CLOSE, container.NameAsParagraph);
         }
-        public override Handler DoPut(TranslatedInput input)
+        public override Handler DoPut(ParsedInput input)
         {
             // TODO: put <item> on <surface>
             //// put <item> in <container>
@@ -505,7 +498,7 @@ namespace cs_store_app_TextGame
             container.Items.Add(item);
             return Handler.HANDLED(message, item.NameAsParagraph, container.NameAsParagraph);
         }
-        public override Handler DoEquip(TranslatedInput input)
+        public override Handler DoEquip(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Equip".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -521,7 +514,7 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(MESSAGE_ENUM.ERROR_ITEM_NOT_EQUIPPABLE);
         }
-        public override Handler DoRemove(TranslatedInput input)
+        public override Handler DoRemove(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Remove".ToParagraph()); }
             if (input.Words.Length > 2) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
@@ -603,12 +596,12 @@ namespace cs_store_app_TextGame
 
         //    return Handler.HANDLED(message, pRemovedItem);
         //}
-        public override Handler DoShowInventory(TranslatedInput input)
+        public override Handler DoShowInventory(ParsedInput input)
         {
             if (input.Words.Length > 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             return Handler.HANDLED(MESSAGE_ENUM.BASE_STRING, InventoryParagraph);
         }
-        public override Handler DoGetExtended(TranslatedInput input)
+        public override Handler DoGetExtended(ParsedInput input)
         {
             //// take <item> from <container>
             //if (input.Words[2] != "from") { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
@@ -644,7 +637,7 @@ namespace cs_store_app_TextGame
             // TODO: fix this
             throw new NotImplementedException();
         }
-        public override Handler DoGet(TranslatedInput input)
+        public override Handler DoGet(ParsedInput input)
         {
             // take <item> from <container>
             if (input.Words.Length == 4) { return DoGetExtended(input); }
@@ -714,7 +707,7 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(message, item.NameWithIndefiniteArticle, container == null ? null : container.NameAsParagraph);
         }
-        public override Handler DoDrop(TranslatedInput input)
+        public override Handler DoDrop(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Drop".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -725,7 +718,7 @@ namespace cs_store_app_TextGame
             CurrentRoom.Items.Add(item);
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_DROP, item.NameAsParagraph);
         }
-        public override Handler DoBuy(TranslatedInput input)
+        public override Handler DoBuy(ParsedInput input)
         {
             // if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Buy".ToParagraph()); }
             if (input.Words.Length > 2) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
@@ -772,7 +765,7 @@ namespace cs_store_app_TextGame
             Gold -= nPrice;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_BUY, boughtItem.NameWithIndefiniteArticle, nPrice.ToString().ToParagraph());
         }
-        public override Handler DoGold(TranslatedInput input)
+        public override Handler DoGold(ParsedInput input)
         {
             if (input.Words.Length > 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             if (Gold > 0)
@@ -782,7 +775,7 @@ namespace cs_store_app_TextGame
 
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_CARRYING_NO_GOLD);
         }
-        public override Handler DoPrice(TranslatedInput input)
+        public override Handler DoPrice(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Price".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -803,7 +796,7 @@ namespace cs_store_app_TextGame
 
             return handler;
         }
-        public override Handler DoSell(TranslatedInput input)
+        public override Handler DoSell(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Sell".ToParagraph()); }
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
@@ -816,33 +809,33 @@ namespace cs_store_app_TextGame
             // TODO: find player item first, THEN attempt to sell to shop
             return shop.DoBuyFromEntity(this, input.Words[1]);
         }
-        public override Handler DoStand(TranslatedInput input)
+        public override Handler DoStand(ParsedInput input)
         {
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
             if (Posture == ENTITY_POSTURE.STANDING) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_ALREADY_STANDING); }
             Posture = ENTITY_POSTURE.STANDING;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_STAND);
         }
-        public override Handler DoKneel(TranslatedInput input)
+        public override Handler DoKneel(ParsedInput input)
         {
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
             if (Posture == ENTITY_POSTURE.KNEELING) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_ALREADY_KNEELING); }
             Posture = ENTITY_POSTURE.KNEELING;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_KNEEL);
         }
-        public override Handler DoSit(TranslatedInput input)
+        public override Handler DoSit(ParsedInput input)
         {
             if (IsDead) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_PLAYER_IS_DEAD); }
             if (Posture == ENTITY_POSTURE.SITTING) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_ALREADY_SITTING); }
             Posture = ENTITY_POSTURE.SITTING;
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_SIT);
         }
-        public override Handler DoShowHealth(TranslatedInput input)
+        public override Handler DoShowHealth(ParsedInput input)
         {
             if (input.Words.Length > 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_BAD_INPUT); }
             return Handler.HANDLED(MESSAGE_ENUM.PLAYER_SHOW_HEALTH, Attributes.HealthString.ToParagraph(), Attributes.MagicString.ToParagraph());
         }
-        public override Handler DoSearch(TranslatedInput input)
+        public override Handler DoSearch(ParsedInput input)
         {
             if (input.Words.Length == 1) { return Handler.HANDLED(MESSAGE_ENUM.ERROR_WHAT, "Search".ToParagraph()); }
 

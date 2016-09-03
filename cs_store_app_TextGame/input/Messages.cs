@@ -230,7 +230,7 @@ namespace cs_store_app_TextGame
 
         public static void Display(MESSAGE_ENUM message, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
         {
-            Statics.AppendQueue.Enqueue(Messages.Get(message, p1, p2, p3, p4));
+            MessageQueue.Enqueue(Messages.Get(message, p1, p2, p3, p4));
         }
     }
 }

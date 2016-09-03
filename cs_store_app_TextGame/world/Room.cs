@@ -7,22 +7,17 @@ using System.Xml.Linq;
 using Windows.UI;
 using Windows.UI.Xaml.Documents;
 
-namespace cs_store_app_TextGame
-{
-    public class Room
-    {
+namespace cs_store_app_TextGame {
+    public class Room {
         #region Attributes
         public int ID { get; set; }
 
         private string _description { get; set; }
-        public string Description
-        {
-            get
-            {
+        public string Description {
+            get {
                 return _description + "\n";
             }
-            set
-            {
+            set {
                 _description = value;
             }
         }
@@ -37,23 +32,19 @@ namespace cs_store_app_TextGame
         #endregion
 
         #region Constructors
-        public Room()
-        {
-            for (int i = 0; i < ExitCollection.NUMBER_OF_EXITS; i++)
-            {
+        public Room() {
+            for (int i = 0; i < ExitCollection.NUMBER_OF_EXITS; i++) {
                 Exits.Set(i, new Exit(-1, -1, -1));
             }
         }
-        public Room(XElement roomNode) : this()
-        {
+        public Room(XElement roomNode) : this() {
             ID = int.Parse(roomNode.Element("id").Value);
             Description = roomNode.Element("description").Value;
 
             // room.exits
             var exitNode = roomNode.Element("exits");
             var northwestNode = exitNode.Element("northwest");
-            if (northwestNode != null)
-            {
+            if (northwestNode != null) {
                 int nRegion = int.Parse(northwestNode.Element("region").Value);
                 int nSubregion = int.Parse(northwestNode.Element("subregion").Value);
                 int nRoom = int.Parse(northwestNode.Element("room").Value);
@@ -61,8 +52,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(0, new Exit(nRegion, nSubregion, nRoom));
             }
             var northNode = exitNode.Element("north");
-            if (northNode != null)
-            {
+            if (northNode != null) {
                 int nRegion = int.Parse(northNode.Element("region").Value);
                 int nSubregion = int.Parse(northNode.Element("subregion").Value);
                 int nRoom = int.Parse(northNode.Element("room").Value);
@@ -70,8 +60,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(1, new Exit(nRegion, nSubregion, nRoom));
             }
             var northeastNode = exitNode.Element("northeast");
-            if (northeastNode != null)
-            {
+            if (northeastNode != null) {
                 int nRegion = int.Parse(northeastNode.Element("region").Value);
                 int nSubregion = int.Parse(northeastNode.Element("subregion").Value);
                 int nRoom = int.Parse(northeastNode.Element("room").Value);
@@ -79,8 +68,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(2, new Exit(nRegion, nSubregion, nRoom));
             }
             var westNode = exitNode.Element("west");
-            if (westNode != null)
-            {
+            if (westNode != null) {
                 int nRegion = int.Parse(westNode.Element("region").Value);
                 int nSubregion = int.Parse(westNode.Element("subregion").Value);
                 int nRoom = int.Parse(westNode.Element("room").Value);
@@ -88,8 +76,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(3, new Exit(nRegion, nSubregion, nRoom));
             }
             var outNode = exitNode.Element("out");
-            if (outNode != null)
-            {
+            if (outNode != null) {
                 int nRegion = int.Parse(outNode.Element("region").Value);
                 int nSubregion = int.Parse(outNode.Element("subregion").Value);
                 int nRoom = int.Parse(outNode.Element("room").Value);
@@ -97,8 +84,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(4, new Exit(nRegion, nSubregion, nRoom));
             }
             var eastNode = exitNode.Element("east");
-            if (eastNode != null)
-            {
+            if (eastNode != null) {
                 int nRegion = int.Parse(eastNode.Element("region").Value);
                 int nSubregion = int.Parse(eastNode.Element("subregion").Value);
                 int nRoom = int.Parse(eastNode.Element("room").Value);
@@ -106,8 +92,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(5, new Exit(nRegion, nSubregion, nRoom));
             }
             var southwestNode = exitNode.Element("southwest");
-            if (southwestNode != null)
-            {
+            if (southwestNode != null) {
                 int nRegion = int.Parse(southwestNode.Element("region").Value);
                 int nSubregion = int.Parse(southwestNode.Element("subregion").Value);
                 int nRoom = int.Parse(southwestNode.Element("room").Value);
@@ -115,8 +100,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(6, new Exit(nRegion, nSubregion, nRoom));
             }
             var southNode = exitNode.Element("south");
-            if (southNode != null)
-            {
+            if (southNode != null) {
                 int nRegion = int.Parse(southNode.Element("region").Value);
                 int nSubregion = int.Parse(southNode.Element("subregion").Value);
                 int nRoom = int.Parse(southNode.Element("room").Value);
@@ -124,8 +108,7 @@ namespace cs_store_app_TextGame
                 Exits.Set(7, new Exit(nRegion, nSubregion, nRoom));
             }
             var southeastNode = exitNode.Element("southeast");
-            if (southeastNode != null)
-            {
+            if (southeastNode != null) {
                 int nRegion = int.Parse(southeastNode.Element("region").Value);
                 int nSubregion = int.Parse(southeastNode.Element("subregion").Value);
                 int nRoom = int.Parse(southeastNode.Element("room").Value);
@@ -138,8 +121,7 @@ namespace cs_store_app_TextGame
                             .Elements("connections")
                               .Elements("connection")
                                   select connections;
-            foreach (var connectionNode in connectionNodes)
-            {
+            foreach (var connectionNode in connectionNodes) {
                 Connections.Add(new Connection(connectionNode));
             }
 
@@ -148,10 +130,8 @@ namespace cs_store_app_TextGame
         #endregion
 
         #region Display
-        public Paragraph FullDisplayParagraph
-        {
-            get
-            {
+        public Paragraph FullDisplayParagraph {
+            get {
                 Paragraph p = new Paragraph();
 
                 p.Inlines.Add(Description.ToRun());
@@ -159,23 +139,20 @@ namespace cs_store_app_TextGame
                 p.Merge(Items.RoomDisplayParagraph);
                 p.Merge(NPCs.RoomDisplayParagraph);
                 p.Merge(Exits.RoomDisplayParagraph);
-                
+
                 return p;
             }
         }
         #endregion
 
-        public void Update()
-        {
-            if (!this.Equals(Game.Player.Coordinates.CurrentRoom))
-            {
+        public void Update() {
+            if (!this.Equals(Game.Player.Coordinates.CurrentRoom)) {
                 DateTime now = DateTime.Now;
                 TimeSpan delta = now - EmptyRoomTimer;
-                if (delta.TotalMilliseconds > Statics.EmptyRoomCleanupThreshold)
-                {
+                if (delta.TotalMilliseconds > Statics.EmptyRoomCleanupThreshold) {
                     EmptyRoomTimer = now;
                     //Cleanup();
-                    
+
                     // DEBUG
                     //Messages.Display(MESSAGE_ENUM.DEBUG_ROOM_CLEANUP, ID.ToString().ToParagraph());
                     // END DEBUG
@@ -183,22 +160,23 @@ namespace cs_store_app_TextGame
             }
         }
 
-        public EntityNPCBase GetRandomHostile(EntityNPCBase source, bool bMustBeAlive = false)
-        {
+        public EntityNPCBase GetRandomHostile(EntityNPCBase source, bool bMustBeAlive = false) {
             return NPCs.GetRandomHostile(source, bMustBeAlive);
         }
 
-        public void Cleanup()
-        {
+        public void Cleanup() {
             // TODO: stagger? is cleanup on all rooms OK?
             // TODO: dynamic time threshold based on item, npc count?
             Items.Cleanup();
             NPCs.Cleanup();
         }
 
-        public void ResetEmptyRoomTimer()
-        {
+        public void ResetEmptyRoomTimer() {
             EmptyRoomTimer = DateTime.Now;
+        }
+
+        internal void AddItem(Item itemTemplate) {
+            Items.Add(itemTemplate.DeepClone());
         }
     }
 }

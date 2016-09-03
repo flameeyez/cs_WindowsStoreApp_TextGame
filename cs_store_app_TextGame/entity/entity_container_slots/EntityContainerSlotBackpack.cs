@@ -12,7 +12,7 @@ namespace cs_store_app_TextGame
     {
         public override ITEM_TYPE Type
         {
-            get { return ITEM_TYPE.CONTAINER_BACKPACK; }
+            get { return ITEM_TYPE.CONTAINER_BACK; }
         }
     }
 }

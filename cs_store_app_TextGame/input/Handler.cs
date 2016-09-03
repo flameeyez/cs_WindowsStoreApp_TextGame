@@ -17,14 +17,14 @@ namespace cs_store_app_TextGame
     {
         public RETURN_CODE ReturnCode { get; set; }
         public MESSAGE_ENUM MessageCode { get; set; }
-        public Paragraph ParagraphToAppend { get; set; }
+        public Paragraph Message { get; set; }
 
         #region Constructor
         public Handler(RETURN_CODE returnCode, MESSAGE_ENUM messageCode, Paragraph p1 = null, Paragraph p2 = null, Paragraph p3 = null, Paragraph p4 = null)
         {
             ReturnCode = returnCode;
             MessageCode = messageCode;
-            ParagraphToAppend = Messages.Get(messageCode, p1, p2, p3, p4);
+            Message = Messages.Get(messageCode, p1, p2, p3, p4);
         }
         #endregion
         #region Statics

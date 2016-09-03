@@ -133,6 +133,7 @@
     <Compile Include="ExitWithDirection.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="input\Handler.cs" />
     <Compile Include="items\ItemArmorNeck.cs" />
     <Compile Include="items\ItemArmorFinger.cs" />
@@ -147,7 +148,8 @@
     <Compile Include="items\ItemContainerPouch.cs" />
     <Compile Include="items\ItemWithSource.cs" />
     <Compile Include="input\Messages.cs" />
-    <Compile Include="input\TranslatedInput.cs" />
+    <Compile Include="input\ParsedInput.cs" />
+    <Compile Include="MessageQueue.cs" />
     <Compile Include="RichTextManager.cs" />
     <Compile Include="static\Enums.cs" />
     <Compile Include="world\Connection.cs" />

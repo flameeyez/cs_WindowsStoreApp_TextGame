@@ -16,7 +16,7 @@ namespace cs_store_app_TextGame
         {
             get
             {
-                return ITEM_TYPE.CONTAINER_BACKPACK;
+                return ITEM_TYPE.CONTAINER_BACK;
             }
         }
     }

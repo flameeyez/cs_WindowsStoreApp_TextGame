@@ -27,9 +27,9 @@ namespace cs_store_app_TextGame
         ARMOR_SHIELD = 0x400,
         // TODO: shields don't count right now (for DoEquip)
         ARMOR_ANY = ARMOR_CHEST | ARMOR_FEET | ARMOR_HEAD | ARMOR_NECK | ARMOR_FINGER, // | ARMOR_SHIELD
-        CONTAINER_POUCH = 0x1000,
-        CONTAINER_BACKPACK = 0x2000,
-        CONTAINER_ANY = CONTAINER_POUCH | CONTAINER_BACKPACK,
+        CONTAINER_WAIST = 0x1000,
+        CONTAINER_BACK = 0x2000,
+        CONTAINER_ANY = CONTAINER_WAIST | CONTAINER_BACK,
         ANY = 0xFFFF,
     };
 
@@ -64,8 +64,8 @@ namespace cs_store_app_TextGame
             StringToEnum.Add("armor-feet", ITEM_TYPE.ARMOR_FEET);
             StringToEnum.Add("armor-head", ITEM_TYPE.ARMOR_HEAD);
             StringToEnum.Add("armor-shield", ITEM_TYPE.ARMOR_SHIELD);
-            StringToEnum.Add("container-pouch", ITEM_TYPE.CONTAINER_POUCH);
-            StringToEnum.Add("container-backpack", ITEM_TYPE.CONTAINER_BACKPACK);
+            StringToEnum.Add("container-pouch", ITEM_TYPE.CONTAINER_WAIST);
+            StringToEnum.Add("container-backpack", ITEM_TYPE.CONTAINER_BACK);
             StringToEnum.Add("food", ITEM_TYPE.FOOD);
             StringToEnum.Add("drink", ITEM_TYPE.DRINK);
             StringToEnum.Add("armor-neck", ITEM_TYPE.ARMOR_NECK);

@@ -21,6 +21,5 @@ namespace cs_store_app_TextGame
             NumberOfDrinks = int.Parse(itemNode.Element("number-of-drinks").Value);
             MagicPerDrink = int.Parse(itemNode.Element("magic-per-drink").Value);
         }
-
     }
 }

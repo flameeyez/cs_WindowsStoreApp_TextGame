@@ -81,36 +81,36 @@ namespace cs_store_app_TextGame
         public abstract Paragraph InventoryParagraph { get; }        
 
         #region Action Handlers
-        public virtual Handler DoAttack(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoMoveBasic(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoLook(TranslatedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoAttack(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoMoveBasic(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoLook(ParsedInput input) { return Handler.UNHANDLED(); }
             protected virtual Handler DoLook(string strWord) { return Handler.UNHANDLED(); }
             protected virtual Handler DoLook(string strWord1, string strWord2) { return Handler.UNHANDLED(); }
             protected virtual Handler DoLook(string strWord1, string strWord2, string strWord3) { return Handler.UNHANDLED(); }
-        public virtual Handler DoLookHands(TranslatedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoLookHands(ParsedInput input) { return Handler.UNHANDLED(); }
         public virtual Handler DoLookInContainer(string strKeyword, int ordinal = 0) { return Handler.UNHANDLED(); }
-        public virtual Handler DoEat(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoDrink(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoOpen(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoClose(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoMoveConnection(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoPut(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoEquip(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoRemove(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoShowInventory(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoGetExtended(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoGet(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoDrop(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoBuy(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoGold(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoPrice(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoSell(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoStand(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoKneel(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoSit(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoShowHealth(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public virtual Handler DoSearch(TranslatedInput input) { return Handler.UNHANDLED(); }
-        public Handler ProcessInput(TranslatedInput input)
+        public virtual Handler DoEat(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoDrink(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoOpen(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoClose(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoMoveConnection(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoPut(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoEquip(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoRemove(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoShowInventory(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoGetExtended(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoGet(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoDrop(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoBuy(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoGold(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoPrice(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoSell(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoStand(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoKneel(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoSit(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoShowHealth(ParsedInput input) { return Handler.UNHANDLED(); }
+        public virtual Handler DoSearch(ParsedInput input) { return Handler.UNHANDLED(); }
+        public Handler ProcessInput(ParsedInput input)
         {
             switch (input.Action)
             {

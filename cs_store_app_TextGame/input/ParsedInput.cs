@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace cs_store_app_TextGame
-{
-    public enum ACTION_ENUM
-    {
+namespace cs_store_app_TextGame {
+    public enum INPUT_SOURCE {
+        PLAYER,
+        NPC,
+        ROOM
+    }
+    public enum ACTION_ENUM {
         NONE,
         LOOK,
         MOVE_BASIC,
@@ -35,15 +38,15 @@ namespace cs_store_app_TextGame
         SEARCH
     }
 
-    public class TranslatedInput
-    {
+    public class ParsedInput {
         public ACTION_ENUM Action { get; set; }
+        public string String { get; set; }
         public string[] Words { get; set; }
+        public INPUT_SOURCE Source { get; set; }
 
         public static Dictionary<string, ACTION_ENUM> StringToAction;
 
-        static TranslatedInput()
-        {
+        static ParsedInput() {
             StringToAction = new Dictionary<string, ACTION_ENUM>();
 
             StringToAction.Add("look", ACTION_ENUM.LOOK);
@@ -75,9 +78,10 @@ namespace cs_store_app_TextGame
             StringToAction.Add("search", ACTION_ENUM.SEARCH);
         }
 
-        public TranslatedInput(string unparsedInput)
-        {
+        public ParsedInput(INPUT_SOURCE source, string unparsedInput) {
+            Source = source;
             Action = ACTION_ENUM.NONE;
+            String = unparsedInput;
 
             char[] delimiters = { ' ' };
             string strInput = unparsedInput.ToLower();
@@ -86,17 +90,14 @@ namespace cs_store_app_TextGame
             if (Words.Length == 0) { return; }
 
             int nDirection = Statics.DirectionToInt(Words[0]);
-            if (nDirection != -1) 
-            {
+            if (nDirection != -1) {
                 // hack - replace first word with integer direction
                 Words[0] = nDirection.ToString();
-                Action = ACTION_ENUM.MOVE_BASIC; 
+                Action = ACTION_ENUM.MOVE_BASIC;
             }
-            else
-            {
+            else {
                 ACTION_ENUM action;
-                if(StringToAction.TryGetValue(Words[0], out action))
-                {
+                if (StringToAction.TryGetValue(Words[0], out action)) {
                     Action = action;
                 }
             }

@@ -261,5 +261,14 @@ namespace cs_store_app_TextGame
 
             return null;
         }
+
+        #region Static
+        internal static EntityHands CreateStandardHandsHumanoid() {
+            EntityHands h = new EntityHands();
+            h.Add(new EntityHand());
+            h.Add(new EntityHand());
+            return h;
+        }
+        #endregion
     }
 }
