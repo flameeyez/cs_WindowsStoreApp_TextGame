@@ -17,7 +17,7 @@ namespace cs_store_app_TextGame
         DRINK = 0x1,
         FOOD = 0x2,
         JUNK = 0x4,
-        // something = 0x8,
+        GEM = 0x8,
         WEAPON = 0x10,
         ARMOR_CHEST = 0x20,
         ARMOR_FEET = 0x40,
@@ -141,7 +141,7 @@ namespace cs_store_app_TextGame
         [DataMember]
         public double Weight { get; set; }
         [DataMember]
-        public int Value{get;set;}
+        public virtual int Value{get;set;}
         // no underlying stored value, so no [DataMember] attribute
         public abstract ITEM_TYPE Type { get; }
         [DataMember]

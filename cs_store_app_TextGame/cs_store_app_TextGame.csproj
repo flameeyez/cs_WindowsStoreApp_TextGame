@@ -146,6 +146,7 @@
     <Compile Include="items\ItemArmorShield.cs" />
     <Compile Include="items\ItemContainerBackpack.cs" />
     <Compile Include="items\ItemContainerPouch.cs" />
+    <Compile Include="items\ItemGem.cs" />
     <Compile Include="items\ItemWithSource.cs" />
     <Compile Include="input\Messages.cs" />
     <Compile Include="input\ParsedInput.cs" />
