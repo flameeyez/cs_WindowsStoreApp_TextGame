@@ -6,25 +6,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace cs_store_app_TextGame
-{
-    public static class ItemTemplates
-    {
-        public static List<ItemJunk> ItemsJunk = new List<ItemJunk>();
-        public static List<ItemWeapon> ItemsWeapon = new List<ItemWeapon>();
-        public static List<ItemFood> ItemsFood = new List<ItemFood>();
-        public static List<ItemDrink> ItemsDrink = new List<ItemDrink>();
-        public static List<ItemContainerBackpack> ItemsContainerBackpack = new List<ItemContainerBackpack>();
-        public static List<ItemContainerPouch> ItemsContainerPouch = new List<ItemContainerPouch>();
-        public static List<ItemArmorChest> ItemsArmorChest = new List<ItemArmorChest>();
-        public static List<ItemArmorFeet> ItemsArmorFeet = new List<ItemArmorFeet>();
-        public static List<ItemArmorHead> ItemsArmorHead = new List<ItemArmorHead>();
-        public static List<ItemArmorNeck> ItemsArmorNeck = new List<ItemArmorNeck>();
-        public static List<ItemArmorFinger> ItemsArmorFinger = new List<ItemArmorFinger>();
-        public static List<ItemArmorShield> ItemsArmorShield = new List<ItemArmorShield>();
+namespace cs_store_app_TextGame {
+    public static class ItemTemplates {
+        public static List<ItemGem> ItemGemTemplates = new List<ItemGem>();
+        public static List<ItemJunk> ItemJunkTemplates = new List<ItemJunk>();
+        public static List<ItemWeapon> ItemWeaponTemplates = new List<ItemWeapon>();
+        public static List<ItemFood> ItemFoodTemplates = new List<ItemFood>();
+        public static List<ItemDrink> ItemDrinkTemplates = new List<ItemDrink>();
+        public static List<ItemContainerBackpack> ItemContainerBackpackTemplates = new List<ItemContainerBackpack>();
+        public static List<ItemContainerPouch> ItemContainerPouchTemplates = new List<ItemContainerPouch>();
+        public static List<ItemArmorChest> ItemArmorChestTemplates = new List<ItemArmorChest>();
+        public static List<ItemArmorFeet> ItemArmorFeetTemplates = new List<ItemArmorFeet>();
+        public static List<ItemArmorHead> ItemArmorHeadTemplates = new List<ItemArmorHead>();
+        public static List<ItemArmorNeck> ItemArmorNeckTemplates = new List<ItemArmorNeck>();
+        public static List<ItemArmorFinger> ItemArmorFingerTemplates = new List<ItemArmorFinger>();
+        public static List<ItemArmorShield> ItemArmorShieldTemplates = new List<ItemArmorShield>();
 
-        public async static Task Load()
-        {
+        public async static Task Load() {
+            await LoadItemTemplateGems();
             await LoadItemsContainerBackpack();
             await LoadItemsContainerPouch();
             await LoadItemsDrink();
@@ -38,10 +37,31 @@ namespace cs_store_app_TextGame
             await LoadItemsArmorFinger();
             await LoadItemsArmorShield();
         }
-        private async static Task LoadItemsDrink()
-        {
-            try
-            {
+
+        private async static Task LoadItemTemplateGems() {
+            try {
+                var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
+                var file = await folder.GetFileAsync("item-gem-templates.xml");
+                var stream = await file.OpenStreamForReadAsync();
+
+                XDocument itemsDrinkDocument = XDocument.Load(stream);
+                await stream.FlushAsync();
+
+                var itemNodes = from itemTemplates in itemsDrinkDocument
+                                      .Elements("item-templates")
+                                        .Elements("item-template")
+                                select itemTemplates;
+                foreach (var itemNode in itemNodes) {
+                    ItemGemTemplates.Add(new ItemGem(itemNode));
+                }
+            }
+            catch (Exception e) {
+                throw e;
+            }
+        }
+
+        private async static Task LoadItemsDrink() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-drink-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -53,20 +73,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsDrink.Add(new ItemDrink(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemDrinkTemplates.Add(new ItemDrink(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsFood()
-        {
-            try
-            {
+        private async static Task LoadItemsFood() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-food-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -78,20 +94,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsFood.Add(new ItemFood(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemFoodTemplates.Add(new ItemFood(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsJunk()
-        {
-            try
-            {
+        private async static Task LoadItemsJunk() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-junk-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -102,21 +114,17 @@ namespace cs_store_app_TextGame
                 var itemNodes = from itemTemplates in itemsJunkDocument
                                       .Elements("item-templates")
                                         .Elements("item-template")
-                                  select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsJunk.Add(new ItemJunk(itemNode));
+                                select itemTemplates;
+                foreach (var itemNode in itemNodes) {
+                    ItemJunkTemplates.Add(new ItemJunk(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsWeapon()
-        {
-            try
-            {
+        private async static Task LoadItemsWeapon() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-weapon-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -128,20 +136,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsWeapon.Add(new ItemWeapon(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemWeaponTemplates.Add(new ItemWeapon(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsContainerBackpack()
-        {
-            try
-            {
+        private async static Task LoadItemsContainerBackpack() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-container-backpack-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -153,20 +157,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsContainerBackpack.Add(new ItemContainerBackpack(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemContainerBackpackTemplates.Add(new ItemContainerBackpack(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsContainerPouch()
-        {
-            try
-            {
+        private async static Task LoadItemsContainerPouch() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-container-pouch-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -178,20 +178,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsContainerPouch.Add(new ItemContainerPouch(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemContainerPouchTemplates.Add(new ItemContainerPouch(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorChest()
-        {
-            try
-            {
+        private async static Task LoadItemsArmorChest() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-chest-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -203,20 +199,51 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorChest.Add(new ItemArmorChest(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorChestTemplates.Add(new ItemArmorChest(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorFeet()
-        {
-            try
-            {
+
+        internal static Item CloneRandom(ITEM_TYPE itemType) {
+            switch (itemType) {
+                case ITEM_TYPE.ARMOR_CHEST:
+                    return ItemArmorChestTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.ARMOR_FEET:
+                    return ItemArmorFeetTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.ARMOR_FINGER:
+                    return ItemArmorFingerTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.ARMOR_HEAD:
+                    return ItemArmorHeadTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.ARMOR_NECK:
+                    return ItemArmorNeckTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.ARMOR_SHIELD:
+                    return ItemArmorShieldTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.CONTAINER_BACK:
+                    return ItemContainerBackpackTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.CONTAINER_WAIST:
+                    return ItemContainerPouchTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.DRINK:
+                    return ItemDrinkTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.FOOD:
+                    return ItemFoodTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.GEM:
+                    return ItemGemTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.JUNK:
+                    return ItemJunkTemplates.RandomListItem().Clone();
+                case ITEM_TYPE.WEAPON:
+                    return ItemWeaponTemplates.RandomListItem().Clone();
+                default:
+                    throw new Exception();
+                    //return null;
+            }
+        }
+
+        private async static Task LoadItemsArmorFeet() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-feet-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -228,20 +255,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorFeet.Add(new ItemArmorFeet(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorFeetTemplates.Add(new ItemArmorFeet(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorHead()
-        {
-            try
-            {
+        private async static Task LoadItemsArmorHead() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-head-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -253,20 +276,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorHead.Add(new ItemArmorHead(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorHeadTemplates.Add(new ItemArmorHead(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorNeck()
-        {
-            try
-            {
+        private async static Task LoadItemsArmorNeck() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-neck-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -278,20 +297,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorNeck.Add(new ItemArmorNeck(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorNeckTemplates.Add(new ItemArmorNeck(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorFinger()
-        {
-            try
-            {
+        private async static Task LoadItemsArmorFinger() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-finger-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -303,20 +318,16 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorFinger.Add(new ItemArmorFinger(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorFingerTemplates.Add(new ItemArmorFinger(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }
-        private async static Task LoadItemsArmorShield()
-        {
-            try
-            {
+        private async static Task LoadItemsArmorShield() {
+            try {
                 var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("xml\\templates");
                 var file = await folder.GetFileAsync("item-armor-shield-templates.xml");
                 var stream = await file.OpenStreamForReadAsync();
@@ -328,13 +339,11 @@ namespace cs_store_app_TextGame
                                       .Elements("item-templates")
                                         .Elements("item-template")
                                 select itemTemplates;
-                foreach (var itemNode in itemNodes)
-                {
-                    ItemsArmorShield.Add(new ItemArmorShield(itemNode));
+                foreach (var itemNode in itemNodes) {
+                    ItemArmorShieldTemplates.Add(new ItemArmorShield(itemNode));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 throw e;
             }
         }

@@ -193,40 +193,26 @@ namespace cs_store_app_TextGame {
 
             // DEBUG ITEMS
             for (int i = 0; i < Statics.DebugItemPasses; i++) {
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsDrink[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsFood[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsJunk[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsWeapon[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsContainerBackpack[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsContainerPouch[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorChest[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorFeet[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorHead[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorNeck[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorFinger[0]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorFinger[1]);
-                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.ItemsArmorShield[0]);
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.GEM));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.DRINK));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.FOOD));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.JUNK));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.WEAPON));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.CONTAINER_BACK));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.CONTAINER_WAIST));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_CHEST));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_FEET));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_HEAD));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_NECK));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_FINGER));
+                World.Regions[0].Subregions[0].Rooms[r.Next(9)].AddItem(ItemTemplates.CloneRandom(ITEM_TYPE.ARMOR_SHIELD));
             }
-
-            //EntityBodyPartChest bodyPartChest = new EntityBodyPartChest();
-
-            //ItemArmorChest chest = new ItemArmorChest();
-            //chest.Name = "Chest Name";
-            //chest.Description = "Chest Description";
-            //chest.ArmorFactor = 5;
-            //ItemArmorChest chestClone = chest.DeepClone();
-
-            //bodyPartChest.Item = chestClone;
-            //EntityBodyPartChest bodyPartChestClone = bodyPartChest.DeepClone();
 
             // DEBUG NPCS
             for (int i = 0; i < Statics.DebugNPCCount; i++) {
-                int region = 0;
-                int subregion = 0;
-                int room = r.Next(9);
-                EntityNPCBase npc = EntityNPCTemplates.NPCTemplates.Random().DeepClone();
-                npc.Coordinates.Set(region, subregion, room);
-                World.Regions[region].Subregions[subregion].Rooms[room].NPCs.Add(npc);
+                //EntityNPCBase npc = EntityNPCTemplates.NPCTemplates.RandomListItem().Clone();
+                //npc.Coordinates.Set(region, subregion, room);
+                //World.Regions[0].Subregions[0].Rooms[r.Next(9)].NPCs.Add(npc);
             }
         }
         #endregion

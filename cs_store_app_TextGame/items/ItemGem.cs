@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -10,33 +9,35 @@ namespace cs_store_app_TextGame {
     public enum GEM_QUALITY { CHIPPED, FLAWED, NONE, POLISHED, FLAWLESS, PERFECT }
     public enum GEM_SIZE { TINY, SMALL, NORMAL, LARGE, HUGE }
 
-    [DataContract(Name = "ItemGem", Namespace = "cs_store_app_TextGame")]
     public class ItemGem : Item {
         public override ITEM_TYPE Type { get { return ITEM_TYPE.GEM; } }
-        public ItemGem(XElement itemNode) : base(itemNode) {
-            _quality = GemQualityStringToGemQuality[itemNode.Element("gem-quality").Value];
-            _size = GemSizeStringToGemSize[itemNode.Element("size").Value];
-            _valueBase = float.Parse(itemNode.Element("value-base").Value);
+        public GEM_QUALITY Quality { get; set; }
+        public GEM_SIZE Size { get; set; }
+        protected ItemGem(ItemGem template) : base(template) {
+            Quality = (GEM_QUALITY)(GEM_QUALITY_VALUES.GetValue(Statics.Random.Next(GEM_QUALITY_VALUES.Length)));
+            Size = (GEM_SIZE)(GEM_SIZE_VALUES.GetValue(Statics.Random.Next(GEM_SIZE_VALUES.Length)));
+            Value = (int)(Value * GemQualityToValueMultiplier[Quality] * GemSizeToValueMultiplier[Size]);
+            Name = PrefixString(this) + Name;
         }
-
-        private GEM_SIZE _size;
-        private string Size { get { return _size == GEM_SIZE.NORMAL ? string.Empty : GemSizeToString[_size] + " "; } }
-
-        private GEM_QUALITY _quality;
-        private string Quality { get { return _quality == GEM_QUALITY.NONE ? string.Empty : GemQualityToString[_quality] + " "; } }
-
-        public string FullName { get { return Size + Quality + Name; } }
-
-        private float _valueBase;
-        public override int Value { get { return (int)(_valueBase * GemQualityToValueMultiplier[_quality]); } }
+        public ItemGem(XElement itemNode) : base(itemNode) { }
+        public override Item Clone() {
+            return new ItemGem(this);
+        }
 
         #region Static
         private static Dictionary<GEM_SIZE, string> GemSizeToString = new Dictionary<GEM_SIZE, string>();
         private static Dictionary<string, GEM_SIZE> GemSizeStringToGemSize = new Dictionary<string, GEM_SIZE>();
+        private static Dictionary<GEM_SIZE, float> GemSizeToValueMultiplier = new Dictionary<GEM_SIZE, float>();
+        private static Dictionary<GEM_QUALITY, string> GemQualityToString = new Dictionary<GEM_QUALITY, string>();
         private static Dictionary<string, GEM_QUALITY> GemQualityStringToGemQuality = new Dictionary<string, GEM_QUALITY>();
         private static Dictionary<GEM_QUALITY, float> GemQualityToValueMultiplier = new Dictionary<GEM_QUALITY, float>();
-        private static Dictionary<GEM_QUALITY, string> GemQualityToString = new Dictionary<GEM_QUALITY, string>();
+        private static Array GEM_QUALITY_VALUES;
+        private static Array GEM_SIZE_VALUES;
+
         static ItemGem() {
+            GEM_QUALITY_VALUES = Enum.GetValues(typeof(GEM_QUALITY));
+            GEM_SIZE_VALUES = Enum.GetValues(typeof(GEM_SIZE));
+
             GemSizeStringToGemSize.Add("tiny", GEM_SIZE.TINY);
             GemSizeStringToGemSize.Add("small", GEM_SIZE.SMALL);
             GemSizeStringToGemSize.Add("normal", GEM_SIZE.NORMAL);
@@ -48,6 +49,12 @@ namespace cs_store_app_TextGame {
             GemSizeToString.Add(GEM_SIZE.NORMAL, "normal");
             GemSizeToString.Add(GEM_SIZE.LARGE, "large");
             GemSizeToString.Add(GEM_SIZE.HUGE, "huge");
+
+            GemSizeToValueMultiplier.Add(GEM_SIZE.TINY, 0.2f);
+            GemSizeToValueMultiplier.Add(GEM_SIZE.SMALL, 0.5f);
+            GemSizeToValueMultiplier.Add(GEM_SIZE.NORMAL, 1.0f);
+            GemSizeToValueMultiplier.Add(GEM_SIZE.LARGE, 2.0f);
+            GemSizeToValueMultiplier.Add(GEM_SIZE.HUGE, 3.0f);
 
             GemQualityStringToGemQuality.Add("chipped", GEM_QUALITY.CHIPPED);
             GemQualityStringToGemQuality.Add("flawed", GEM_QUALITY.FLAWLESS);
@@ -69,6 +76,11 @@ namespace cs_store_app_TextGame {
             GemQualityToValueMultiplier.Add(GEM_QUALITY.POLISHED, 1.5f);
             GemQualityToValueMultiplier.Add(GEM_QUALITY.FLAWLESS, 2.0f);
             GemQualityToValueMultiplier.Add(GEM_QUALITY.PERFECT, 3.0f);
+        }
+        public static string PrefixString(ItemGem gem) {
+            string _sizeString = gem.Size == GEM_SIZE.NORMAL ? string.Empty : GemSizeToString[gem.Size] + " ";
+            string _qualityString = gem.Quality == GEM_QUALITY.NONE ? string.Empty : GemQualityToString[gem.Quality] + " ";
+            return _sizeString + _qualityString;
         }
         #endregion
     }

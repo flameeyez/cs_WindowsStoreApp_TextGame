@@ -40,7 +40,7 @@ namespace cs_store_app_TextGame
             while(PossibleActionsCopy.Count > 0)
             {
                 // last item should always have greatest chance
-                int random = Statics.r.Next(PossibleActionsCopy[PossibleActionsCopy.Count - 1].PercentageChance);
+                int random = Statics.Random.Next(PossibleActionsCopy[PossibleActionsCopy.Count - 1].PercentageChance);
 
                 for (int i = 0; i < PossibleActionsCopy.Count; i++)
                 {

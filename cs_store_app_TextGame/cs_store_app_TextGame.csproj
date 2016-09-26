@@ -163,7 +163,7 @@
     <Compile Include="items\ItemWeapon.cs" />
     <Compile Include="items\ItemDrink.cs" />
     <Compile Include="items\ItemFood.cs" />
-    <Compile Include="items\ItemTemplates.cs" />
+    <Compile Include="items\templates\ItemTemplates.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -194,6 +194,8 @@
     <Content Include="xml\templates\item-armor-neck-templates.xml" />
     <Content Include="xml\templates\item-armor-finger-templates.xml" />
     <Content Include="xml\templates\item-container-pouch-templates.xml" />
+    <Content Include="xml\templates\item-gem-templates.xml" />
+    <Content Include="xml\templates\item-junk-templates.xml" />
     <Content Include="xml\world\world.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -216,7 +218,6 @@
     <Content Include="xml\templates\item-container-backpack-templates.xml" />
     <Content Include="xml\templates\item-drink-templates.xml" />
     <Content Include="xml\templates\item-food-templates.xml" />
-    <Content Include="xml\templates\item-junk-templates.xml" />
     <Content Include="xml\templates\item-weapon-templates.xml" />
     <Content Include="xml\spells\spells.xml" />
   </ItemGroup>

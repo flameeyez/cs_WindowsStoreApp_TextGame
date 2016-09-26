@@ -167,7 +167,7 @@ namespace cs_store_app_TextGame
         {
             List<EntityNPCBase> hostiles = GetListOfHostiles(source, bMustBeAlive);
             if (hostiles.Count == 0) { return null; }
-            return hostiles.Random();
+            return hostiles.RandomListItem();
         }
         private List<EntityNPCBase> GetListOfHostiles(EntityNPCBase source, bool bMustBeAlive = false)
         {

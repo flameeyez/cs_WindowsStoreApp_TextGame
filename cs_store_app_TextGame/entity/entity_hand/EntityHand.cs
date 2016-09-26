@@ -34,40 +34,40 @@ namespace cs_store_app_TextGame
             switch (itemElement.Name.LocalName)
             {
                 case "weapon":
-                    Item = ItemTemplates.ItemsWeapon[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemWeaponTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-shield":
-                    Item = ItemTemplates.ItemsArmorShield[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorShieldTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-head":
-                    Item = ItemTemplates.ItemsArmorHead[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorHeadTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-feet":
-                    Item = ItemTemplates.ItemsArmorFeet[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorFeetTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-chest":
-                    Item = ItemTemplates.ItemsArmorChest[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorChestTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-finger":
-                    Item = ItemTemplates.ItemsArmorFinger[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorFingerTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "armor-neck":
-                    Item = ItemTemplates.ItemsArmorNeck[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemArmorNeckTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "drink":
-                    Item = ItemTemplates.ItemsDrink[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemDrinkTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "food":
-                    Item = ItemTemplates.ItemsFood[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemFoodTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "container-backpack":
-                    Item = ItemTemplates.ItemsContainerBackpack[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemContainerBackpackTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "container-pouch":
-                    Item = ItemTemplates.ItemsContainerPouch[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemContainerPouchTemplates[nItemTemplateIndex].Clone();
                     break;
                 case "junk":
-                    Item = ItemTemplates.ItemsJunk[nItemTemplateIndex].DeepClone(0);
+                    Item = ItemTemplates.ItemJunkTemplates[nItemTemplateIndex].Clone();
                     break;
                 default:
                     throw new Exception("Error in EntityHand constructor. Bad item type.");

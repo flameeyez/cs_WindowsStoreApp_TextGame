@@ -1,0 +1,52 @@
+<item-templates>
+  <item-template>
+    <id>0</id>
+    <name>diamond</name>
+    <description>It's a diamond. Shiny!</description>
+    <keywords>
+      <keyword>diamond</keyword>
+    </keywords>
+    <weight>0.1</weight>
+    <value>100</value>
+  </item-template>
+  <item-template>
+    <id>1</id>
+    <name>sapphire</name>
+    <description>It's a sapphire. Neat!</description>
+    <keywords>
+      <keyword>sapphire</keyword>
+    </keywords>
+    <weight>0.1</weight>
+    <value>50</value>
+  </item-template>
+  <item-template>
+    <id>2</id>
+    <name>ruby</name>
+    <description>It's a ruby. Nice!</description>
+    <keywords>
+      <keyword>ruby</keyword>
+    </keywords>
+    <weight>0.1</weight>
+    <value>60</value>
+  </item-template>
+  <item-template>
+    <id>3</id>
+    <name>emerald</name>
+    <description>It's an emerald. Whoa!</description>
+    <keywords>
+      <keyword>emerald</keyword>
+    </keywords>
+    <weight>0.1</weight>
+    <value>40</value>
+  </item-template>
+  <item-template>
+    <id>4</id>
+    <name>topaz</name>
+    <description>It's a topaz. OK!</description>
+    <keywords>
+      <keyword>topaz</keyword>
+    </keywords>
+    <weight>0.1</weight>
+    <value>25</value>
+  </item-template>
+</item-templates>

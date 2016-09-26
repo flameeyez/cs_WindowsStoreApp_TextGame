@@ -28,7 +28,7 @@ namespace cs_store_app_TextGame
 
         public static int EmptyRoomCleanupThreshold = 30000;
 
-        public static Random r = new Random(DateTime.Now.Millisecond);
+        public static Random Random = new Random(DateTime.Now.Millisecond);
 
         #region Static Constructor
         static Statics()
@@ -129,9 +129,9 @@ namespace cs_store_app_TextGame
         }
         #endregion
 
-        public static T Random<T>(this List<T> list)
+        public static T RandomListItem<T>(this List<T> list)
         {
-            int index = Statics.r.Next(list.Count);
+            int index = Statics.Random.Next(list.Count);
             return list[index];
         }
 
@@ -212,24 +212,24 @@ namespace cs_store_app_TextGame
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
-        public static T DeepClone<T>(this T a, int nid = -1)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                DataContractSerializer serializer = new DataContractSerializer(a.GetType());
-                serializer.WriteObject(stream, a);
-                stream.Position = 0;
-                T returnObject = (T)serializer.ReadObject(stream);
+        //public static T DeepClone<T>(this T a, int nid = -1)
+        //{
+        //    using (MemoryStream stream = new MemoryStream())
+        //    {
+        //        DataContractSerializer serializer = new DataContractSerializer(a.GetType());
+        //        serializer.WriteObject(stream, a);
+        //        stream.Position = 0;
+        //        T returnObject = (T)serializer.ReadObject(stream);
 
-                GameObject g = returnObject as GameObject;
-                if(g != null)
-                {
-                    g.NID = nid == -1 ? Statics.NID++ : nid;
-                }
+        //        GameObject g = returnObject as GameObject;
+        //        if(g != null)
+        //        {
+        //            g.NID = nid == -1 ? Statics.NID++ : nid;
+        //        }
 
-                return returnObject;
-            }
-        }
+        //        return returnObject;
+        //    }
+        //}
 
         // TODO: implement entity levels, experience (npcs gain experience?)
         public static Color LevelDeltaToColor(int level)

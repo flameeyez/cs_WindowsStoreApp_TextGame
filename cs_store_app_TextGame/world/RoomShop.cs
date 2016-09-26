@@ -41,37 +41,37 @@ namespace cs_store_app_TextGame
                 switch(item.Name.LocalName)
                 {
                     case "weapon":
-                        SoldItems.Add(ItemTemplates.ItemsWeapon[value]);
+                        SoldItems.Add(ItemTemplates.ItemWeaponTemplates[value]);
                         break;
                     case "armor-chest":
-                        SoldItems.Add(ItemTemplates.ItemsArmorChest[value]);
+                        SoldItems.Add(ItemTemplates.ItemArmorChestTemplates[value]);
                         break;
                     case "armor-feet":
-                        SoldItems.Add(ItemTemplates.ItemsArmorFeet[value]);
+                        SoldItems.Add(ItemTemplates.ItemArmorFeetTemplates[value]);
                         break;
                     case "armor-head":
-                        SoldItems.Add(ItemTemplates.ItemsArmorHead[value]);
+                        SoldItems.Add(ItemTemplates.ItemArmorHeadTemplates[value]);
                         break;
                     case "junk":
-                        SoldItems.Add(ItemTemplates.ItemsJunk[value]);
+                        SoldItems.Add(ItemTemplates.ItemJunkTemplates[value]);
                         break;
                     case "container-backpack":
-                        SoldItems.Add(ItemTemplates.ItemsContainerBackpack[value]);
+                        SoldItems.Add(ItemTemplates.ItemContainerBackpackTemplates[value]);
                         break;
                     case "container-pouch":
-                        SoldItems.Add(ItemTemplates.ItemsContainerPouch[value]);
+                        SoldItems.Add(ItemTemplates.ItemContainerPouchTemplates[value]);
                         break;
                     case "armor-finger":
-                        SoldItems.Add(ItemTemplates.ItemsArmorFinger[value]);
+                        SoldItems.Add(ItemTemplates.ItemArmorFingerTemplates[value]);
                         break;
                     case "armor-neck":
-                        SoldItems.Add(ItemTemplates.ItemsArmorNeck[value]);
+                        SoldItems.Add(ItemTemplates.ItemArmorNeckTemplates[value]);
                         break;
                     case "food":
-                        SoldItems.Add(ItemTemplates.ItemsFood[value]);
+                        SoldItems.Add(ItemTemplates.ItemFoodTemplates[value]);
                         break;
                     case "drink":
-                        SoldItems.Add(ItemTemplates.ItemsDrink[value]);
+                        SoldItems.Add(ItemTemplates.ItemDrinkTemplates[value]);
                         break;
                     default:
                         break;

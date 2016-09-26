@@ -175,8 +175,8 @@ namespace cs_store_app_TextGame {
             EmptyRoomTimer = DateTime.Now;
         }
 
-        internal void AddItem(Item itemTemplate) {
-            Items.Add(itemTemplate.DeepClone());
+        internal void AddItem(Item item) {
+            Items.Add(item);
         }
     }
 }

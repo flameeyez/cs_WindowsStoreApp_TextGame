@@ -747,7 +747,7 @@ namespace cs_store_app_TextGame
                     return Handler.HANDLED(MESSAGE_ENUM.ERROR_NOT_ENOUGH_GOLD, shop.SoldItems[itemIndex - 1].NameAsParagraph);
                 }
 
-                boughtItem = shop.SoldItems[itemIndex - 1].DeepClone();
+                boughtItem = shop.SoldItems[itemIndex - 1].Clone();
             }
 
             // TODO: scenario 2: parse second word as item keyword

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.UI;
 using Windows.UI.Xaml.Documents;
 
-namespace cs_store_app_TextGame
-{
+namespace cs_store_app_TextGame {
     [Flags]
-    public enum ITEM_TYPE
-    {
+    public enum ITEM_TYPE {
         BASE = 0x0,
         DRINK = 0x1,
         FOOD = 0x2,
@@ -33,32 +30,17 @@ namespace cs_store_app_TextGame
         ANY = 0xFFFF,
     };
 
-    public enum ITEM_MATCH_CODE
-    {
+    public enum ITEM_MATCH_CODE {
         MATCH,
         BAD_KEYWORD,
         BAD_TYPE
     }
 
-    [DataContract(Name = "Item", Namespace = "cs_store_app_TextGame")]
-    [KnownType(typeof(ItemWeapon))]
-    [KnownType(typeof(ItemArmorChest))]
-    [KnownType(typeof(ItemArmorFeet))]
-    [KnownType(typeof(ItemArmorFinger))]
-    [KnownType(typeof(ItemArmorHead))]
-    [KnownType(typeof(ItemArmorNeck))]
-    [KnownType(typeof(ItemArmorShield))]
-    [KnownType(typeof(ItemContainerBackpack))]
-    [KnownType(typeof(ItemContainerPouch))]
-    [KnownType(typeof(ItemFood))]
-    [KnownType(typeof(ItemDrink))]
-    [KnownType(typeof(ItemJunk))]
-    public abstract class Item : GameObject
-    {
+    public abstract class Item : GameObject {
         public static Dictionary<string, ITEM_TYPE> StringToEnum = new Dictionary<string, ITEM_TYPE>();
-        static Item()
-        {
+        static Item() {
             StringToEnum.Add("any", ITEM_TYPE.ANY);
+            StringToEnum.Add("gem", ITEM_TYPE.GEM);
             StringToEnum.Add("weapon", ITEM_TYPE.WEAPON);
             StringToEnum.Add("armor-chest", ITEM_TYPE.ARMOR_CHEST);
             StringToEnum.Add("armor-feet", ITEM_TYPE.ARMOR_FEET);
@@ -73,137 +55,99 @@ namespace cs_store_app_TextGame
             StringToEnum.Add("junk", ITEM_TYPE.JUNK);
         }
 
-        //[DataMember]
         //public Guid UID { get; set; }
-        [DataMember]
         public int ID { get; set; }
-        [DataMember]
-        private string _name;
-        public string Name 
-        {
-            get
-            {
-                return _name + " (" + NID.ToString() + ")";// +" {" + UID.ToString() + "}";
-            }
-            set
-            {
-                _name = value;
-            }
+        protected string _name;
+        public string Name {
+            get { return _name + " (" + NID.ToString() + ")"; } // +" {" + UID.ToString() + "}";            }
+            set { _name = value; }
         }
-        public Run NameAsRun
-        {
-            get
-            {
-                return Name.ToRun(Statics.ItemBrushColor, NID);
-            }
+        public Run NameAsRun {
+            get { return Name.ToRun(Statics.ItemBrushColor, NID); }
         }
-        public Paragraph NameAsParagraph
-        {
-            get
-            {
+        public Paragraph NameAsParagraph {
+            get {
                 Paragraph p = new Paragraph();
                 p.Inlines.Add(NameAsRun);
                 return p;
             }
         }
-        public string NameIndefiniteArticle
-        {
-            get
-            {
-                return _name.IndefiniteArticle();
-            }
+        public string NameIndefiniteArticle {
+            get { return _name.IndefiniteArticle(); }
         }
-        public Paragraph NameWithIndefiniteArticle
-        {
-            get
-            {
+        public Paragraph NameWithIndefiniteArticle {
+            get {
                 Paragraph p = new Paragraph();
-
                 p.Inlines.Add((NameIndefiniteArticle).ToRun());
                 p.Inlines.Add(NameAsRun);
-
                 return p;
             }
         }
-        [DataMember]
-        private string _description;
-        public string Description 
-        {
-            get
-            {
-                return _description; // Name + "\n" + _description;
-            }
-            set
-            {
-                _description = value;
+
+        public string Description { get; set; }
+        public double Weight { get; set; }
+        public virtual int Value { get; set; }
+        public abstract ITEM_TYPE Type { get; }
+        public List<string> Keywords = new List<string>();
+
+        public Item() { }
+        protected Item(Item template) {
+            NID = Statics.NID++;
+            ID = template.ID;
+            Name = template.Name;
+            Description = template.Description;
+            Weight = template.Weight;
+            Value = template.Value;
+
+            foreach(string strKeyword in template.Keywords) {
+                Keywords.Add(strKeyword);
             }
         }
-        [DataMember]
-        public double Weight { get; set; }
-        [DataMember]
-        public virtual int Value{get;set;}
-        // no underlying stored value, so no [DataMember] attribute
-        public abstract ITEM_TYPE Type { get; }
-        [DataMember]
-        public List<string> Keywords = new List<string>();
-        
-        public Item() { }
-        public Item(XElement itemNode) : this()
-        {
+        public Item(XElement itemNode) : this() {
             ID = int.Parse(itemNode.Element("id").Value);
             Name = itemNode.Element("name").Value;
             Description = itemNode.Element("description").Value;
             Weight = double.Parse(itemNode.Element("weight").Value);
             Value = int.Parse(itemNode.Element("value").Value);
 
-            // item.keywords
-            var keywordNodes = from keywords in itemNode
-                                .Elements("keywords")
-                                  .Elements("keyword")
-                            select keywords;
-            foreach(var keywordNode in keywordNodes)
-            {
+            IEnumerable<XElement> keywordNodes = itemNode.Element("keywords").Elements("keyword");
+            foreach (var keywordNode in keywordNodes) {
                 Keywords.Add(keywordNode.Value);
             }
         }
-        public bool IsKeyword(string strKeyword)
-        {
-            foreach(string keyword in Keywords)
-            {
-                if(keyword == strKeyword)
-                {
+
+        public bool IsKeyword(string strKeyword) {
+            foreach (string keyword in Keywords) {
+                if (keyword == strKeyword) {
                     return true;
                 }
             }
             return false;
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             Item item = obj as Item;
             if (item == null) { return false; }
-
             return (this.Name == item.Name) && (this.Type == item.Type);
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             int hash = 13;
             hash = (hash * 7) + Name.GetHashCode();
             hash = (hash * 7) + Type.GetHashCode();
             return hash;
         }
 
-        public ITEM_MATCH_CODE Match(string strKeyword, ITEM_TYPE type = ITEM_TYPE.ANY)
-        {
+        public ITEM_MATCH_CODE Match(string strKeyword, ITEM_TYPE type = ITEM_TYPE.ANY) {
             if (!this.IsKeyword(strKeyword)) { return ITEM_MATCH_CODE.BAD_KEYWORD; }
             if (!(this.Type == type) && type != ITEM_TYPE.ANY) { return ITEM_MATCH_CODE.BAD_TYPE; }
             return ITEM_MATCH_CODE.MATCH;
         }
 
-        public bool IsType(ITEM_TYPE type)
-        {
+        public bool IsType(ITEM_TYPE type) {
             return (type & Type) == Type;
         }
+
+        public abstract Item Clone();
     }
 }

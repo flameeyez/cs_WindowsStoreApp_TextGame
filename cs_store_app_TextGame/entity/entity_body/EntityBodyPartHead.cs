@@ -17,7 +17,7 @@ namespace cs_store_app_TextGame
             int nItemTemplateIndex = -1;
             if (!int.TryParse(bodyPartElement.Value, out nItemTemplateIndex)) { return; }
 
-            Item = ItemTemplates.ItemsArmorHead[nItemTemplateIndex].DeepClone(0);
+            Item = (ItemArmor)ItemTemplates.ItemArmorHeadTemplates[nItemTemplateIndex].Clone();
         }
         public override ITEM_TYPE Type 
         {
